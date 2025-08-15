@@ -46,6 +46,9 @@ postgres:
   ## @param postgres.secretRef The secret reference for Postgres
   ##
   secretRef: odoo-postgres
+  ## @param postgres.userPasswordKey The user password key for Postgres
+  ##
+  userPasswordKey: password
   ## @param postgres.storageClassName Set the storage class
   ##
   storageClassName: standard
@@ -77,10 +80,8 @@ postgresql:
 ## @section CloudNativePG parameters
 ##
 cnpg:
+  enabled: true
   cluster:
-    ## @param cnpg.cluster.enabled Enable or disable CloudNativePG
-    ##
-    enabled: true
     ## @param cnpg.cluster.nameOverride Override the name of the PostgreSQL cluster
     ## Default: "{release-name}-postgresql"
     ##
@@ -91,22 +92,22 @@ cnpg:
     storage:
       ## @param cnpg.cluster.storage.size Persistent volume size for each instance
       ##
-      size: 8Gi
-  ## @param cnpg.database.enabled Enable or disable creation of a Database resource
-  ## Requires a running Cluster
-  ##
-  database:
-    enabled: true
-    ## @param cnpg.database.name Name of the PostgreSQL database to create
-    ##
-    name: odoo
-    ## @param cnpg.database.user Name of the database user (optional, defaults to database name)
-    ##
-    user: odoo
-    ## @param cnpg.database.secretName Name of the secret to store credentials
-    ## Default: {release-name}-cnpg-credentials
-    ##
-    secretName: ""
+      size: 4Gi
+    ## @param cnpg.bootstrap Configure a database to run on cluster creation
+    bootstrap:
+      initdb:
+        ## @param cnpg.database.name Name of the PostgreSQL database to create
+        ##
+        name: odoo
+        ## @param cnpg.database.user Name of the database user (optional, defaults to database name)
+        ##
+        user: odoo
+        hostname: odoo-db
+        majorVersion: 16
+        ## @param cnpg.database.secretName Name of the secret to store credentials
+        ## Default: {release-name}-cnpg-credentials
+        ##
+        secretName: "odoo-postgresql"
 
 ## @section Odoo parameters
 ##
@@ -122,12 +123,6 @@ imagePullPolicy: Always
 ## @param proxyMode Enable or disable proxy mode for Odoo
 ##
 proxyMode: true
-## @param githubUsername The GitHub username for Odoo
-##
-githubUsername: ""
-## @param githubPersonalAccessToken The GitHub personal access token for Odoo
-##
-githubPersonalAccessToken: ""
 ## @param downloadOdooEnterprise Enable or disable downloading Odoo Enterprise
 ##
 downloadOdooEnterprise: false
@@ -146,10 +141,9 @@ initLang: de_CH
 ## @param listDB Enable or disable listing databases for Odoo
 ##
 listDB: false
-## @param secretRef The secret reference for Odoo
+## @param githubAddonsCredentialsSecretName Name of secret containing GITHUB_USERNAME and GITHUB_PERSONAL_ACCESS_TOKEN with access to the addons repo.
 ##
-secretRef: odoo-creds
-
+githubAddonsCredentialsSecretName: odoo-github
 ## @section K8up parameters
 ##
 k8up:

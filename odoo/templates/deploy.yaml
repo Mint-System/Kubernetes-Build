@@ -22,11 +22,11 @@ spec:
             - -c
             - |
               {{- if .Values.downloadOdooEnterprise }}/entrypoint.sh download-git-archive && \{{- end }}
-              /entrypoint.sh clone-git-addons && \
+              /entrypoint.sh git-clone-addons && \
               /entrypoint.sh init-db
           envFrom:
             - secretRef:
-                name: {{ .Values.secretRef }}
+                name: {{ .Values.githubAddonsCredentialsSecretName }}
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           env:
@@ -80,16 +80,13 @@ spec:
             {{- end }}
             {{- if .Values.cnpg.enabled }}
             - name: PGHOST
-              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
+              value: {{ .Release.Name }}-odoo-db-rw.{{ .Release.Namespace }}.svc.cluster.local
             - name: PGUSER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql-app
-                  key: username
+              value: {{ .Values.cnpg.cluster.bootstrap.initdb.user }}
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql-app
+                  name: {{ .Release.Name }}-odoo-db-app
                   key: password
             {{- end }}
           {{- if .Values.vshnPostgres.enabled }}
@@ -106,7 +103,7 @@ spec:
           - containerPort: 8069
           envFrom:
             - secretRef:
-                name: {{ .Values.secretRef }}
+                name: {{ .Values.githubAddonsCredentialsSecretName }}
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           env:
@@ -114,8 +111,8 @@ spec:
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgresql.auth.existingSecret }}
-                  key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
+                  name: {{ .Release.Name }}-postgresql
+                  key: password
             - name: PGHOST
               value: odoo-postgresql.{{ .Release.Namespace }}.svc.cluster.local
             - name: PGUSER
@@ -125,8 +122,8 @@ spec:
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgres.secretRef }}
-                  key: {{ .Values.postgres.userPasswordKey }}
+                  name: {{ .Release.Name }}-odoo-db-app
+                  key: password
             - name: PGHOST
               value: postgres.{{ .Release.Namespace }}.svc.cluster.local
             - name: PGUSER
@@ -160,16 +157,13 @@ spec:
             {{- end }}
             {{- if .Values.cnpg.enabled }}
             - name: PGHOST
-              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
+              value: {{ .Release.Name }}-odoo-db-rw.{{ .Release.Namespace }}.svc.cluster.local
             - name: PGUSER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql-app
-                  key: username
+              value: {{ .Values.cnpg.cluster.bootstrap.initdb.user }}
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql-app
+                  name: {{ .Release.Name }}-odoo-db-app
                   key: password
             {{- end }}
           {{- if .Values.vshnPostgres.enabled }}

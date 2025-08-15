@@ -2,6 +2,45 @@
 
 This Helm chart deploys Odoo with PostgreSQL.
 
+## Installation Instructions
+
+### 1. Create a GitHub Credentials Secret
+
+You must create a Kubernetes secret containing both your GitHub username and your GitHub Personal Access Token. This secret is required for downloading private Odoo Enterprise or private addons.
+
+Create the secret using the following command:
+
+```sh
+kubectl create secret generic odoo-github \
+    --from-literal=GITHUB_USERNAME=<YOUR_GITHUB_USERNAME> \
+    --from-literal=GITHUB_PERSONAL_ACCESS_TOKEN=<YOUR_GITHUB_PERSONAL_ACCESS_TOKEN> \
+    -n <namespace>
+```
+
+Replace `<YOUR_GITHUB_USERNAME>` and `<YOUR_GITHUB_PERSONAL_ACCESS_TOKEN>` with your actual credentials and `<namespace>` with the namespace where you are deploying Odoo.
+
+### 2. Add DockerHub Registry Credentials Secret
+
+If you use a private DockerHub registry, create a Kubernetes secret for your DockerHub credentials:
+
+```sh
+kubectl create secret docker-registry dockerhub-registry-read \
+    --namespace=<your-namespace> \
+    --docker-server=https://index.docker.io/v1/ \
+    --docker-username=<your-dockerhub-username> \
+    --docker-password=<your-dockerhub-access-token>
+```
+
+Replace `<your-namespace>`, `<your-dockerhub-username>`, and `<your-dockerhub-access-token>` with your actual DockerHub namespace, username, and access token.
+
+### 3. Install the Chart
+
+Install the chart using Helm:
+
+```sh
+helm upgrade --install sozialinfo . -f values.yaml
+```
+
 ## Parameters
 
 ### Ingress parameters
