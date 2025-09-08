@@ -220,12 +220,9 @@ task install-chart ingress-nginx
 
 #### Setup cert manager
 
-Create an api token with domain scope: <https://manager.infomaniak.com/v3/infomaniak-api>
+Create an Infomaniak API token with domain scope: <https://manager.infomaniak.com/v3/infomaniak-api>
 
-```bash
-ACME_EMAIL="sysadmin@example.com"
-INFOMANIAK_API_TOKEN="YOUR_API_TOKEN"
-```
+Setup the secret according to [clusterIssuer > Secrets](/clusterIssuer/README.md#Secrets)
 
 Install cert manager with Infomaniak webhook.
 
@@ -272,13 +269,14 @@ task install-chart ingress-nginx
 
 #### Setup cert manager
 
-Setup `.env` config.
+Set the `acme.email` value.
 
-```bash
-ACME_EMAIL="sysadmin@example.com"
+```yaml
+acme:
+    email: sysadmin@example.com
 ```
 
-Install cert manager with Infomaniak webhook.
+Install cert manager.
 
 ```bash
 task install-chart cert-manager
