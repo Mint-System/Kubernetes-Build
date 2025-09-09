@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-vuepress
+  labels:
+    app: vuepress
+spec:
+  selector:
+    matchLabels:
+      app: vuepress
+  template:
+    metadata:
+      labels:
+        app: vuepress
+    spec:
+      containers:
+        - name: odoo
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+          - containerPort: 80

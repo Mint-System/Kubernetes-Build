@@ -39,6 +39,7 @@ List of charts:
 * [postgres](/postgres/README.md)
 * [vshnPostgres](/vshnPostgres/README.md)
 * [hugo](/hugo/README.md)
+* [vuepress](/vuepress/README.md)
 * [deploymentUpdater](/deploymentUpdater/README.md)
 * [forgejoRunner](/forgejoRunner/README.md)
 

@@ -1,6 +1,6 @@
 # Mint System Hugo
 
-This Helm chart deploys Hugo site.
+This Helm chart deploys a Hugo site.
 
 ## Parameters
 

@@ -143,8 +143,8 @@ function setup-hosts() {
     grep -qxF '127.0.0.1 knd.local' /etc/hosts || echo "127.0.0.1 knd.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 odoo.knd.local" /etc/hosts || echo "127.0.0.1 odoo.knd.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 odoo.local" /etc/hosts || echo "127.0.0.1 odoo.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF "127.0.0.1 restic.knd.local" /etc/hosts || echo "127.0.0.1 restic.knd.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF "127.0.0.1 restic.local" /etc/hosts || echo "127.0.0.1 restic.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF "127.0.0.1 hugo.knd.local" /etc/hosts || echo "127.0.0.1 hugo.knd.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF "127.0.0.1 vuepress.knd.local" /etc/hosts || echo "127.0.0.1 vuepress.knd.local" | sudo tee -a /etc/hosts > /dev/null
 }
 
 function test-chart-odoo() {
@@ -221,6 +221,7 @@ function docs() {
     pnpm run generate-readme --values postgres/values.yaml -r postgres/README.md
     pnpm run generate-readme --values vshnPostgres/values.yaml -r vshnPostgres/README.md
     pnpm run generate-readme --values hugo/values.yaml -r hugo/README.md
+    pnpm run generate-readme --values vuepress/values.yaml -r vuepress/README.md
     pnpm run generate-readme --values forgejoRunner/values.yaml -r forgejoRunner/README.md
 }
 
