@@ -9,7 +9,7 @@ To use the Infomaniak resolver setup a `infomaniak-api-credentials` secret with 
 ```bash
 INFOMANIAK_API_TOKEN="*******"
 kubectl create secret generic infomaniak-api-credentials \
-    --from-literal=infomaniakApiToken="$INFOMANIAK_API_TOKEN" \
+    --from-literal=api-token="$INFOMANIAK_API_TOKEN" \
     -n cert-manager
 ```
 

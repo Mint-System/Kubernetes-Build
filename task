@@ -433,6 +433,10 @@ function upgrade-cert-manager() {
         --version v1.18.2 \
         --set crds.enabled=true \
         --set config.featureGates.ACMEHTTP01IngressPathTypeExact=false
+
+    # https://github.com/Infomaniak/cert-manager-webhook-infomaniak
+    echo "Apply Infomaniak webhook"
+    kubectl apply -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
 }
 
 function upgrade-clusterIssuer() {
