@@ -99,7 +99,7 @@ task install-chart cnpg
 Install the Odoo chart:
 
 ```bash
-task install-chart odoo
+task install-chart odoo values/odoo.knd.local.yaml
 ```
 
 The Odoo database will be initialized automatically.
@@ -185,7 +185,7 @@ task switch-context axo
 Install the Helm release.
 
 ```bash
-task install-chart odoo
+task install-chart odoo values/odoo.axo.mintcloud.ch.yaml
 ```
 
 ### Infomaniak
@@ -242,7 +242,7 @@ task install-chart clusterIssuer
 Install the Odoo chart.
 
 ```bash
-task install-chart odoo
+task install-chart odoo values/odoo.chk.mintcloud.ch
 ```
 
 ### K3s

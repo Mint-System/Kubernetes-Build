@@ -1,0 +1,7 @@
+ingress:
+    host: "janikvonrotz.chk.janikv.cloud"
+    customDomain: "janikvonrotz.ch"
+    clusterIssuerRef: letsencrypt-http-prod
+acme:
+    email: login@janikvonrotz.ch
+storageClassName: csi-cinder-sc-retain

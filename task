@@ -52,8 +52,8 @@ function help() {
     printf "$COLUMN" "show-context" "" "Show active kubeconfig."
     printf "$COLUMN" "get-context-alias" "" "Get alias of current context."
     printf "$COLUMN" "update-dependencies" "[chart]" "Update dependencies for a chart."
-    printf "$COLUMN" "install-chart" "[chart]" "Install Helm chart."
-    printf "$COLUMN" "upgrade-release" "[chart]" "Upgrade Helm release."
+    printf "$COLUMN" "install-chart" "[chart][values]" "Install Helm chart."
+    printf "$COLUMN" "upgrade-release" "[chart][values]" "Upgrade Helm release."
     printf "$COLUMN" "uninstall-release" "[release]" "Uninstall Helm release."
     # kubectl
     printf "$COLUMN" "get-secrets" "[chart]" "Show secrets for chart."
@@ -66,7 +66,7 @@ function help() {
     printf "$COLUMN" "login-oc" "" "Refresh the auth token for OpenShift."
     # Helm
     printf "$COLUMN" "add-repos" "" "Add the required Helm repos."
-    printf "$COLUMN" "template-manifest" "[chart][release]" "Template all charts with Helm."
+    printf "$COLUMN" "template-manifest" "[chart][values]" "Template all charts with Helm."
     printf "$COLUMN" "package-repo" "[chart]" "Package Helm charts."
     printf "$COLUMN" "index-repo" "" "Index Helm chart."
     printf "$COLUMN" "publish-repo" "" "Copy Helm chart files to dist."
@@ -160,7 +160,7 @@ function test-chart-odoo() {
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         update-dependencies odoo
-        install-chart odoo
+        install-chart odoo values/odoo.knd.local.yaml
     fi
 }
 
@@ -280,7 +280,7 @@ function forward-haproxy-ingress() {
 function list-charts() {
     for DIR in */; do
         DIR_NAME="${DIR%/}"
-        if [[ "$DIR_NAME" != "public" ]] && ! git check-ignore -q "$DIR_NAME" 2>/dev/null; then
+        if [[ ! "$DIR_NAME" =~ ^(public|values)$ ]] && ! git check-ignore -q "$DIR_NAME" 2>/dev/null; then
             echo "$DIR_NAME"
         fi
     done
@@ -292,7 +292,6 @@ function list-external-charts() {
     echo "haproxy-ingress"
     echo "ingress-nginx"
     echo "k8up"
-    echo "postgresql"
 }
 
 function list-context() {
@@ -301,6 +300,7 @@ function list-context() {
     echo "chk (chk.mintcloud.ch)"
     echo "axo (axo.mintcloud.ch)"
     echo "ksi (k8s.sozialinfo.ch)"
+    echo "jvr (chk.janikv.cloud)"
 }
 
 function switch-context() {
@@ -330,18 +330,19 @@ function update-dependencies() {
 
 function install-chart() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
+
     if [ "$(get-context-alias)" = "axo" ]; then
         echo "Set oc project to $OC_PROJECT."
         oc project "$OC_PROJECT"
     fi
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
-    if task list-charts | grep -qx "$1"; then
+    if list-charts | grep -q "$1"; then
         echo "Install chart $1 as release $RELEASE_NAME:"
         helm install "$RELEASE_NAME" "$1" \
-            --values "./values.${CONTEXT_ALIAS}.yaml"
+            --values "$2"
     else
-        "install-$1"
+        "install-$1" "$2"
     fi
 }
 
@@ -356,11 +357,6 @@ function install-cnpg() {
       --namespace cnpg-system \
       --create-namespace \
       cnpg/cloudnative-pg
-}
-
-function install-postgresql() {
-    echo "Install bitnami/postgresql."
-    helm install postgresql bitnami/postgresql --values odoo/values.yaml
 }
 
 function install-ingress-nginx() {
@@ -396,7 +392,7 @@ function install-clusterIssuer() {
     helm install \
         clusterIssuer clusterIssuer \
         --namespace cert-manager \
-        --values "./values.${CONTEXT_ALIAS}.yaml"
+        --values "$1"
 }
 
 function test-chart-clusterIssuer() {
@@ -437,18 +433,13 @@ function upgrade-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
-    if task list-charts | grep -qx "$1"; then
+    if list-charts | grep -q "$1"; then
         echo "Upgrade $1 chart for release $RELEASE_NAME:"
         helm upgrade "$RELEASE_NAME" "$1" \
-            --values "./values.${CONTEXT_ALIAS}.yaml"
+            --values "$2"
     else
-        "upgrade-$1"
+        "upgrade-$1" "$2"
     fi
-}
-
-function upgrade-postgresql() {
-    echo "Upgrade bitnami/postgresql"
-    helm upgrade postgresql bitnami/postgresql -f odoo/values.yaml
 }
 
 function upgrade-cert-manager() {
@@ -466,7 +457,7 @@ function upgrade-clusterIssuer() {
     helm upgrade \
         clusterIssuer clusterIssuer \
         --namespace cert-manager \
-        --values "./values.${CONTEXT_ALIAS}.yaml"
+        --values "$2"
 }
 function upgrade-ingress-nginx() {
     if [ -n "$EXTERNAL_IP" ]; then
@@ -492,25 +483,11 @@ function uninstall-release() {
 # kubectl Commands
 
 function get-secrets() {
-    if [ "$1" = "odoo" ]; then
-        echo "odoo-postgresql-app/username:"
-        kubectl get secret odoo-postgresql-app -o jsonpath="{.data.username}" | base64 --decode && echo
-        echo "odoo-postgresql-app/password:"
-        kubectl get secret odoo-postgresql-app -o jsonpath="{.data.password}" | base64 --decode && echo
-    fi
-
     if [ "$1" = "postgres" ]; then
         echo "postgres/user:"
         kubectl get secret postgres -o jsonpath="{.data.user}" | base64 --decode && echo
         echo "postgres/password:"
         kubectl get secret postgres -o jsonpath="{.data.password}" | base64 --decode && echo
-    fi
-
-    if [ "$1" = "postgresql" ]; then
-        echo "odoo-postgresql/password:"
-        kubectl get secret odoo-postgresql -o jsonpath="{.data.password}" | base64 --decode && echo
-        echo "odoo-postgresql/postgres-password:"
-        kubectl get secret odoo-postgresql -o jsonpath="{.data.postgres-password}" | base64 --decode && echo
     fi
 
     if [ "$1" = "clusterIssuer" ]; then
@@ -552,6 +529,7 @@ function logs-ingress-nginx() {
 
 function template-manifest() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
+    if test -z "$2"; then echo "\$2 is empty."; exit; fi
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
     echo "Template chart $1 as release $RELEASE_NAME into manifest.yaml."
@@ -559,10 +537,10 @@ function template-manifest() {
     if [ "$1" = "clusterIssuer" ]; then
         helm --debug template clusterIssuer clusterIssuer \
             --namespace cert-manager \
-            --values "./values.${CONTEXT_ALIAS}.yaml" > manifest.yaml
-    elif task list-charts | grep -qx "$1"; then
+            --values "$2" > manifest.yaml
+    elif list-charts | grep -q "$1"; then
         helm --debug template "$RELEASE_NAME" "$1" \
-            --values "./values.${CONTEXT_ALIAS}.yaml" > manifest.yaml
+            --values "$2" > manifest.yaml
     fi
 }
 

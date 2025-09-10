@@ -17,11 +17,3 @@ dependencies:
     version: 0.1.0
     repository: "file://../vshnPostgres"
     condition: vshnPostgres.enabled
-  - name: postgresql
-    version: 16.7.21
-    repository: https://charts.bitnami.com/bitnami
-    condition: postgresql.enabled
-  # - name: cloudnative-pg
-  #   version: 0.25.0
-  #   repository: https://cloudnative-pg.github.io/charts
-  #   condition: cnpg.enabled
