@@ -395,24 +395,6 @@ function install-clusterIssuer() {
         --values "$1"
 }
 
-function test-chart-clusterIssuer() {
-    echo "Apply certificate."
-    cat <<EOF | kubectl apply -f -
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-    name: chk-mintcloud-ch
-spec:
-    secretName: chk-mintcloud-ch
-    issuerRef:
-        name: letsencrypt-dns-staging
-        kind: ClusterIssuer
-    dnsNames:
-    - chk.mintcloud.ch
-EOF
-}
-
 function install-haproxy-ingress() {
     echo "Install haproxy-ingress/haproxy-ingress."
 

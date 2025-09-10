@@ -14,7 +14,7 @@ spec:
         app: vuepress
     spec:
       containers:
-        - name: odoo
+        - name: vuepress
           image: {{ .Values.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:

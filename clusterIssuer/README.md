@@ -13,6 +13,30 @@ kubectl create secret generic infomaniak-api-credentials \
     -n cert-manager
 ```
 
+## Test
+
+### Infomaniak webhook
+
+To test the Infomaniak webhook create a certificate with the `letsencrypt-dns-staging` issuer.
+
+```bash
+    echo "Apply certificate."
+    cat <<EOF | kubectl apply -f -
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+    name: chk-mintcloud-ch
+spec:
+    secretName: chk-mintcloud-ch
+    issuerRef:
+        name: letsencrypt-dns-staging
+        kind: ClusterIssuer
+    dnsNames:
+    - chk.mintcloud.ch
+EOF
+```
+
 ## Parameters
 
 ### ACME parameters
