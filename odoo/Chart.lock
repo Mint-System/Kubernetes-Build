@@ -5,8 +5,5 @@ dependencies:
 - name: vshnPostgres
   repository: file://../vshnPostgres
   version: 0.1.0
-- name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 16.7.21
-digest: sha256:2d4bef8058676e09a7cb1705fcf5ce92c818a58304ca5932051d14710358c6ab
-generated: "2025-08-13T10:33:08.487602219+02:00"
+digest: sha256:a1a86df6087f9ec9f19635efafcde2b92f0cf1e534125ba7acd9d012649ad613
+generated: "2025-09-10T09:29:43.380841477+02:00"

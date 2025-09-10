@@ -5,5 +5,3 @@ vshnPostgres:
     enabled: true
     client:
         enabled: true
-postgresql:
-    enabled: false
