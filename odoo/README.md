@@ -7,6 +7,8 @@ This Helm chart deploys Odoo with PostgreSQL.
 The K8up backup requires a `s3-credentials` secret. Here is an example for Exoscale SOS:
 
 ```bash
+EXOSCALE_IAM_KEY="*******"
+EXOSCALE_IAM_SECRET="*******"
 kubectl create secret generic s3-credentials \
     --from-literal=endpoint="https://sos-ch-gva-2.exo.io" \
     --from-literal=bucket="k8up.mintcloud.ch" \

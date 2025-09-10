@@ -2,4 +2,5 @@ ingress:
     host: "janikvonrotz.chk.janikv.cloud"
     customDomain: "janikvonrotz.ch"
     clusterIssuerRef: letsencrypt-http-prod
+image: janikvonrotz/janikvonrotz.ch:latest
 storageClassName: csi-cinder-sc-retain

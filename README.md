@@ -222,7 +222,7 @@ Add all repos and install the ingress nginx.
 
 ```bash
 task add-repos
-task install-chart ingress-nginx values/chk.mintcloud.ch
+task install-chart ingress-nginx values/chk.mintcloud.ch.yaml
 ```
 
 #### Setup cert manager
@@ -234,13 +234,13 @@ Setup the secret according to [clusterIssuer > Secrets](/clusterIssuer/README.md
 Install cert manager with Infomaniak webhook.
 
 ```bash
-task install-chart cert-manager values/chk.mintcloud.ch
+task install-chart cert-manager values/chk.mintcloud.ch.yaml
 ```
 
 Install cluster issuer.
 
 ```bash
-task install-chart clusterIssuer values/chk.mintcloud.ch
+task install-chart clusterIssuer values/chk.mintcloud.ch.yaml
 ```
 
 #### Create Odoo release

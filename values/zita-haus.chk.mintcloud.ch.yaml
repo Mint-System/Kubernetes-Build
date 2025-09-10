@@ -2,8 +2,6 @@ ingress:
     host: "zita-haus.chk.mintcloud.ch"
     customDomain: "zita.haus"
     clusterIssuerRef: letsencrypt-http-prod
-acme:
-    email: login@janikvonrotz.ch
 storageClassName: csi-cinder-sc-retain
 addonsGitRepos:
  - https://github.com/odoo/design-themes.git#18.0

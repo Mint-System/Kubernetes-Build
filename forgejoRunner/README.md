@@ -7,12 +7,15 @@ Setup a Forgejo runner to run actions.
 To register the runner set up a `forgejo-runner` secret with the token.
 
 ```bash
+FORGEJO_INSTANCE_TOKEN="*******"
 kubectl create secret generic forgejo-runner \
     --from-literal=forgejoInstanceToken="$FORGEJO_INSTANCE_TOKEN" \
     -n <namespace>
 ```
 
-## Builder
+## Integration
+
+### Forgejo Buildx action
 
 To use the Buildx builder in your Forgejo action a kubeconfig is required.
 
@@ -56,3 +59,4 @@ Setup secret `KUBECONFIG_BUILDX` with content of `buildx.kubeconfig`.
 | `image`              | The image for the Forgejo Runner            | `code.forgejo.org/forgejo/runner:9` |
 | `forgejoInstanceUrl` | Forgejo instance url.                       | `https://codeberg.org`              |
 | `secretRef`          | The secret reference for the Forgejo Runner | `forgejo-runner`                    |
+| `storageClassName`   | Set the storage class                       | `""`                                |
