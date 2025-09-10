@@ -1,6 +1,3 @@
 ingress:
     host: "janikvonrotz.k3s.raspberrypi.build"
     clusterIssuerRef: letsencrypt-http-prod
-acme:
-    email: login@janikvonrotz.ch
-    solver:

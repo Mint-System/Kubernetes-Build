@@ -288,13 +288,6 @@ task install-chart ingress-nginx values/k3s.raspberrypi.build.yaml
 
 #### Setup cert manager
 
-Set the `acme.email` value.
-
-```yaml
-acme:
-    email: sysadmin@example.com
-```
-
 Install cert manager.
 
 ```bash
