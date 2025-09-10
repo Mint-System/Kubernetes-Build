@@ -45,7 +45,8 @@ function help() {
     printf "$COLUMN" "setup-hosts" "" "Update hosts file."
     printf "$COLUMN" "forward" "[chart]" "Forward port."
     # Chart
-    printf "$COLUMN" "list-chart" "" "List Helm charts."
+    printf "$COLUMN" "list-charts" "" "List local Helm charts."
+    printf "$COLUMN" "list-external-charts" "" "List external Helm charts."
     printf "$COLUMN" "list-context" "" "List contexts."
     printf "$COLUMN" "switch-context" "" "Switch kubeconfig file."
     printf "$COLUMN" "show-context" "" "Show active kubeconfig."
@@ -212,43 +213,6 @@ export-kubeconfig() {
   echo "Kubeconfig exported for user $KUBE_USER to file $KUBE_OUTPUT_FILE"
 }
 
-
-# Docs Commands
-
-function docs() {
-    pnpm run generate-readme --values clusterIssuer/values.yaml -r clusterIssuer/README.md
-    pnpm run generate-readme --values odoo/values.yaml -r odoo/README.md
-    pnpm run generate-readme --values postgres/values.yaml -r postgres/README.md
-    pnpm run generate-readme --values vshnPostgres/values.yaml -r vshnPostgres/README.md
-    pnpm run generate-readme --values hugo/values.yaml -r hugo/README.md
-    pnpm run generate-readme --values vuepress/values.yaml -r vuepress/README.md
-    pnpm run generate-readme --values forgejoRunner/values.yaml -r forgejoRunner/README.md
-}
-
-function lint() {
-    helm lint clusterIssuer
-    helm lint odoo
-    helm lint postgres
-    helm lint vshnPostgres
-    helm lint hugo
-    helm lint deploymentUpdater
-    helm lint forgejoRunner
-}
-
-function dev-vitepress() {
-    cp README.md index.md
-    pnpm run docs:dev
-}
-
-function build-vitepress() {
-    cp README.md index.md
-    pnpm run docs:build
-}
-
-function preview-vitepress() {
-    pnpm run docs:preview
-}
-
 # Host Commands
 
 function start-kind() {
@@ -299,12 +263,6 @@ function forward-odoo() {
     kubectl port-forward service/odoo $PORT:8069
 }
 
-function forward-hugo() {
-    PORT=1313
-    echo "Open http://localhost:$PORT url in your browser."
-    kubectl port-forward service/hugo $PORT:1313
-}
-
 function forward-ingress-nginx() {
     PORT=8080
     echo "Open http://odoo.knd.local:$PORT or http://odoo.local:$PORT url in your browser."
@@ -319,19 +277,22 @@ function forward-haproxy-ingress() {
 
 # Chart Commands
 
-function list-chart() {
-    echo "cnpg"
-    echo "k8up"
-    echo "deploymentUpdater"
-    echo "postgresql"
-    echo "hugo"
-    echo "postgres"
-    echo "vshnpostgres"
+function list-charts() {
+    for DIR in */; do
+        DIR_NAME="${DIR%/}"
+        if [[ "$DIR_NAME" != "public" ]] && ! git check-ignore -q "$DIR_NAME" 2>/dev/null; then
+            echo "$DIR_NAME"
+        fi
+    done
+}
+
+function list-external-charts() {
     echo "cert-manager"
-    echo "clusterIssuer"
-    echo "ingress-nginx"
+    echo "cnpg"
     echo "haproxy-ingress"
-    echo "forgejoRunner"
+    echo "ingress-nginx"
+    echo "k8up"
+    echo "postgresql"
 }
 
 function list-context() {
@@ -375,7 +336,7 @@ function install-chart() {
     fi
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
-    if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
+    if task list-charts | grep -qx "$1"; then
         echo "Install chart $1 as release $RELEASE_NAME:"
         helm install "$RELEASE_NAME" "$1" \
             --values "./values.${CONTEXT_ALIAS}.yaml"
@@ -476,7 +437,7 @@ function upgrade-release() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
-    if [[ "$1" =~ (hugo|odoo|postgres|vshnPostgres|deploymentUpdater|forgejoRunner) ]]; then
+    if task list-charts | grep -qx "$1"; then
         echo "Upgrade $1 chart for release $RELEASE_NAME:"
         helm upgrade "$RELEASE_NAME" "$1" \
             --values "./values.${CONTEXT_ALIAS}.yaml"
@@ -595,12 +556,12 @@ function template-manifest() {
 
     echo "Template chart $1 as release $RELEASE_NAME into manifest.yaml."
 
-    if [[ "$1" =~ (hugo|odoo|postgres|deploymentUpdater|forgejoRunner) ]]; then
-        helm --debug template "$RELEASE_NAME" "$1" \
-            --values "./values.${CONTEXT_ALIAS}.yaml" > manifest.yaml
-    elif [ "$1" = "clusterIssuer" ]; then
+    if [ "$1" = "clusterIssuer" ]; then
         helm --debug template clusterIssuer clusterIssuer \
             --namespace cert-manager \
+            --values "./values.${CONTEXT_ALIAS}.yaml" > manifest.yaml
+    elif task list-charts | grep -qx "$1"; then
+        helm --debug template "$RELEASE_NAME" "$1" \
             --values "./values.${CONTEXT_ALIAS}.yaml" > manifest.yaml
     fi
 }
@@ -670,6 +631,34 @@ function add-repos(){
 function remove-repo(){
     echo "Remove the kubernetes-build repo."
     helm repo remove kubernetes-build
+}
+
+# Docs Commands
+
+function docs() {
+    for REPO in $(list-charts | grep -v '^deploymentUpdater$'); do
+        pnpm run generate-readme --values "$REPO/values.yaml" -r "$REPO/README.md"
+    done
+}
+
+function lint() {
+    for REPO in $(list-charts); do
+        helm lint "$REPO"
+    done
+}
+
+function dev-vitepress() {
+    cp README.md index.md
+    pnpm run docs:dev
+}
+
+function build-vitepress() {
+    cp README.md index.md
+    pnpm run docs:build
+}
+
+function preview-vitepress() {
+    pnpm run docs:preview
 }
 
 if declare -f "$1" > /dev/null; then

@@ -18,7 +18,5 @@ jobs:
         uses: astral-sh/setup-uv@v5
       - name: Clone taskfile
         run: ./task clone-taskfile
-      - name: Template .env
-        run: ./task template-dotenv
       - name: Test chart odoo
         run: ./task test-chart-odoo
