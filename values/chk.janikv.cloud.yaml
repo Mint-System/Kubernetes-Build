@@ -1,3 +1,4 @@
 acme:
     email: login@janikvonrotz.ch
+    solver: infomaniak
 storageClassName: csi-cinder-sc-retain

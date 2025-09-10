@@ -4,7 +4,7 @@ This chart deploys cluster issuers for prod and staging and for dns and http.
 
 ## Secrets
 
-To use the infomaniak resolver setup a `infomaniak-api-credentials` secret with the API token.
+To use the Infomaniak resolver setup a `infomaniak-api-credentials` secret with the API token.
 
 ```bash
 INFOMANIAK_API_TOKEN="*******"

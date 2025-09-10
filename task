@@ -337,7 +337,9 @@ function install-chart() {
     fi
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
-    if list-charts | grep -q "$1"; then
+    if [ "$1" = "clusterIssuer" ]; then
+        "install-$1" "$2"
+    elif list-charts | grep -q "$1"; then
         echo "Install chart $1 as release $RELEASE_NAME:"
         helm install "$RELEASE_NAME" "$1" \
             --values "$2"
@@ -388,9 +390,8 @@ function install-cert-manager() {
 }
 
 function install-clusterIssuer() {
-    echo "Install clusterIssuer."
-    helm install \
-        clusterIssuer clusterIssuer \
+    echo "Install clusterissuer."
+    helm install clusterissuer clusterIssuer \
         --namespace cert-manager \
         --values "$1"
 }
@@ -437,10 +438,11 @@ function upgrade-cert-manager() {
 function upgrade-clusterIssuer() {
     echo "Upgrade clusterIssuer."
     helm upgrade \
-        clusterIssuer clusterIssuer \
+        clusterissuer clusterIssuer \
         --namespace cert-manager \
         --values "$2"
 }
+
 function upgrade-ingress-nginx() {
     if [ -n "$EXTERNAL_IP" ]; then
         echo "Upgrade ingress-nginx/ingress-nginx with external IP $EXTERNAL_IP:"
@@ -517,7 +519,7 @@ function template-manifest() {
     echo "Template chart $1 as release $RELEASE_NAME into manifest.yaml."
 
     if [ "$1" = "clusterIssuer" ]; then
-        helm --debug template clusterIssuer clusterIssuer \
+        helm --debug template "$RELEASE_NAME" clusterIssuer \
             --namespace cert-manager \
             --values "$2" > manifest.yaml
     elif list-charts | grep -q "$1"; then
