@@ -93,7 +93,7 @@ task setup-hosts
 Install the CloudNativePG chart:
 
 ```bash
-task install-chart cnpg
+task install-chart cnpg values/knd.local.yaml
 ```
 
 Install the Odoo chart:
@@ -115,7 +115,7 @@ task forward odoo
 Install ingress-nginx in the current cluster.
 
 ```bash
-task install-chart ingress-nginx
+task install-chart ingress-nginx values/knd.local.yaml
 ```
 
 Forward the ingress-nginx port.
@@ -129,7 +129,7 @@ task forward ingress-nginx
 Install haproxy-ingress in the current cluster.
 
 ```bash
-task install-chart haproxy-ingress
+task install-chart haproxy-ingress values/knd.local.yaml
 ```
 
 Forward the haproxy-ingress port.
@@ -210,13 +210,19 @@ Switch context to `chk`.
 task switch-context chk
 ```
 
+Create a namespace for the application.
+
+```bash
+k create <namespace>
+```
+
 #### Setup ingress nginx
 
 Add all repos and install the ingress nginx.
 
 ```bash
 task add-repos
-task install-chart ingress-nginx
+task install-chart ingress-nginx values/chk.mintcloud.ch
 ```
 
 #### Setup cert manager
@@ -228,16 +234,22 @@ Setup the secret according to [clusterIssuer > Secrets](/clusterIssuer/README.md
 Install cert manager with Infomaniak webhook.
 
 ```bash
-task install-chart cert-manager
+task install-chart cert-manager values/chk.mintcloud.ch
 ```
 
 Install cluster issuer.
 
 ```bash
-task install-chart clusterIssuer
+task install-chart clusterIssuer values/chk.mintcloud.ch
 ```
 
 #### Create Odoo release
+
+Select the namespace.
+
+```bash
+kubens
+```
 
 Install the Odoo chart.
 
@@ -259,13 +271,19 @@ Switch context to `rpi`.
 task switch-context rpi
 ```
 
+Create a namespace for the application.
+
+```bash
+k create <namespace>
+```
+
 #### Setup ingress nginx
 
 Add all repos and install the ingress nginx.
 
 ```bash
 task add-repos
-task install-chart ingress-nginx
+task install-chart ingress-nginx values/k3s.raspberrypi.build.yaml
 ```
 
 #### Setup cert manager
@@ -280,16 +298,22 @@ acme:
 Install cert manager.
 
 ```bash
-task install-chart cert-manager
+task install-chart cert-manager values/k3s.raspberrypi.build.yaml
 ```
 
 Install cluster issuer.
 
 ```bash
-task install-chart clusterIssuer
+task install-chart clusterIssuer values/k3s.raspberrypi.build.yaml
 ```
 
 #### Create Hugo release
+
+Select the namespace.
+
+```bash
+kubens
+```
 
 Install the Hugo chart.
 
