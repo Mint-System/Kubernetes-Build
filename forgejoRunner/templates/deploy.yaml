@@ -15,6 +15,8 @@ spec:
       labels:
         app: forgejo-runner
     spec:
+      securityContext:
+        fsGroup: 1000
       restartPolicy: Always
       initContainers:
       - name: registration
