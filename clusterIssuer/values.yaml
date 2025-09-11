@@ -1,0 +1,10 @@
+
+## @section Cluster Issuer parameters
+##
+acme:
+  ## @param acme.email The email address for ACME
+  ##
+  email: ""
+  ## @param acme.solver The solver for ACME
+  ##
+  solver: ""

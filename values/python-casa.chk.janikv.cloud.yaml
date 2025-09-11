@@ -1,6 +1,7 @@
 ingress:
     host: "python-casa.chk.janikv.cloud"
     customDomain: "python.casa"
-    clusterIssuerRef: letsencrypt-dns-staging
+    clusterIssuerRef: letsencrypt-http-prod
+    # clusterIssuerRef: letsencrypt-dns-staging
 image: janikvonrotz/python.casa:latest
 storageClassName: csi-cinder-sc-retain

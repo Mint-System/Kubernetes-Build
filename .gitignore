@@ -9,4 +9,3 @@ manifest.yaml
 odoo/charts
 .env
 index.md
-values.yaml

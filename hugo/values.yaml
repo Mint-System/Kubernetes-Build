@@ -1,0 +1,27 @@
+## @section Ingress parameters
+##
+ingress:
+  ## @param ingress.enabled Enable or disable the ingress
+  ##
+  enabled: true
+  ## @param ingress.className The class name for the ingress
+  ##
+  className: nginx
+  ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
+  ##
+  clusterIssuerRef:
+  ## @param ingress.host The host for the ingress
+  ##
+  host: ""
+  ## @param ingress.customDomain The custom domain for the ingress
+  ##
+  customDomain: ""
+
+## @section Hugo parameters
+##
+## @param image The image for Hugo
+##
+image: ""
+## @param imagePullPolicy Pull policy for Hugo image
+##
+imagePullPolicy: Always

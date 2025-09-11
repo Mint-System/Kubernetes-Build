@@ -1,4 +1,4 @@
-# Mint System forgejoRunner
+# Mint System Forgejo Runner
 
 Setup a Forgejo runner to run actions.
 
@@ -56,7 +56,8 @@ Setup secret `KUBECONFIG_BUILDX` with content of `buildx.kubeconfig`.
 
 | Name                 | Description                                 | Value                               |
 | -------------------- | ------------------------------------------- | ----------------------------------- |
-| `image`              | The image for the Forgejo Runner            | `code.forgejo.org/forgejo/runner:9` |
+| `image`              | The image for  Forgejo Runner               | `code.forgejo.org/forgejo/runner:9` |
+| `imagePullPolicy`    | Pull policy for  Forgejo Runner image       | `Always`                            |
 | `forgejoInstanceUrl` | Forgejo instance url.                       | `https://codeberg.org`              |
 | `secretRef`          | The secret reference for the Forgejo Runner | `forgejo-runner`                    |
 | `storageClassName`   | Set the storage class                       | `""`                                |

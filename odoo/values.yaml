@@ -103,7 +103,7 @@ cnpg:
 ## @param enabled Enable or disable Odoo
 ##
 enabled: true
-## @param image The image for odoo
+## @param image The image for Odoo
 ##
 image: mintsystem/odoo:18.0.20250725
 ## @param imagePullPolicy Pull policy for Odoo image

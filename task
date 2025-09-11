@@ -362,16 +362,13 @@ function install-cnpg() {
 }
 
 function install-ingress-nginx() {
-    if [ -n "$EXTERNAL_IP" ]; then
-        echo "Install ingress-nginx/ingress-nginx with external IP $EXTERNAL_IP:"
-        helm install ingress-nginx ingress-nginx/ingress-nginx \
-            --create-namespace --namespace ingress-nginx \
-            --set controller.service.externalIPs[0]=$EXTERNAL_IP
-    else
-        echo "Install ingress-nginx/ingress-nginx:"
-        helm install ingress-nginx ingress-nginx/ingress-nginx \
-            --create-namespace --namespace ingress-nginx
-    fi
+    echo "Install ingress-nginx/ingress-nginx:"
+    helm install ingress-nginx ingress-nginx/ingress-nginx \
+        --create-namespace --namespace ingress-nginx
+        # --set controller.service.externalIPs[0]=$EXTERNAL_IP
+
+    echo "External IP:"
+    kubectl get svc -n ingress-nginx
 }
 
 function install-cert-manager() {
@@ -520,7 +517,7 @@ function template-manifest() {
     if test -z "$2"; then echo "\$2 is empty."; exit; fi
     RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
-    echo "Template chart $1 as release $RELEASE_NAME into manifest.yaml."
+    echo "Template chart $1 as release ${RELEASE_NAME}..."
 
     if [ "$1" = "clusterIssuer" ]; then
         helm --debug template "$RELEASE_NAME" clusterIssuer \
@@ -528,7 +525,7 @@ function template-manifest() {
             --values "$2" > manifest.yaml
     elif list-charts | grep -q "$1"; then
         helm --debug template "$RELEASE_NAME" "$1" \
-            --values "$2" > manifest.yaml
+            --values "$2"
     fi
 }
 

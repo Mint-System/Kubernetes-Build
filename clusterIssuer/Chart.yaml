@@ -1,6 +1,6 @@
 apiVersion: v2
 name: clusterIssuer
-description: Mint System clusterIssuer
+description: Mint System Cluster Issuer
 home: https://kubernetes.build
 maintainers:
   - name: Mint System GmbH
