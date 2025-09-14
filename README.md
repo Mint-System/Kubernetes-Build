@@ -42,6 +42,7 @@ List of charts:
 * [vuepress](/vuepress/README.md)
 * [deploymentUpdater](/deploymentUpdater/README.md)
 * [forgejoRunner](/forgejoRunner/README.md)
+* [taskfileBuild](/taskfileBuild/README.md)
 
 ## Develop
 

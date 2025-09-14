@@ -1,0 +1,36 @@
+## @section taskfile.build parameters
+##
+ingress:
+  ## @param ingress.enabled Enable or disable the ingress
+  ##
+  enabled: true
+  ## @param ingress.className The class name for the ingress
+  ##
+  className: nginx
+  ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
+  ##
+  clusterIssuerRef:
+  ## @param ingress.host The host for the ingress
+  ##
+  host: ""
+  ## @param ingress.customDomain The custom domain for the ingress
+  ##
+  customDomain: ""
+
+## @section taskfile.build parameters
+##
+## @param image The image for taskfile.build
+##
+image: "janikvonrotz/taskfile.build:latest"
+## @param imagePullPolicy Pull policy for taskfile.build image
+##
+imagePullPolicy: Always
+## @param gitUrl Repo url to pull.
+##
+gitUrl: ""
+## @param taskCommands Run this commands with the task file.
+##
+taskCommands: ""
+## @param taskCommands Static site path relative to repo root.
+##
+caddyRoot: ""

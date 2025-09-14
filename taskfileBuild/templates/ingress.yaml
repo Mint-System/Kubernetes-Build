@@ -1,0 +1,47 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: taskfile-build-ingress
+  annotations:
+    {{- if .Values.ingress.clusterIssuerRef }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
+    {{- end }}
+    {{- if eq .Values.ingress.className "nginx" }}
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    {{- end }}
+spec:
+  ingressClassName: {{.Values.ingress.className }}
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: taskfile-build
+            port:
+              number: 80
+  {{- if .Values.ingress.customDomain }}
+  - host: {{.Values.ingress.customDomain }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: taskfile-build
+            port:
+              number: 80
+  {{- end }}
+  {{- if .Values.ingress.clusterIssuerRef }}
+  tls:
+    - hosts:
+      - {{.Values.ingress.host }}
+      {{- if .Values.ingress.customDomain }}
+      - {{ .Values.ingress.customDomain }}
+      {{- end }}
+      secretName: taskfile-build-ingress-cert
+  {{- end }}
+{{- end }}

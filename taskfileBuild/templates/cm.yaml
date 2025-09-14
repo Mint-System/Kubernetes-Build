@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+  labels:
+    app: taskfile-build
+data:
+  GIT_URL: {{ .Values.gitUrl }}
+  TASK_COMMANDS: {{ .Values.taskCommands }}
+  CADDY_ROOT: {{ .Values.caddyRoot }}

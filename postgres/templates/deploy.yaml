@@ -12,13 +12,6 @@ spec:
       labels:
         app: postgres
     spec:
-      # initContainers:
-      #   - name: cleaner
-      #     image: alpine
-      #     command: ["/bin/sh", "-c", "rm -rf /mnt/*"]
-      #     volumeMounts:
-      #       - name: postgresdb
-      #         mountPath: /mnt
       containers:
         - name: postgres
           image: {{.Values.image }}

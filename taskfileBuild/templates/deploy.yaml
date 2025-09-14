@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-taskfile-build
+  labels:
+    app: taskfile-build
+spec:
+  selector:
+    matchLabels:
+      app: taskfile-build
+  template:
+    metadata:
+      labels:
+        app: taskfile-build
+    spec:
+      containers:
+        - name: taskfile-build
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+          ports:
+          - containerPort: 80
