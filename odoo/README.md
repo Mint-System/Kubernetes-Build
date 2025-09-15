@@ -58,17 +58,6 @@ kubectl create secret generic s3-credentials \
 | `postgres.secretRef`        | The secret reference for Postgres | `odoo-postgres` |
 | `postgres.storageClassName` | Set the storage class             | `standard`      |
 
-### PostgreSQL parameters
-
-| Name                                          | Description                                     | Value               |
-| --------------------------------------------- | ----------------------------------------------- | ------------------- |
-| `postgresql.enabled`                          | Enable or disable PostgreSQL                    | `false`             |
-| `postgresql.auth.username`                    | The username for PostgreSQL authentication      | `odoo`              |
-| `postgresql.auth.database`                    | The database name for PostgreSQL authentication | `odoo`              |
-| `postgresql.auth.existingSecret`              | Name of the secret key.                         | `odoo-postgresql`   |
-| `postgresql.auth.secretKeys.adminPasswordKey` | The admin password key for PostgreSQL           | `postgres-password` |
-| `postgresql.auth.secretKeys.userPasswordKey`  | The user password key for PostgreSQL            | `password`          |
-
 ### CloudNativePG parameters
 
 | Name                | Description                                                  | Value  |
@@ -82,21 +71,19 @@ kubectl create secret generic s3-credentials \
 
 ### Odoo parameters
 
-| Name                        | Description                                   | Value                                                                                                                                                         |
-| --------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `enabled`                   | Enable or disable Odoo                        | `true`                                                                                                                                                        |
-| `image`                     | The image for Odoo                            | `mintsystem/odoo:18.0.20250725`                                                                                                                               |
-| `imagePullPolicy`           | Pull policy for Odoo image                    | `Always`                                                                                                                                                      |
-| `proxyMode`                 | Enable or disable proxy mode for Odoo         | `true`                                                                                                                                                        |
-| `githubUsername`            | The GitHub username for Odoo                  | `""`                                                                                                                                                          |
-| `githubPersonalAccessToken` | The GitHub personal access token for Odoo     | `""`                                                                                                                                                          |
-| `downloadOdooEnterprise`    | Enable or disable downloading Odoo Enterprise | `false`                                                                                                                                                       |
-| `addonsGitRepos`            | List of addon Git repositories for Odoo       | `["https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0","https://github.com/OCA/Server-Tools.git#18.0","https://github.com/OCA/Project.git#18.0"]` |
-| `database`                  | The database for odoo                         | `odoo`                                                                                                                                                        |
-| `initLang`                  | The initial language for Odoo                 | `de_CH`                                                                                                                                                       |
-| `listDB`                    | Enable or disable listing databases for Odoo  | `false`                                                                                                                                                       |
-| `secretRef`                 | The secret reference for Odoo                 | `odoo-creds`                                                                                                                                                  |
-| `storageClassName`          | Set the storage class                         | `""`                                                                                                                                                          |
+| Name                     | Description                                   | Value                                                                                                                                                         |
+| ------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`                | Enable or disable Odoo                        | `true`                                                                                                                                                        |
+| `image`                  | The image for Odoo                            | `mintsystem/odoo:18.0.20250725`                                                                                                                               |
+| `imagePullPolicy`        | Pull policy for Odoo image                    | `Always`                                                                                                                                                      |
+| `proxyMode`              | Enable or disable proxy mode for Odoo         | `true`                                                                                                                                                        |
+| `downloadOdooEnterprise` | Enable or disable downloading Odoo Enterprise | `false`                                                                                                                                                       |
+| `addonsGitRepos`         | List of addon Git repositories for Odoo       | `["https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0","https://github.com/OCA/Server-Tools.git#18.0","https://github.com/OCA/Project.git#18.0"]` |
+| `database`               | The database for odoo                         | `odoo`                                                                                                                                                        |
+| `initLang`               | The initial language for Odoo                 | `de_CH`                                                                                                                                                       |
+| `listDB`                 | Enable or disable listing databases for Odoo  | `false`                                                                                                                                                       |
+| `secretRef`              | The secret reference for Odoo                 | `odoo-creds`                                                                                                                                                  |
+| `storageClassName`       | Set the storage class                         | `""`                                                                                                                                                          |
 
 ### K8up parameters
 

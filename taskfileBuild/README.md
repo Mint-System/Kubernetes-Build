@@ -4,7 +4,7 @@ This Helm chart deploys a Vuepress site.
 
 ## Parameters
 
-### Ingress parameters
+### taskfile.build parameters
 
 | Name                       | Description                                  | Value   |
 | -------------------------- | -------------------------------------------- | ------- |
@@ -14,9 +14,12 @@ This Helm chart deploys a Vuepress site.
 | `ingress.host`             | The host for the ingress                     | `""`    |
 | `ingress.customDomain`     | The custom domain for the ingress            | `""`    |
 
-### Hugo parameters
+### taskfile.build parameters
 
-| Name              | Description                | Value    |
-| ----------------- | -------------------------- | -------- |
-| `image`           | The image for Hugo         | `""`     |
-| `imagePullPolicy` | Pull policy for Hugo image | `Always` |
+| Name              | Description                             | Value                                |
+| ----------------- | --------------------------------------- | ------------------------------------ |
+| `image`           | The image for taskfile.build            | `janikvonrotz/taskfile.build:latest` |
+| `imagePullPolicy` | Pull policy for taskfile.build image    | `Always`                             |
+| `gitUrl`          | Repo url to pull.                       | `""`                                 |
+| `taskCommands`    | Run this commands with the task file.   | `""`                                 |
+| `caddyRoot`       | Static site path relative to repo root. | `""`                                 |

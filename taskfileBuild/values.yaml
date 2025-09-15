@@ -31,6 +31,6 @@ gitUrl: ""
 ## @param taskCommands Run this commands with the task file.
 ##
 taskCommands: ""
-## @param taskCommands Static site path relative to repo root.
+## @param caddyRoot Static site path relative to repo root.
 ##
 caddyRoot: ""
