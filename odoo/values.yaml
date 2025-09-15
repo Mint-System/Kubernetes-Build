@@ -88,12 +88,6 @@ imagePullPolicy: Always
 ## @param proxyMode Enable or disable proxy mode for Odoo
 ##
 proxyMode: true
-## @param githubUsername The GitHub username for Odoo
-##
-githubUsername: ""
-## @param githubPersonalAccessToken The GitHub personal access token for Odoo
-##
-githubPersonalAccessToken: ""
 ## @param downloadOdooEnterprise Enable or disable downloading Odoo Enterprise
 ##
 downloadOdooEnterprise: false
