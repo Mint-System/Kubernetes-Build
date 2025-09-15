@@ -50,30 +50,6 @@ postgres:
   ##
   storageClassName: standard
 
-## @section PostgreSQL parameters
-##
-postgresql:
-  ## @param postgresql.enabled Enable or disable PostgreSQL
-  ##
-  enabled: false
-  auth:
-    ## @param postgresql.auth.username The username for PostgreSQL authentication
-    ##
-    username: odoo
-    ## @param postgresql.auth.database The database name for PostgreSQL authentication
-    ##
-    database: odoo
-    ## @param postgresql.auth.existingSecret Name of the secret key.
-    ##
-    existingSecret: odoo-postgresql
-    secretKeys:
-      ## @param postgresql.auth.secretKeys.adminPasswordKey The admin password key for PostgreSQL
-      ##
-      adminPasswordKey: "postgres-password"
-      ## @param postgresql.auth.secretKeys.userPasswordKey The user password key for PostgreSQL
-      ##
-      userPasswordKey: "password"
-
 ## @section CloudNativePG parameters
 ##
 cnpg:
