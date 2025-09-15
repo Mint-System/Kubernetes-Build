@@ -23,10 +23,25 @@ spec:
             name: hugo
             port:
               number: 80
+  {{- if .Values.ingress.customDomain }}
+  - host: {{.Values.ingress.customDomain }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hugo
+            port:
+              number: 80
+  {{- end }}
   {{- if .Values.ingress.clusterIssuerRef }}
   tls:
     - hosts:
       - {{.Values.ingress.host }}
+      {{- if .Values.ingress.customDomain }}
+      - {{ .Values.ingress.customDomain }}
+      {{- end }}
       secretName: hugo-ingress-cert
   {{- end }}
 {{- end }}
