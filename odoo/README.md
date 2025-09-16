@@ -10,8 +10,8 @@ Setup a `odoo-creds` secret with GitHub credentials to download private Repos.
 GITHUB_USERNAME="<username>"
 GITHUB_PAT="*******"
 kubectl create secret generic odoo-creds \
-    --from-literal=="$GITHUB_USERNAME" \
-    --from-literal=="$GITHUB_PAT" \
+    --from-literal=GITHUB_USERNAME="$GITHUB_USERNAME" \
+    --from-literal=GITHUB_PAT="$GITHUB_PAT" \
     -n <namespace>
 ```
 

@@ -27,7 +27,7 @@ spec:
               /entrypoint.sh clone-git-addons && \
               /entrypoint.sh init-db
           envFrom:
-            {{- if (lookup "v1" "Secret" .Release.Namespace .Values.secretRef) }}
+            {{- if and .Values.secretRef (lookup "v1" "Secret" .Release.Namespace .Values.secretRef) }}
             - secretRef:
                 name: {{ .Values.secretRef }}
             {{- end }}
@@ -107,7 +107,7 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
           envFrom:
-            {{- if (lookup "v1" "Secret" .Release.Namespace .Values.secretRef) }}
+            {{- if and .Values.secretRef (lookup "v1" "Secret" .Release.Namespace .Values.secretRef) }}
             - secretRef:
                 name: {{ .Values.secretRef }}
             {{- end }}

@@ -1,2 +1,35 @@
 ingress:
   host: odoo.knd.local
+addonsGitRepos:
+  # OCA Core repositories
+  - https://github.com/OCA/partner-contact.git#16.0
+  - https://github.com/OCA/server-backend.git#16.0
+  - https://github.com/OCA/server-tools.git#16.0
+  - https://github.com/OCA/server-env.git#16.0
+  - https://github.com/OCA/account-invoicing.git#16.0
+  - https://github.com/OCA/purchase-workflow.git#16.0
+  - https://github.com/OCA/sale-workflow.git#16.0
+  - https://github.com/OCA/bank-payment.git#16.0
+  - https://github.com/OCA/social.git#16.0
+  - https://github.com/OCA/rest-framework.git#16.0
+  - https://github.com/OCA/server-auth.git#16.0
+  - https://github.com/OCA/web-api.git#16.0
+  - https://github.com/OCA/hr-holidays.git#16.0
+  - https://github.com/OCA/survey.git#16.0
+  - https://github.com/OCA/queue.git#16.0
+  # Mint-System repositories
+  - https://github.com/Mint-System/Odoo-Apps-Purchase-Workflow.git#16.0
+  - https://github.com/Mint-System/Odoo-Apps-Sale-Workflow.git#16.0
+  - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#16.0
+  - https://github.com/Mint-System/Odoo-Apps-HR.git#16.0
+  - https://github.com/Mint-System/Odoo-Apps-Account-Invoicing.git#16.0
+  - https://github.com/Mint-System/Odoo-Apps-Partner-Contact.git#16.0
+  - https://github.com/Mint-System/Odoo-Apps-Social.git#16.0
+  - https://github.com/Mint-System/Odoo-Apps-Account-Financial-Reporting.git#16.0
+  - https://github.com/Mint-System/Odoo-Apps-Connector.git#16.0
+  - https://github.com/Mint-System/Odoo-Apps-Account-Reconcile.git#16.0
+  - https://github.com/Mint-System/Odoo-Apps-Spreadsheet.git#16.0
+  # Sozialinfo repositories
+  - https://github.com/sozialinfo/hr-attendance.git#16.0
+  - https://github.com/sozialinfo/account-financial-tools.git#16.0
+  - https://github.com/sozialinfo/web.git#16.0
