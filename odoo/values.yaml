@@ -100,13 +100,12 @@ addonsGitRepos:
 ## @param database The database for odoo
 ##
 database: odoo
-## @param init.lang The initial language for Odoo
+## @param initLang The initial language for Odoo
 ##
-init:
-  lang: de_CH
-## @param init.login The initial login for Odoo
+initLang: de_CH
+## @param initLogin The initial login for Odoo
 ##
-  login: "admin"
+initLogin: "admin"
 ## @param listDB Enable or disable listing databases for Odoo
 ##
 listDB: false

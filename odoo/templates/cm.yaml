@@ -7,7 +7,7 @@ metadata:
 data:
   ODOO_DATABASE: {{ .Values.database }}
   ADDONS_GIT_REPOS: {{ join "," .Values.addonsGitRepos | quote }}
-  ODOO_INIT_LANG: {{ .Values.init.lang | quote }}
-  ODOO_INIT_LOGIN: {{ .Values.init.login | quote }}
+  ODOO_INIT_LANG: {{ .Values.initLang | quote }}
+  ODOO_INIT_LOGIN: {{ .Values.initLogin | quote }}
   PROXY_MODE: {{ .Values.proxyMode | quote }}
   LIST_DB: {{ .Values.listDB | quote }}
