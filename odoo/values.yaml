@@ -81,7 +81,7 @@ cnpg:
 enabled: true
 ## @param image The image for Odoo
 ##
-image: mintsystem/odoo:18.0.20250725
+image: mintsystem/odoo:18.0.20250909
 ## @param imagePullPolicy Pull policy for Odoo image
 ##
 imagePullPolicy: Always
@@ -105,7 +105,7 @@ database: odoo
 initLang: de_CH
 ## @param initLogin The initial login for Odoo
 ##
-initLogin: "admin"
+initLogin: ""
 ## @param listDB Enable or disable listing databases for Odoo
 ##
 listDB: false
