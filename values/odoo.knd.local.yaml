@@ -1,5 +1,6 @@
 ingress:
   host: odoo.knd.local
+image: mintsystem/odoo:16.0.20250819
 addonsGitRepos:
   # OCA Core repositories
   - https://github.com/OCA/partner-contact.git#16.0
