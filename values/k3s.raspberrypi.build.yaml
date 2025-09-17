@@ -1,2 +1,3 @@
+kind: deployment
 acme:
     email: login@janikvonrotz.ch

@@ -1,3 +1,4 @@
+kind: deployment
 ingress:
     host: "python-casa.chk.janikv.cloud"
     customDomain: "python.casa"

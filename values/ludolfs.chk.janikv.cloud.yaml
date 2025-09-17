@@ -1,5 +1,5 @@
+kind: deployment
 ingress:
     host: "ludolfs.chk.janikv.cloud"
     clusterIssuerRef: letsencrypt-http-prod
 gitUrl: https://codeberg.org/janikvonrotz/ludolfs.ch
-storageClassName: csi-cinder-sc-retain

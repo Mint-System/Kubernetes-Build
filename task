@@ -47,8 +47,8 @@ function help() {
     # Chart
     printf "$COLUMN" "list-charts" "" "List local Helm charts."
     printf "$COLUMN" "list-external-charts" "" "List external Helm charts."
-    printf "$COLUMN" "list-context" "" "List contexts."
-    printf "$COLUMN" "switch-context" "" "Switch kubeconfig file."
+    printf "$COLUMN" "list-cluster" "" "List contexts."
+    printf "$COLUMN" "switch-cluster" "" "Switch kubeconfig file."
     printf "$COLUMN" "show-context" "" "Show active kubeconfig."
     printf "$COLUMN" "get-context-alias" "" "Get alias of current context."
     printf "$COLUMN" "update-dependencies" "[chart]" "Update dependencies for a chart."
@@ -294,16 +294,18 @@ function list-external-charts() {
     echo "k8up"
 }
 
-function list-context() {
-    echo "loc (knd.local)"
-    echo "rpi (k3s.raspberrypi.build)"
-    echo "chk (chk.mintcloud.ch)"
-    echo "axo (axo.mintcloud.ch)"
-    echo "ksi (k8s.sozialinfo.ch)"
-    echo "jvr (chk.janikv.cloud)"
+function list-cluster() {
+    for FILE in values/*.yaml; do
+        KIND=$(yq eval '.kind' "$FILE")
+        ALIAS=$(yq eval '.alias' "$FILE")
+        if [[ -n "$KIND" && "$KIND" = "cluster" ]]; then
+            BASE=$(basename "$FILE" .yaml)
+            printf '%s (%s)\n' "$ALIAS" "$BASE"
+        fi
+    done | sort
 }
 
-function switch-context() {
+function switch-cluster() {
     if test -z "$1"; then echo "\$1 is empty."; exit; fi
 
     LINK_NAME="$HOME/.kube/config"

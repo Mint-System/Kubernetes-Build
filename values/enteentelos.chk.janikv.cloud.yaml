@@ -1,6 +1,6 @@
+kind: deployment
 ingress:
     host: "enteentelos.chk.janikv.cloud"
     customDomain: "enteentelos.ch"
     clusterIssuerRef: letsencrypt-http-prod
 gitUrl: https://codeberg.org/janikvonrotz/enteentelos.ch
-caddyRoot: /
