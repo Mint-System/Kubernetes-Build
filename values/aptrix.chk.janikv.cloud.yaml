@@ -1,0 +1,8 @@
+kind: deployment
+ingress:
+    host: "aptrix.chk.janikv.cloud"
+    customDomain: "aptrix.ch"
+    clusterIssuerRef: letsencrypt-http-prod
+gitUrl: https://codeberg.org/janikvonrotz/aptrix.ch
+taskCommands: install,build
+caddyRoot: public
