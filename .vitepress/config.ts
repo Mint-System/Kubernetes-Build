@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { vitepressMermaidPreview } from 'vitepress-mermaid-preview';
 
 export default defineConfig({
   title: "Kubernetes Build",
@@ -8,6 +9,9 @@ export default defineConfig({
   ],
   themeConfig: {
     logo: '/icon.png',
+    search: {
+      provider: 'local'
+    },
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Odoo Build', link: 'https://odoo.build/' },
@@ -16,5 +20,10 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/Mint-System/Kubernetes-Build' }
     ]
-  }
+  },
+  markdown: {
+    config: (md) => {
+      vitepressMermaidPreview(md);
+    },
+  },
 })

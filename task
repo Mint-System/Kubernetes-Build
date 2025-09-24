@@ -31,12 +31,12 @@ function help() {
     printf "$COLUMN" "save-kubeconfig" "[ctx]" "Save kubeconfig file in pass."
     printf "$COLUMN" "save-dotenv" "" "Store content of .env in pass entry."
     # Docs
-    printf "$COLUMN" "install-vitepress" "" "Install node dependencies."
+    printf "$COLUMN" "install-vitepress" "" "Install Node dependencies."
     printf "$COLUMN" "docs" "" "Generate Helm chart readmes."
     printf "$COLUMN" "lint" "" "Lint Helm charts."
     printf "$COLUMN" "dev-vitepress" "" "Start VitePress dev server."
     printf "$COLUMN" "build-vitepress" "" "Build site with VitePress."
-    printf "$COLUMN" "preview-vitepress" "" "Server VitePress build."
+    printf "$COLUMN" "serve-vitepress" "" "Serve VitePress build."
     # Host
     printf "$COLUMN" "start-kind" "" "Start kind Kubernetes cluster."
     printf "$COLUMN" "load-images" "" "Load Docker images into kind cluster."
@@ -619,7 +619,7 @@ function build-vitepress() {
     pnpm run docs:build
 }
 
-function preview-vitepress() {
+function serve-vitepress() {
     pnpm run docs:preview
 }
 

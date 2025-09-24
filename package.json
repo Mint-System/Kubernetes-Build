@@ -1,7 +1,4 @@
 {
-  "devDependencies": {
-    "vitepress": "^1.6.3"
-  },
   "scripts": {
     "generate-readme": "node node_modules/@bitnami/readme-generator-for-helm/bin/index.js",
     "docs:dev": "vitepress dev",
@@ -9,6 +6,8 @@
     "docs:preview": "vitepress preview"
   },
   "dependencies": {
-    "@bitnami/readme-generator-for-helm": "^2.7.2"
+    "vitepress": "2.0.0-alpha.12",
+    "@bitnami/readme-generator-for-helm": "^2.7.2",
+    "vitepress-mermaid-preview": "^0.0.8"
   }
 }
