@@ -103,9 +103,12 @@ database: odoo
 ## @param initLang The initial language for Odoo
 ##
 initLang: de_CH
-## @param initLogin The initial login for Odoo
+## @param initLogin The initial username for Odoo admin account
 ##
 initLogin: ""
+## @param initPassword The initial passwod for Odoo admin account
+##
+initPassword: ""
 ## @param listDB Enable or disable listing databases for Odoo
 ##
 listDB: false

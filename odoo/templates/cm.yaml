@@ -9,5 +9,6 @@ data:
   ADDONS_GIT_REPOS: {{ join "," .Values.addonsGitRepos | quote }}
   ODOO_INIT_LANG: {{ .Values.initLang | quote }}
   ODOO_INIT_LOGIN: {{ .Values.initLogin | quote }}
+  ODOO_INIT_PASSWORD: {{ .Values.initPassword | quote }}
   PROXY_MODE: {{ .Values.proxyMode | quote }}
   LIST_DB: {{ .Values.listDB | quote }}
