@@ -72,6 +72,6 @@ spec:
       {{- if .Values.ingress.customDomain }}
       - {{ .Values.ingress.customDomain }}
       {{- end }}
-      secretName: odoo-ingress-cert
+      secretName: odoo-tls
   {{- end }}
 {{- end }}

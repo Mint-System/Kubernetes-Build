@@ -14,7 +14,7 @@ function help() {
 
     # Define column widths
     CMD_WIDTH=26
-    OPT_WIDTH=14
+    OPT_WIDTH=16
     DESC_WIDTH=50
     COLUMN="| %-${CMD_WIDTH}s | %-${OPT_WIDTH}s | %-${DESC_WIDTH}s |\n"
     # Print table header

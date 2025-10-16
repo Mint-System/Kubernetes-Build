@@ -1,3 +1,4 @@
-kind: deployment
+kind: cluster
+alias: rpi
 acme:
     email: login@janikvonrotz.ch

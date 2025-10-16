@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-nextcloud
+  labels:
+    app: nextcloud
+spec:
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/cm.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: nextcloud
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+          - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /status.php
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /status.php
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          envFrom:
+            {{- if and .Values.secretRef (lookup "v1" "Secret" .Release.Namespace .Values.secretRef) }}
+            - secretRef:
+                name: {{ .Values.secretRef }}
+            {{- end }}
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+          env:
+            {{- if .Values.cnpg.enabled }}
+            - name: POSTGRES_HOST
+              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: password
+            {{- end }}
+            {{- if .Values.postgres.enabled }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: {{ .Values.postgres.userPasswordKey }}
+            - name: POSTGRES_HOST
+              value: postgres.{{ .Release.Namespace }}.svc.cluster.local
+            - name: POSTGRES_USER
+              value: {{ .Values.postgres.user }}
+            {{- end }}
+          volumeMounts:
+            - mountPath: /var/www/html/
+              name: nextcloud
+      volumes:
+        - name: nextcloud
+          persistentVolumeClaim:
+            claimName: data-nextcloud

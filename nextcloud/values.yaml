@@ -1,0 +1,101 @@
+## @section Ingress parameters
+##
+ingress:
+  ## @param ingress.enabled Enable or disable the ingress
+  ##
+  enabled: true
+  ## @param ingress.className The class name for the ingress
+  ##
+  className: nginx
+  ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
+  ##
+  clusterIssuerRef:
+  ## @param ingress.host The host for the ingress
+  ##
+  host: ""
+  ## @param ingress.customDomain The custom domain for the ingress
+  ##
+  customDomain: ""
+
+## @section CloudNativePG parameters
+##
+cnpg:
+  ## @param cnpg.enabled Enable or disable CloudNativePG
+  ##
+  enabled: true
+  ## @param cnpg.nameOverride Override the name of the CloudNativePG cluster
+  ## Default: "{release-name}-postgresql"
+  ##
+  nameOverride: ""
+  ## @param cnpg.instances Number of instances (1 for single, 2+ for high availability)
+  ##
+  instances: 1
+  storage:
+    ## @param cnpg.storage.size Persistent volume size for each instance
+    ##
+    size: 8Gi
+  ## @param cnpg.database Name of the CloudNativePG database to create
+  ##
+  database: nextcloud
+  ## @param cnpg.owner Name of the database user
+  ##
+  owner: app
+
+## @section External Postgres parameters
+##
+postgres:
+  ## @param postgres.enabled Enable or disable external Postgres
+  ##
+  enabled: false
+  ## @param postgres.db The database name for Postgres
+  ##
+  db: nextcloud
+  ## @param postgres.user The username for Postgres
+  ##
+  user: nextcloud
+  ## @param postgres.secretRef The secret reference for Postgres
+  ##
+  secretRef: nextcloud-postgres
+  ## @param postgres.userPasswordKey The key for the user password in the secret
+  ##
+  userPasswordKey: password
+  ## @param postgres.storageClassName Set the storage class
+  ##
+  storageClassName: standard
+
+## @section Nextcloud parameters
+##
+## @param enabled Enable or disable Nextcloud
+##
+enabled: true
+## @param image The image for Nextcloud
+##
+image: nextcloud:latest
+## @param imagePullPolicy Pull policy for Nextcloud image
+##
+imagePullPolicy: Always
+## @param proxyMode Enable or disable proxy mode for Nextcloud
+##
+proxyMode: true
+## @param adminUser The admin username for Nextcloud
+##
+adminUser: admin
+## @param adminPassword The admin password for Nextcloud
+##
+adminPassword: ""
+## @param dbType The database type for Nextcloud
+##
+dbType: pgsql
+## @param secretRef The secret reference for Nextcloud
+##
+secretRef: nextcloud-creds
+## @param storageClassName Set the storage class
+##
+storageClassName: ""
+
+## @section K8up parameters
+##
+k8up:
+  ## @param k8up.enabled Enable or disable K8up
+  ##
+  enabled: false
