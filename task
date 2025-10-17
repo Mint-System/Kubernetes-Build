@@ -71,7 +71,6 @@ function help() {
     printf "$COLUMN" "template-manifest" "[chart][values]" "Template all charts with Helm."
     printf "$COLUMN" "package-repo" "[chart]" "Package Helm charts."
     printf "$COLUMN" "index-repo" "" "Index Helm chart."
-    printf "$COLUMN" "publish-repo" "" "Copy Helm chart files to dist."
     printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-build repo."
     printf "$COLUMN" "commit" "" "Commit .tgz files."
     # LLM
@@ -612,12 +611,6 @@ function index-repo() {
     helm repo index .
 }
 
-function publish-repo() {
-    build-vitepress
-    cp *.tgz .vitepress/dist
-    cp index.yaml .vitepress/dist
-}
-
 function add-repos(){
     echo "Add kubernetes-build."
     helm repo add kubernetes-build https://kubernetes.build
@@ -665,6 +658,8 @@ function dev-vitepress() {
 function build-vitepress() {
     cp README.md index.md
     pnpm run docs:build
+    cp *.tgz .vitepress/dist
+    cp index.yaml .vitepress/dist
 }
 
 function serve-vitepress() {
