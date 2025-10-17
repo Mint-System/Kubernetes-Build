@@ -26,10 +26,12 @@ function help() {
     printf "$COLUMN" "info" "" "Show info about env."
     printf "$COLUMN" "template-dotenv" "" "Generate .env from .env.template."
     printf "$COLUMN" "export-kubeconfig" "[user][path]" "Export kubeconfig file for service account."
-    printf "$COLUMN" "load-kubeconfig" "[ctx]" "Load kubeconfig file from pass."
-    printf "$COLUMN" "load-dotenv" "" "Restore content to .env from pass entry."
-    printf "$COLUMN" "save-kubeconfig" "[ctx]" "Save kubeconfig file in pass."
-    printf "$COLUMN" "save-dotenv" "" "Store content of .env in pass entry."
+    printf "$COLUMN" "load-kubeconfig-from-pass" "[ctx]" "Load kubeconfig file from pass."
+    printf "$COLUMN" "load-kubeconfig-from-keepass" "[ctx]" "Load kubeconfig file from KeePass."
+    printf "$COLUMN" "load-dotenv-from-keepass" "" "Restore content to .env from KeePass entry."
+    printf "$COLUMN" "save-kubeconfig-to-pass" "[ctx]" "Save kubeconfig file in pass."
+    printf "$COLUMN" "save-kubeconfig-to-keepass" "[ctx]" "Save kubeconfig file in KeePass."
+    printf "$COLUMN" "save-dotenv-to-keepass" "" "Store content of .env in KeePass entry."
     # Docs
     printf "$COLUMN" "install-vitepress" "" "Install Node dependencies."
     printf "$COLUMN" "docs" "" "Generate Helm chart readmes."
@@ -89,6 +91,7 @@ CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
 # Dynamic vars
 
 PASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
+KEEPASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
 if kubectl &> /dev/null; then
     CURRENT_CONTEXT=$(kubectl config current-context 2> /dev/null) || CURRENT_CONTEXT=""
 fi
@@ -164,11 +167,11 @@ function test-chart-odoo() {
     fi
 }
 
-function save-kubeconfig() {
+function save-kubeconfig-to-pass() {
     PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
     KUBECONFIG_FILE="$HOME/.kube/config"
 
-    if [ -n"$1" ]; then
+    if [ -n "$1" ]; then
         PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
         KUBECONFIG_FILE="$HOME/.kube/config.$1"
     fi
@@ -181,11 +184,11 @@ function save-kubeconfig() {
     fi
 }
 
-function load-kubeconfig() {
+function load-kubeconfig-from-pass() {
     PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
     KUBECONFIG_FILE="$HOME/.kube/config"
 
-    if [ -n"$1" ]; then
+    if [ -n "$1" ]; then
         PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
         KUBECONFIG_FILE="$HOME/.kube/config.$1"
     fi
@@ -197,6 +200,51 @@ function load-kubeconfig() {
     else
         echo "Pass entry not found."
     fi
+}
+
+function save-kubeconfig-to-keepass() {
+    local KEEPASS_KUBECONFIG_ENTRY="env/kubeconfig_$USER"
+    local KUBECONFIG_FILE="$HOME/.kube/config"
+
+    if [ -n "$1" ]; then
+        KEEPASS_KUBECONFIG_ENTRY="env/kubeconfig_$1"
+        KUBECONFIG_FILE="$HOME/.kube/config.$1"
+    fi
+
+    KEEPASS_KUBECONFIG_ENTRY=$(echo "$KEEPASS_KUBECONFIG_ENTRY" | tr '[:upper:]' '[:lower:]')
+
+    if [ -f "$KUBECONFIG_FILE" ]; then
+        echo "Store $KUBECONFIG_FILE file in keepassxc: $KEEPASS_KUBECONFIG_ENTRY"
+        keepassxc-cli add \
+            --key-file "$KEEPASS_DATABASE_KEY_FILE" \
+            "$KEEPASS_DATABASE_FILE" \
+            "$KEEPASS_KUBECONFIG_ENTRY"
+        keepassxc-cli attachment-import \
+            --key-file "$KEEPASS_DATABASE_KEY_FILE" \
+            "$KEEPASS_DATABASE_FILE" \
+            "$KEEPASS_KUBECONFIG_ENTRY" \
+            "$(basename $KUBECONFIG_FILE)" \
+            "$KUBECONFIG_FILE"
+    else
+        echo "No $KUBECONFIG_FILE file found."
+    fi
+}
+
+function load-kubeconfig-from-keepass() {
+    KEEPASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
+    KUBECONFIG_FILE="$HOME/.kube/config"
+    if [ -n "$1" ]; then
+        KEEPASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
+        KUBECONFIG_FILE="$HOME/.kube/config.$1"
+    fi
+    echo "Load $KUBECONFIG_FILE file from keepassxc: $KEEPASS_KUBECONFIG_ENTRY"
+    mkdir -p "$HOME/.kube/"
+    keepassxc-cli attachment-export \
+        --key-file "$KEEPASS_DATABASE_KEY_FILE" \
+        "$KEEPASS_DATABASE_FILE" \
+        "$KEEPASS_KUBECONFIG_ENTRY" \
+        "$(basename $KUBECONFIG_FILE)" \
+        "$KUBECONFIG_FILE"
 }
 
 export-kubeconfig() {

@@ -3,9 +3,9 @@ entries:
   clusterIssuer:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-09-15T14:47:30.839875878+02:00"
+    created: "2025-10-17T08:11:10.824908252+02:00"
     description: Mint System Cluster Issuer
-    digest: e46abe4b89b09c4b9a6f3eb085490cf5e1760fb3aaa8b6dfbdd3e64bff890d7b
+    digest: 6686fd099e480cf3ab70bebbc1dc937a50df9c3650eac7a3cb8d828cc363557e
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -18,9 +18,9 @@ entries:
   hugo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-09-15T14:47:30.840080349+02:00"
+    created: "2025-10-17T08:11:10.825130883+02:00"
     description: Mint System Hugo
-    digest: ec6d6199a82968df856e781e81dd4d33f307ebce88755ca223c1af6d25e281fc
+    digest: 0001f7fc84744e8cddd4e905047fdc05efd5b52f4d72749716383f290a95186e
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -33,7 +33,7 @@ entries:
   odoo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-09-15T14:47:30.84087433+02:00"
+    created: "2025-10-17T08:11:10.825601844+02:00"
     dependencies:
     - condition: postgres.enabled
       name: postgres
@@ -44,7 +44,7 @@ entries:
       repository: file://../vshnPostgres
       version: 0.1.0
     description: Mint System Odoo
-    digest: 0d055d6046fb57a6c73fd5c9640be8eea52970f434a83b1c37f627db7a0db869
+    digest: 9e2898104ab18fdcc59dc3c987451415f2dcd41d95107145b9bdd21115b39e4c
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -57,9 +57,9 @@ entries:
   postgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-09-15T14:47:30.841015953+02:00"
+    created: "2025-10-17T08:11:10.825708546+02:00"
     description: Mint System Postgres
-    digest: 599dd30bbabceb5975a6584058ae0c9d598910f60ae1dcca8ccdc1302fdfa518
+    digest: 4698cea23b325867afc92f3906bb77e02114d958766c590637e2625651faab94
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -72,9 +72,9 @@ entries:
   vshnPostgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-09-15T14:47:30.841097703+02:00"
+    created: "2025-10-17T08:11:10.825788728+02:00"
     description: VSHN Postgres
-    digest: 8391384bc330908c8adbc428b1dcb8d19e63c3a7626e2ce919c16034c56e1c9a
+    digest: 08ae6be54ff53e0c6557c12dfd341a7cb77f97b5958dadd357e59b8c22a08a13
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -84,4 +84,4 @@ entries:
     urls:
     - vshnPostgres-0.1.0.tgz
     version: 0.1.0
-generated: "2025-09-15T14:47:30.839441574+02:00"
+generated: "2025-10-17T08:11:10.82456329+02:00"
