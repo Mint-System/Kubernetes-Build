@@ -159,6 +159,7 @@ function test-chart-odoo() {
         add-repos
         info
         install-chart ingress-nginx
+        kubectl wait --namespace ingress-nginx --for=condition=Available --timeout=60s deployments/ingress-nginx-controller
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         update-dependencies odoo
