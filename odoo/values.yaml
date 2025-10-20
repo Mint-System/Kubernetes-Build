@@ -125,3 +125,13 @@ k8up:
   ## @param k8up.enabled Enable or disable K8up
   ##
   enabled: false
+
+## @section Staging parameters
+##
+staging:
+  ## @param staging.enabled Enable or disable staging deployment
+  ##
+  enabled: false
+  ## @param staging.name Name of the staging environment (used in staging ingress: staging.name.ingress.host)
+  ##
+  name: staging

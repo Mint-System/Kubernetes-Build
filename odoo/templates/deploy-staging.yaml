@@ -1,40 +1,70 @@
+{{- if .Values.staging.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-odoo
+  name: {{ .Release.Name }}-odoo-{{ .Values.staging.name }}
   labels:
-    app: odoo
+    app: odoo-{{ .Values.staging.name }}
   annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
-    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   selector:
     matchLabels:
-      app: odoo
+      app: odoo-{{ .Values.staging.name }}
   template:
     metadata:
       labels:
-        app: odoo
+        app: odoo-{{ .Values.staging.name }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/cm.yaml") . | sha256sum }}
     spec:
       initContainers:
-        - name: init
+        - name: wait-for-main-odoo
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command:
+          - sh
+          - -c
+          - |
+            # Wait for main Odoo deployment pods to be running and ready
+            echo "Waiting for main Odoo deployment to be ready..."
+            until curl -sf http://{{ .Release.Name }}-odoo:8069/web/health > /dev/null 2>&1; do
+              echo "Waiting for main Odoo service to respond..."
+              sleep 5
+            done
+            echo "Main Odoo deployment is ready!"
+        - name: post-init
           image: {{ .Values.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           command:
             - /bin/bash
             - -c
             - |
-              {{- if .Values.downloadOdooEnterprise }}/entrypoint.sh download-git-archive && \{{- end }}
-              /entrypoint.sh clone-git-addons && \
-              /entrypoint.sh init-db
+              echo "Creating staging database from template..."
+              
+              # First, try to terminate any active connections to the source database
+              PGPASSWORD=$(cat /etc/secrets/postgresql-app/password) psql -h {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local -U {{ .Values.cnpg.owner }} -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{{ .Values.cnpg.database }}' AND pid <> pg_backend_pid();" || true
+              
+              # Check if staging database already exists and drop it
+              DB_EXISTS=$(PGPASSWORD=$(cat /etc/secrets/postgresql-app/password) psql -h {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local -U {{ .Values.cnpg.owner }} -tAc "SELECT 1 FROM pg_database WHERE datname='{{ .Values.database }}-{{ .Values.staging.name }}';" 2>/dev/null)
+              if [ "$DB_EXISTS" = "1" ]; then
+                echo "Terminating connections to existing staging database..."
+                PGPASSWORD=$(cat /etc/secrets/postgresql-app/password) psql -h {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local -U {{ .Values.cnpg.owner }} -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{{ .Values.database }}-{{ .Values.staging.name }}' AND pid <> pg_backend_pid();" || true
+                echo "Dropping existing staging database..."
+                PGPASSWORD=$(cat /etc/secrets/postgresql-app/password) psql -h {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local -U {{ .Values.cnpg.owner }} -c "DROP DATABASE {{ .Values.database }}-{{ .Values.staging.name }};"
+              fi
+              
+              # Create staging database from template (much faster than dump/restore)
+              echo "Creating database from template..."
+              PGPASSWORD=$(cat /etc/secrets/postgresql-app/password) psql -h {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local -U {{ .Values.cnpg.owner }} -c "CREATE DATABASE \"{{ .Values.database }}-{{ .Values.staging.name }}\" WITH TEMPLATE \"{{ .Values.cnpg.database }}\";"
+              
+              # Neutralize the staging database using Odoo's neutralize command
+              echo "Neutralizing staging database with Odoo neutralize command..."
+              odoo -d {{ .Values.database }}-{{ .Values.staging.name }} --neutralize --stop-after-init
+              echo "Database creation from template and neutralization completed for {{ .Values.staging.name }}."
           envFrom:
-            {{- if and .Values.secretRef (lookup "v1" "Secret" .Release.Namespace .Values.secretRef) }}
-            - secretRef:
-                name: {{ .Values.secretRef }}
-            {{- end }}
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           env:
@@ -90,14 +120,20 @@ spec:
               value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
             {{- end }}
           volumeMounts:
-            - mountPath: /var/lib/odoo/
+            - mountPath: /main-data
               name: odoo-main
+              subPath: odoodata
+            - mountPath: /staging-data
+              name: odoo-staging
               subPath: odoodata
             {{- if .Values.vshnPostgres.enabled }}
             - name: {{ .Values.vshnPostgres.secretRef }}
               readOnly: true
               mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
             {{- end }}
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
       containers:
         - name: odoo
           image: {{ .Values.image }}
@@ -118,6 +154,8 @@ spec:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           env:
+            - name: ODOO_DATABASE
+              value: {{ .Values.database }}-{{ .Values.staging.name }}
             {{- if .Values.cnpg.enabled }}
             - name: PGHOST
               value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
@@ -171,7 +209,7 @@ spec:
             {{- end }}
           volumeMounts:
             - mountPath: /var/lib/odoo/
-              name: odoo-main
+              name: odoo-staging
               subPath: odoodata
             {{- if .Values.vshnPostgres.enabled }}
             - name: {{ .Values.vshnPostgres.secretRef }}
@@ -179,6 +217,9 @@ spec:
               mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
             {{- end }}
       volumes:
+        - name: odoo-staging
+          persistentVolumeClaim:
+            claimName: data-odoo-staging
         - name: odoo-main
           persistentVolumeClaim:
             claimName: data-odoo-main
@@ -187,3 +228,4 @@ spec:
           secret:
             secretName: {{ .Values.vshnPostgres.secretRef }}
         {{- end }}
+{{- end }}

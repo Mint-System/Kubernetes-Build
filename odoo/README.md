@@ -74,7 +74,7 @@ kubectl create secret generic s3-credentials \
 | Name                     | Description                                   | Value                                                                                                                                                         |
 | ------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `enabled`                | Enable or disable Odoo                        | `true`                                                                                                                                                        |
-| `image`                  | The image for Odoo                            | `mintsystem/odoo:18.0.20250909`                                                                                                                               |
+| `image`                  | The image for Odoo                            | `mintsystem/odoo:18.0.20251008`                                                                                                                               |
 | `imagePullPolicy`        | Pull policy for Odoo image                    | `Always`                                                                                                                                                      |
 | `proxyMode`              | Enable or disable proxy mode for Odoo         | `true`                                                                                                                                                        |
 | `downloadOdooEnterprise` | Enable or disable downloading Odoo Enterprise | `false`                                                                                                                                                       |
@@ -92,3 +92,10 @@ kubectl create secret generic s3-credentials \
 | Name           | Description            | Value   |
 | -------------- | ---------------------- | ------- |
 | `k8up.enabled` | Enable or disable K8up | `false` |
+
+### Staging parameters
+
+| Name              | Description                                                                          | Value     |
+| ----------------- | ------------------------------------------------------------------------------------ | --------- |
+| `staging.enabled` | Enable or disable staging deployment                                                 | `false`   |
+| `staging.name`    | Name of the staging environment (used in staging ingress: staging.name.ingress.host) | `staging` |

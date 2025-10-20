@@ -75,3 +75,44 @@ spec:
       secretName: odoo-tls
   {{- end }}
 {{- end }}
+{{- if and .Values.staging.enabled .Values.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: odoo-{{ .Values.staging.name }}-ingress
+  annotations:
+    {{- if .Values.ingress.clusterIssuerRef }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
+    {{- end }}
+    {{- if eq .Values.ingress.className "nginx" }}
+    nginx.ingress.kubernetes.io/proxy-set-headers: "custom-headers"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+  - host: {{ .Values.staging.name }}.{{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /websocket
+        pathType: Prefix
+        backend:
+          service:
+            name: odoo-{{ .Values.staging.name }}-gevent
+            port:
+              number: 8072
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: odoo-{{ .Values.staging.name }}
+            port:
+              number: 8069
+  {{- if .Values.ingress.clusterIssuerRef }}
+  tls:
+    - hosts:
+      - {{ .Values.staging.name }}.{{ .Values.ingress.host }}
+      secretName: odoo-{{ .Values.staging.name }}-tls
+  {{- end }}
+{{- end }}

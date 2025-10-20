@@ -19,3 +19,27 @@ spec:
   ports:
     - port: 8072
       targetPort: 8072
+{{- if .Values.staging.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odoo-{{ .Values.staging.name }}
+spec:
+  selector:
+    app: odoo-{{ .Values.staging.name }}
+  ports:
+    - port: 8069
+      targetPort: 8069
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odoo-{{ .Values.staging.name }}-gevent
+spec:
+  selector:
+    app: odoo-{{ .Values.staging.name }}
+  ports:
+    - port: 8072
+      targetPort: 8072
+{{- end }}

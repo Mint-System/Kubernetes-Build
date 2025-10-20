@@ -36,6 +36,7 @@ List of charts:
 
 * [clusterIssuer](/clusterIssuer/README.md)
 * [odoo](/odoo/README.md)
+* [nextcloud](/nextcloud/README.md)
 * [postgres](/postgres/README.md)
 * [vshnPostgres](/vshnPostgres/README.md)
 * [hugo](/hugo/README.md)

@@ -8,3 +8,5 @@ addonsGitRepos:
   - https://github.com/OCA/server-tools.git#16.0
   # Mint-System repositories
   - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#16.0
+staging:
+  enabled: true
