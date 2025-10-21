@@ -597,11 +597,9 @@ function package-repo() {
     else
         echo "Package all Helm charts."
         index-repo
-        helm package clusterIssuer
-        helm package postgres
-        helm package vshnPostgres
-        helm package odoo
-        helm package hugo
+        for CHART in $(list-charts); do
+             helm package "$CHART"
+        done
     fi
 }
 
@@ -653,8 +651,8 @@ function docs() {
 }
 
 function lint() {
-    for REPO in $(list-charts); do
-        helm lint "$REPO"
+    for CHART in $(list-charts); do
+        helm lint "$CHART"
     done
 }
 
