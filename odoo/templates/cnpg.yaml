@@ -11,4 +11,6 @@ spec:
     initdb:
       database: {{ .Values.cnpg.database }}
       owner: {{ .Values.cnpg.owner }}
+      postInitSQL:
+        - ALTER USER {{ .Values.cnpg.owner }} CREATEDB;
 {{- end }}

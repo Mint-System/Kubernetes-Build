@@ -307,14 +307,20 @@ function forward-postgres() {
 }
 
 function forward-odoo() {
-    PORT=8069
+    PORT=8080
     echo "Open http://localhost:$PORT url in your browser."
     kubectl port-forward service/odoo $PORT:8069
 }
 
+function forward-odoo-staging() {
+    PORT=8080
+    echo "Open http://localhost:$PORT url in your browser."
+    kubectl port-forward service/odoo-staging $PORT:8069
+}
+
 function forward-ingress-nginx() {
     PORT=8080
-    echo "Open http://odoo.knd.local:$PORT or http://odoo.local:$PORT url in your browser."
+    echo "Open http://staging.odoo.knd.local:$PORT or http://odoo.knd.local:$PORT or http://odoo.local:$PORT url in your browser."
     kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller $PORT:80
 }
 

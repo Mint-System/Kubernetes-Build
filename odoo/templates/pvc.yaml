@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: data-odoo
+  name: data-odoo-main
 spec:
   accessModes:
     - ReadWriteOnce

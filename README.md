@@ -98,6 +98,12 @@ Install the CloudNativePG chart:
 task install-chart cnpg values/knd.local.yaml
 ```
 
+Install ingress-nginx in the current cluster.
+
+```bash
+task install-chart ingress-nginx values/knd.local.yaml
+```
+
 Install the Odoo chart:
 
 ```bash
@@ -105,20 +111,6 @@ task install-chart odoo values/odoo.knd.local.yaml
 ```
 
 The Odoo database will be initialized automatically.
-
-Once the pod is ready, run this command to port forward the service:
-
-```bash
-task forward odoo
-```
-
-### Setup ingress nginx
-
-Install ingress-nginx in the current cluster.
-
-```bash
-task install-chart ingress-nginx values/knd.local.yaml
-```
 
 Forward the ingress-nginx port.
 
