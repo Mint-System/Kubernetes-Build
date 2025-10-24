@@ -10,4 +10,4 @@ data:
   ODOO_INIT_LANG: {{ .Values.initLang | quote }}
   ODOO_INIT_LOGIN: {{ .Values.initLogin | quote }}
   ODOO_INIT_PASSWORD: {{ .Values.initPassword | quote }}
-  DB_FILTER: {{ .Values.database }}
+  DB_NAME: {{ .Values.database }}

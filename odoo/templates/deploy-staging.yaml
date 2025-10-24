@@ -149,7 +149,7 @@ spec:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           env:
-            - name: DB_FILTER
+            - name: DB_NAME
               value: {{ .Values.database }}-{{ .Values.staging.name }}
             {{- if .Values.cnpg.enabled }}
             - name: PGHOST
