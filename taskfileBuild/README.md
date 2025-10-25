@@ -1,6 +1,6 @@
-# Mint System Vuepress
+# Mint System Taskfile Build
 
-This Helm chart deploys a Vuepress site.
+This Helm chart deploys a taskfile.build container.
 
 ## Parameters
 

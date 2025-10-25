@@ -1,4 +1,4 @@
-# vshnPostgres Helm Chart
+# VSHN Postgres
 
 This chart deploys a VSHN Postgres service.
 
