@@ -6,6 +6,7 @@ ingress:
   clusterIssuerRef: letsencrypt-http-prod
 image: mintsystem/odoo:18.0.20251021
 storageClassName: csi-cinder-sc-retain
+downloadOdooEnterprise: true
 init:
   login: laura.honegger@korporation.ch
   password: 8MiPifRR
