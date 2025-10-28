@@ -96,7 +96,6 @@ downloadOdooEnterprise: false
 addonsGitRepos:
   - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0
   - https://github.com/OCA/Server-Tools.git#18.0
-  - https://github.com/OCA/Project.git#18.0
 ## @param database The database for odoo
 ##
 database: odoo
