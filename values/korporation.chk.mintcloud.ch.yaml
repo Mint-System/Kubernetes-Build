@@ -4,8 +4,9 @@ ingress:
   host: korporation.chk.mintcloud.ch
   customDomain: odoo.korporation.ch
   clusterIssuerRef: letsencrypt-http-prod
-image: mintsystem/odoo:19.0.20251021
+image: mintsystem/odoo:18.0.20251021
 addonsGitRepos: []
 storageClassName: csi-cinder-sc-retain
-initLogin: laura.honegger@korporation.ch
-initPassword: 8MiPifRR
+init:
+  login: laura.honegger@korporation.ch
+  password: 8MiPifRR
