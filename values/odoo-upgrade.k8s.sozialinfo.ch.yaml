@@ -1,4 +1,0 @@
-kind: deployment
-ingress:
-  clusterIssuerRef: letsencrypt-staging
-  host: odoo-upgrade.k8s.sozialinfo.ch

@@ -1,8 +1,0 @@
-kind: deployment
-ingress:
-    host: "taskfile-build.chk.janikv.cloud"
-    customDomain: "taskfile.build"
-    clusterIssuerRef: letsencrypt-http-prod
-gitUrl: https://codeberg.org/janikvonrotz/taskfile.build
-taskCommands: install,build-11ty
-caddyRoot: _site

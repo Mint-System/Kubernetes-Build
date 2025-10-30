@@ -1,7 +1,0 @@
-kind: deployment
-ingress:
-    host: "encrypt-casa.chk.janikv.cloud"
-    customDomain: "encrypt.casa"
-    clusterIssuerRef: letsencrypt-http-prod
-image: janikvonrotz/encrypt.casa:latest
-storageClassName: csi-cinder-sc-retain

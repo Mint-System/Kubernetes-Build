@@ -1,8 +1,0 @@
-kind: deployment
-ingress:
-    host: "zita-haus.chk.mintcloud.ch"
-    customDomain: "zita.haus"
-    clusterIssuerRef: letsencrypt-http-prod
-storageClassName: csi-cinder-sc-retain
-addonsGitRepos:
- - https://github.com/odoo/design-themes.git#18.0

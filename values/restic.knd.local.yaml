@@ -1,4 +1,0 @@
-ingress
-  host: restic.cloud.local
-staging:
-  enabled: true

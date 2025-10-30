@@ -1,4 +1,0 @@
-kind: deployment
-ingress:
-    host: "nextcloud.k3s.raspberrypi.build"
-    clusterIssuerRef: letsencrypt-http-prod

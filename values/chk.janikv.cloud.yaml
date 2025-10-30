@@ -1,6 +1,0 @@
-kind: cluster
-alias: jvr
-acme:
-    email: login@janikvonrotz.ch
-    solver: infomaniak
-storageClassName: csi-cinder-sc-retain

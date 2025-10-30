@@ -1,8 +1,0 @@
-kind: deployment
-ingress:
-    host: "odoo.axo.mintcloud.ch"
-    className: haproxy
-vshnPostgres:
-    enabled: true
-    client:
-        enabled: true

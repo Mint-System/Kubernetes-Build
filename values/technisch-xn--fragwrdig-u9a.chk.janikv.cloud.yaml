@@ -1,6 +1,0 @@
-kind: deployment
-ingress:
-    host: "technisch-xn--fragwrdig-u9a.chk.janikv.cloud"
-    customDomain: "technisch.xn--fragwrdig-u9a.ch"
-    clusterIssuerRef: letsencrypt-http-prod
-gitUrl: https://codeberg.org/janikvonrotz/technisch.xn--fragwrdig-u9a.ch
