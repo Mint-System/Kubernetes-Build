@@ -104,6 +104,12 @@ Install ingress-nginx in the current cluster.
 task install-chart ingress-nginx values/knd.local.yaml
 ```
 
+Install k8up in the current cluster.
+
+```bash
+task install-chart k8up values/knd.local.yaml
+```
+
 Install the Odoo chart:
 
 ```bash
