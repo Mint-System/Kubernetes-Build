@@ -426,10 +426,15 @@ function install-ingress-nginx() {
     echo "Install ingress-nginx/ingress-nginx:"
     helm install ingress-nginx ingress-nginx/ingress-nginx \
         --create-namespace --namespace ingress-nginx
-        # --set controller.service.externalIPs[0]=$EXTERNAL_IP
 
     echo "External IP:"
     kubectl get svc -n ingress-nginx
+}
+
+function install-k8up() {
+    echo "Install k8up-io/k8up."
+    helm install k8up k8up-io/k8up \
+        --create-namespace --namespace k8up
 }
 
 function install-cert-manager() {
