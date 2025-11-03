@@ -19,7 +19,7 @@ spec:
         fsGroup: 1000
       restartPolicy: Always
       initContainers:
-      - name: registration
+      - name: init
         image: {{ .Values.image }}
         command:
           [
