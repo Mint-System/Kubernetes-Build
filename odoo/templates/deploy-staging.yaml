@@ -34,7 +34,7 @@ spec:
                 sleep 5
               done
               echo "Main Odoo deployment is ready!"
-              
+
               echo "Clone and neutralize Odoo staging database from main database..."
               echo "Check if staging database already exists and drop it..."
               DB_EXISTS=$(PGPASSWORD=$PGPASSWORD psql -h $PGHOST -U $PGUSER -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='{{ .Values.database }}-{{ .Values.staging.name }}';" 2>/dev/null)
@@ -44,20 +44,22 @@ spec:
                 echo "Dropping existing staging database..."
                 PGPASSWORD=$PGPASSWORD psql -h $PGHOST -U $PGUSER -d postgres -c "DROP DATABASE {{ .Values.database }}-{{ .Values.staging.name }};"
               fi
-              
+
               echo "Terminate any active connections to the source database..."
               PGPASSWORD=$PGPASSWORD psql -h $PGHOST -U $PGUSER -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{{ .Values.cnpg.database }}' AND pid <> pg_backend_pid();" || true
-              
+
               echo "Copying staging database with template..."
               PGPASSWORD=$PGPASSWORD psql -h $PGHOST -U $PGUSER -d postgres -c "CREATE DATABASE \"{{ .Values.database }}-{{ .Values.staging.name }}\" WITH TEMPLATE \"{{ .Values.cnpg.database }}\";"
-              
+
               echo "Neutralizing staging database with Odoo neutralize command..."
               odoo neutralize -d {{ .Values.database }}-{{ .Values.staging.name }} --stop-after-init
-              
-              echo "Copy filestore from /main-data/ to /staging-data ..."
-              mkdir -p /staging-data/filestore
-              cp -r /main-data/filestore/{{ .Values.database }} /staging-data/filestore/{{ .Values.database }}-{{ .Values.staging.name }}
-              
+
+              echo "Copy data from /main-data/ to /staging-data ..."
+              cp -r /main-data/ /staging-data/
+
+              echo "Rename filestore from {{ .Values.database }} to {{ .Values.database }}-{{ .Values.staging.name }}."
+              mv /main-data/filestore/{{ .Values.database }} /staging-data/filestore/{{ .Values.database }}-{{ .Values.staging.name }}
+
               echo "Clone and and neutralization staging database completed for {{ .Values.staging.name }}."
           envFrom:
             - configMapRef:
