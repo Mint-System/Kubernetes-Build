@@ -125,6 +125,12 @@ k8up:
   ## @param k8up.enabled Enable or disable K8up
   ##
   enabled: false
+  ## @param k8up.endpoint S3 endpoint
+  ##
+  endpoint: ""
+  ## @param k8up.bucket S3 bucket name
+  ##
+  bucket: ""
 
 ## @section Staging parameters
 ##

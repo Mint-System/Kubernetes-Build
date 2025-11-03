@@ -41,7 +41,7 @@ function help() {
     printf "$COLUMN" "serve-vitepress" "" "Serve VitePress build."
     # Host
     printf "$COLUMN" "start-kind" "" "Start kind Kubernetes cluster."
-    printf "$COLUMN" "load-images" "" "Load Docker images into kind cluster."
+    printf "$COLUMN" "load-image" "[tag]" "Load Docker image into kind cluster."
     printf "$COLUMN" "delete-kind" "" "Delete kind Kubernetes cluster."
     printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
     printf "$COLUMN" "setup-hosts" "" "Update hosts file."
@@ -144,17 +144,17 @@ function install-vitepress() {
 function setup-hosts() {
     echo "Adding entries to /etc/hosts ..."
     grep -qxF '127.0.0.1 knd.local' /etc/hosts || echo "127.0.0.1 knd.local" | sudo tee -a /etc/hosts > /dev/null
-    
+
     grep -qxF "127.0.0.1 odoo.local" /etc/hosts || echo "127.0.0.1 odoo.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 odoo.knd.local" /etc/hosts || echo "127.0.0.1 odoo.knd.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 staging.odoo.knd.local" /etc/hosts || echo "127.0.0.1 staging.odoo.knd.local" | sudo tee -a /etc/hosts > /dev/null
-    
+
     grep -qxF "127.0.0.1 restic.local" /etc/hosts || echo "127.0.0.1 restic.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 restic.knd.local" /etc/hosts || echo "127.0.0.1 restic.knd.local" | sudo tee -a /etc/hosts > /dev/null
     grep -qxF "127.0.0.1 staging.restic.knd.local" /etc/hosts || echo "127.0.0.1 staging.restic.knd.local" | sudo tee -a /etc/hosts > /dev/null
-    
+
     grep -qxF "127.0.0.1 hugo.knd.local" /etc/hosts || echo "127.0.0.1 hugo.knd.local" | sudo tee -a /etc/hosts > /dev/null
-    
+
     grep -qxF "127.0.0.1 vuepress.knd.local" /etc/hosts || echo "127.0.0.1 vuepress.knd.local" | sudo tee -a /etc/hosts > /dev/null
 }
 
@@ -276,18 +276,15 @@ function start-kind() {
     kind create cluster
 }
 
-function load-images() {
+function load-image() {
+    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+
     if kind &> /dev/null && kind get clusters | grep -q "kind"; then
         echo "Kind cluster is available. Checking for local Docker images..."
 
-        if docker images -q "janikvonrotz/janikvonrotz.ch:latest" > /dev/null; then
-            echo "Loading local Hugo image into Kind cluster..."
-            kind load docker-image "janikvonrotz/janikvonrotz.ch:latest"
-        fi
-
-        if docker images -q "mintsystem/odoo:18.0.20250725" > /dev/null; then
+        if docker images -q "$1" > /dev/null; then
             echo "Loading local Odoo image into Kind cluster..."
-            kind load docker-image "mintsystem/odoo:18.0.20250725"
+            kind load docker-image "$1"
         fi
     fi
 }

@@ -28,6 +28,8 @@ kubectl create secret generic s3-credentials \
     -n <namespace>
 ```
 
+
+
 ## Parameters
 
 ### Ingress parameters
@@ -89,9 +91,11 @@ kubectl create secret generic s3-credentials \
 
 ### K8up parameters
 
-| Name           | Description            | Value   |
-| -------------- | ---------------------- | ------- |
-| `k8up.enabled` | Enable or disable K8up | `false` |
+| Name            | Description            | Value   |
+| --------------- | ---------------------- | ------- |
+| `k8up.enabled`  | Enable or disable K8up | `false` |
+| `k8up.endpoint` | S3 endpoint            | `""`    |
+| `k8up.bucket`   | S3 bucket name         | `""`    |
 
 ### Staging parameters
 
