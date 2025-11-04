@@ -1,84 +1,83 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
-if [[ -a ".env" ]]; then
+if [[ -a '.env' ]]; then
     source .env
 fi
 
-function help() {
+help() {
     echo
-    echo "task <command> [options]"
+    echo 'task <command> [options]'
     echo
-    echo "commands:"
+    echo 'commands:'
     echo
 
     # Define column widths
-    CMD_WIDTH=26
-    OPT_WIDTH=16
-    DESC_WIDTH=50
-    COLUMN="| %-${CMD_WIDTH}s | %-${OPT_WIDTH}s | %-${DESC_WIDTH}s |\n"
+    local cmd_width=26
+    local opt_width=16
+    local desc_width=50
+    local column="| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n"
     # Print table header
-    printf "$COLUMN" "Command" "Option" "Description"
-    echo "|$(printf '%*s' $((CMD_WIDTH + 2)) '' | tr ' ' '-')|$(printf '%*s' $((OPT_WIDTH + 2)) '' | tr ' ' '-')|$(printf '%*s' $((DESC_WIDTH + 2)) '' | tr ' ' '-')|"
+    printf "$column" 'Command' 'Option' 'Description'
+    echo "|$(printf '%*s' $((cmd_width + 2)) '' | tr ' ' '-')|$(printf '%*s' $((opt_width + 2)) '' | tr ' ' '-')|$(printf '%*s' $((desc_width + 2)) '' | tr ' ' '-')|"
 
     # Env
-    printf "$COLUMN" "version" "" "Show version of required tools."
-    printf "$COLUMN" "info" "" "Show info about env."
-    printf "$COLUMN" "template-dotenv" "" "Generate .env from .env.template."
-    printf "$COLUMN" "export-kubeconfig" "[user][path]" "Export kubeconfig file for service account."
-    printf "$COLUMN" "load-kubeconfig-from-pass" "[ctx]" "Load kubeconfig file from pass."
-    printf "$COLUMN" "load-kubeconfig-from-keepass" "[ctx]" "Load kubeconfig file from KeePass."
-    printf "$COLUMN" "load-dotenv-from-keepass" "" "Restore content to .env from KeePass entry."
-    printf "$COLUMN" "save-kubeconfig-to-pass" "[ctx]" "Save kubeconfig file in pass."
-    printf "$COLUMN" "save-kubeconfig-to-keepass" "[ctx]" "Save kubeconfig file in KeePass."
-    printf "$COLUMN" "save-dotenv-to-keepass" "" "Store content of .env in KeePass entry."
+    printf "$column" 'version' '' 'Show version of required tools.'
+    printf "$column" 'info' '' 'Show info about env.'
+    printf "$column" 'template-dotenv' '' 'Generate .env from .env.template.'
+    printf "$column" 'export-kubeconfig' '[user][path]' 'Export kubeconfig file for service account.'
+    printf "$column" 'load-kubeconfig-from-pass' '[ctx]' 'Load kubeconfig file from pass.'
+    printf "$column" 'load-kubeconfig-from-keepass' '[ctx]' 'Load kubeconfig file from KeePass.'
+    printf "$column" 'load-dotenv-from-keepass' '' 'Restore content to .env from KeePass entry.'
+    printf "$column" 'save-kubeconfig-to-pass' '[ctx]' 'Save kubeconfig file in pass.'
+    printf "$column" 'save-kubeconfig-to-keepass' '[ctx]' 'Save kubeconfig file in KeePass.'
+    printf "$column" 'save-dotenv-to-keepass' '' 'Store content of .env in KeePass entry.'
     # Docs
-    printf "$COLUMN" "install-vitepress" "" "Install Node dependencies."
-    printf "$COLUMN" "docs" "" "Generate Helm chart readmes."
-    printf "$COLUMN" "lint" "" "Lint Helm charts."
-    printf "$COLUMN" "dev-vitepress" "" "Start VitePress dev server."
-    printf "$COLUMN" "build-vitepress" "" "Build site with VitePress."
-    printf "$COLUMN" "serve-vitepress" "" "Serve VitePress build."
+    printf "$column" 'install-vitepress' '' 'Install Node dependencies.'
+    printf "$column" 'docs' '' 'Generate Helm chart readmes.'
+    printf "$column" 'lint' '' 'Lint Helm charts.'
+    printf "$column" 'dev-vitepress' '' 'Start VitePress dev server.'
+    printf "$column" 'build-vitepress' '' 'Build site with VitePress.'
+    printf "$column" 'serve-vitepress' '' 'Serve VitePress build.'
     # Host
-    printf "$COLUMN" "start-kind" "" "Start kind Kubernetes cluster."
-    printf "$COLUMN" "load-image" "[tag]" "Load Docker image into kind cluster."
-    printf "$COLUMN" "delete-kind" "" "Delete kind Kubernetes cluster."
-    printf "$COLUMN" "start-minikube" "" "Start minikube Kubernetes cluster."
-    printf "$COLUMN" "setup-hosts" "" "Update hosts file."
-    printf "$COLUMN" "forward" "[chart]" "Forward port."
+    printf "$column" 'start-kind' '' 'Start kind Kubernetes cluster.'
+    printf "$column" 'load-image' '[tag]' 'Load Docker image into kind cluster.'
+    printf "$column" 'delete-kind' '' 'Delete kind Kubernetes cluster.'
+    printf "$column" 'setup-hosts' '' 'Update hosts file.'
+    printf "$column" 'forward' '[chart]' 'Forward port.'
     # Chart
-    printf "$COLUMN" "list-charts" "" "List local Helm charts."
-    printf "$COLUMN" "list-external-charts" "" "List external Helm charts."
-    printf "$COLUMN" "list-cluster" "" "List contexts."
-    printf "$COLUMN" "switch-cluster" "" "Switch kubeconfig file."
-    printf "$COLUMN" "show-context" "" "Show active kubeconfig."
-    printf "$COLUMN" "get-context-alias" "" "Get alias of current context."
-    printf "$COLUMN" "update-dependencies" "[chart]" "Update dependencies for a chart."
-    printf "$COLUMN" "install-chart" "[chart][values]" "Install Helm chart."
-    printf "$COLUMN" "upgrade-release" "[chart][values]" "Upgrade Helm release."
-    printf "$COLUMN" "uninstall-release" "[release]" "Uninstall Helm release."
+    printf "$column" 'list-charts' '' 'List local Helm charts.'
+    printf "$column" 'list-external-charts' '' 'List external Helm charts.'
+    printf "$column" 'list-cluster' '' 'List contexts.'
+    printf "$column" 'switch-cluster' '' 'Switch kubeconfig file.'
+    printf "$column" 'show-context' '' 'Show active kubeconfig.'
+    printf "$column" 'get-context-alias' '' 'Get alias of current context.'
+    printf "$column" 'update-dependencies' '[chart]' 'Update dependencies for a chart.'
+    printf "$column" 'install-chart' '[chart][values]' 'Install Helm chart.'
+    printf "$column" 'upgrade-release' '[chart][values]' 'Upgrade Helm release.'
+    printf "$column" 'uninstall-release' '[release]' 'Uninstall Helm release.'
     # kubectl
-    printf "$COLUMN" "get-secrets" "[chart]" "Show secrets for chart."
-    printf "$COLUMN" "exec-bash" "[chart]" "Open bash shell in container."
-    printf "$COLUMN" "logs" "[grep]" "Select pods with grep and show logs."
-    printf "$COLUMN" "logs-haproxy-ingress" "" "Show haproxy-ingress logs."
-    printf "$COLUMN" "logs-ingress-nginx" "" "Show ingress-nginx logs."
-    printf "$COLUMN" "list" "" "List Helm deployments."
-    printf "$COLUMN" "get-pods" "" "List all pods."
-    printf "$COLUMN" "login-oc" "" "Refresh the auth token for OpenShift."
+    printf "$column" 'get-secrets' '[chart]' 'Show secrets for chart.'
+    printf "$column" 'exec-bash' '[chart]' 'Open bash shell in container.'
+    printf "$column" 'logs' '[grep]' 'Select pods with grep and show logs.'
+    printf "$column" 'logs-haproxy-ingress' '' 'Show haproxy-ingress logs.'
+    printf "$column" 'logs-ingress-nginx' '' 'Show ingress-nginx logs.'
+    printf "$column" 'list' '' 'List Helm deployments.'
+    printf "$column" 'get-pods' '' 'List all pods.'
+    printf "$column" 'login-oc' '' 'Refresh the auth token for OpenShift.'
     # Helm
-    printf "$COLUMN" "add-repos" "" "Add the required Helm repos."
-    printf "$COLUMN" "template-manifest" "[chart][values]" "Template all charts with Helm."
-    printf "$COLUMN" "package-repo" "[chart]" "Package Helm charts."
-    printf "$COLUMN" "index-repo" "" "Index Helm chart."
-    printf "$COLUMN" "remove-repo" "" "Remove the kubernetes-build repo."
-    printf "$COLUMN" "commit" "" "Commit .tgz files."
+    printf "$column" 'add-repos' '' 'Add the required Helm repos.'
+    printf "$column" 'template-manifest' '[chart][values]' 'Template all charts with Helm.'
+    printf "$column" 'package-repo' '[chart]' 'Package Helm charts.'
+    printf "$column" 'index-repo' '' 'Index Helm chart.'
+    printf "$column" 'remove-repo' '' 'Remove the kubernetes-build repo.'
+    printf "$column" 'commit' '' 'Commit .tgz files.'
     # LLM
-    printf "$COLUMN" "commit-with-llm" "" "Commit with llm generated commit message."
-    printf "$COLUMN" "update-with-llm" "[glob][prompt]" "Feed files matching glob to LLM and apply changes."
+    printf "$column" 'commit-with-llm' '' 'Commit with llm generated commit message.'
+    printf "$column" 'update-with-llm' '[glob][prompt]' 'Feed files matching glob to LLM and apply changes.'
     # Test
-    printf "$COLUMN" "test-chart-clusterIssuer" "" "Test cluster issuer."
-    printf "$COLUMN" "test-chart-odoo" "[clean]" "Setup Odoo chart and dependencies."
+    printf "$column" 'test-chart-clusterIssuer' '' 'Test cluster issuer.'
+    printf "$column" 'test-chart-odoo' '[clean]' 'Setup Odoo chart and dependencies.'
 }
 
 # Default vars
@@ -89,23 +88,23 @@ CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
 
 # Dynamic vars
 
-PASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
-KEEPASS_ENTRY=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
+pass_entry=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
+keepass_entry=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
 if kubectl &> /dev/null; then
-    CURRENT_CONTEXT=$(kubectl config current-context 2> /dev/null) || CURRENT_CONTEXT=""
+    current_context=$(kubectl config current-context 2> /dev/null) || current_context=""
 fi
 if kubens &> /dev/null; then
-    NAMESPACE=$(kubens -c)
+    namespace=$(kubens -c)
 fi
-function get-context-alias() {
+get-context-alias() {
     echo "$(basename "$(readlink "$HOME/.kube/config")" | cut -d '.' -f 2)"
 }
-CONTEXT_ALIAS=$(get-context-alias)
+context_alias=$(get-context-alias)
 
 # Import commands
 
-function clone-taskfile(){
-    if [ ! -d "$HOME/taskfile.build" ]; then
+clone-taskfile(){
+    if [[ ! -d "$HOME/taskfile.build" ]]; then
         echo -e "\033[38;5;214mGit\033[0m: Clone taskfile repo"
         git clone https://git.taskfile.build "$HOME/taskfile.build"
     else
@@ -114,9 +113,9 @@ function clone-taskfile(){
     fi
 }
 
-if [ -d "$HOME/taskfile.build/bin" ]; then
+if [[ -d "$HOME/taskfile.build/bin" ]]; then
     for file in "$HOME/taskfile.build/bin/"*; do
-        if [ -f "$file" ]; then
+        if [[ -f "$file" ]]; then
             source "$file"
         fi
     done
@@ -124,43 +123,42 @@ fi
 
 # Env Commands
 
-function version() {
-    minikube version
+version() {
     kind version
     helm version
 }
 
-function info() {
+info() {
     echo "OpenShift-Project: $OC_PROJECT"
-    echo "Current-Context: $CURRENT_CONTEXT"
-    echo "Context-Alias: $CONTEXT_ALIAS"
-    echo "Namespace: $NAMESPACE"
+    echo "Current-Context: $current_context"
+    echo "Context-Alias: $context_alias"
+    echo "Namespace: $namespace"
 }
 
-function install-vitepress() {
+install-vitepress() {
     pnpm install
 }
 
-function setup-hosts() {
-    echo "Adding entries to /etc/hosts ..."
-    grep -qxF '127.0.0.1 knd.local' /etc/hosts || echo "127.0.0.1 knd.local" | sudo tee -a /etc/hosts > /dev/null
+setup-hosts() {
+    echo 'Adding entries to /etc/hosts ...'
+    grep -qxF '127.0.0.1 knd.local' /etc/hosts || echo '127.0.0.1 knd.local' | sudo tee -a /etc/hosts > /dev/null
 
-    grep -qxF "127.0.0.1 odoo.local" /etc/hosts || echo "127.0.0.1 odoo.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF "127.0.0.1 odoo.knd.local" /etc/hosts || echo "127.0.0.1 odoo.knd.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF "127.0.0.1 staging.odoo.knd.local" /etc/hosts || echo "127.0.0.1 staging.odoo.knd.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF '127.0.0.1 odoo.local' /etc/hosts || echo '127.0.0.1 odoo.local' | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF '127.0.0.1 odoo.knd.local' /etc/hosts || echo '127.0.0.1 odoo.knd.local' | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF '127.0.0.1 staging.odoo.knd.local' /etc/hosts || echo '127.0.0.1 staging.odoo.knd.local' | sudo tee -a /etc/hosts > /dev/null
 
-    grep -qxF "127.0.0.1 restic.local" /etc/hosts || echo "127.0.0.1 restic.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF "127.0.0.1 restic.knd.local" /etc/hosts || echo "127.0.0.1 restic.knd.local" | sudo tee -a /etc/hosts > /dev/null
-    grep -qxF "127.0.0.1 staging.restic.knd.local" /etc/hosts || echo "127.0.0.1 staging.restic.knd.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF '127.0.0.1 restic.local' /etc/hosts || echo '127.0.0.1 restic.local' | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF '127.0.0.1 restic.knd.local' /etc/hosts || echo '127.0.0.1 restic.knd.local' | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF '127.0.0.1 staging.restic.knd.local' /etc/hosts || echo '127.0.0.1 staging.restic.knd.local' | sudo tee -a /etc/hosts > /dev/null
 
-    grep -qxF "127.0.0.1 hugo.knd.local" /etc/hosts || echo "127.0.0.1 hugo.knd.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF '127.0.0.1 hugo.knd.local' /etc/hosts || echo '127.0.0.1 hugo.knd.local' | sudo tee -a /etc/hosts > /dev/null
 
-    grep -qxF "127.0.0.1 vuepress.knd.local" /etc/hosts || echo "127.0.0.1 vuepress.knd.local" | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF '127.0.0.1 vuepress.knd.local' /etc/hosts || echo '127.0.0.1 vuepress.knd.local' | sudo tee -a /etc/hosts > /dev/null
 }
 
-function test-chart-odoo() {
-    if [ "$1" = "clean" ]; then
-        echo "Cleanup environment"
+test-chart-odoo() {
+    if [[ "$1" = 'clean' ]]; then
+        echo 'Cleanup environment'
         delete-kind
     else
         start-kind
@@ -175,270 +173,267 @@ function test-chart-odoo() {
     fi
 }
 
-function save-kubeconfig-to-pass() {
-    PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
-    KUBECONFIG_FILE="$HOME/.kube/config"
+save-kubeconfig-to-pass() {
+    local pass_kubeconfig_entry=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
+    local kubeconfig_file="$HOME/.kube/config"
 
-    if [ -n "$1" ]; then
-        PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
-        KUBECONFIG_FILE="$HOME/.kube/config.$1"
+    if [[ -n "$1" ]]; then
+        pass_kubeconfig_entry=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
+        kubeconfig_file="$HOME/.kube/config.$1"
     fi
 
-    if [ -f "$KUBECONFIG_FILE" ]; then
-        echo "Store $KUBECONFIG_FILE file in pass: $PASS_KUBECONFIG_ENTRY"
-        echo -e "\n$(cat $KUBECONFIG_FILE)" | pass insert -m -f "$PASS_KUBECONFIG_ENTRY"
+    if [[ -f "$kubeconfig_file" ]]; then
+        echo "Store $kubeconfig_file file in pass: $pass_kubeconfig_entry"
+        echo -e "\n$(cat $kubeconfig_file)" | pass insert -m -f "$pass_kubeconfig_entry"
     else
-        echo "No $KUBECONFIG_FILE file found."
+        echo "No $kubeconfig_file file found."
     fi
 }
 
-function load-kubeconfig-from-pass() {
-    PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
-    KUBECONFIG_FILE="$HOME/.kube/config"
+load-kubeconfig-from-pass() {
+    local pass_kubeconfig_entry=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
+    local kubeconfig_file="$HOME/.kube/config"
 
-    if [ -n "$1" ]; then
-        PASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
-        KUBECONFIG_FILE="$HOME/.kube/config.$1"
+    if [[ -n "$1" ]]; then
+        pass_kubeconfig_entry=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
+        kubeconfig_file="$HOME/.kube/config.$1"
     fi
 
-    if pass find "$PASS_KUBECONFIG_ENTRY" >/dev/null; then
-        echo "Load $KUBECONFIG_FILE file from pass: $PASS_KUBECONFIG_ENTRY"
+    if pass find "$pass_kubeconfig_entry" >/dev/null; then
+        echo "Load $kubeconfig_file file from pass: $pass_kubeconfig_entry"
         mkdir -p "$HOME/.kube/"
-        pass show "$PASS_KUBECONFIG_ENTRY" | tail -n +2 > "$KUBECONFIG_FILE"
+        pass show "$pass_kubeconfig_entry" | tail -n +2 > "$kubeconfig_file"
     else
-        echo "Pass entry not found."
+        echo 'Pass entry not found.'
     fi
 }
 
-function save-kubeconfig-to-keepass() {
-    local KEEPASS_KUBECONFIG_ENTRY="env/kubeconfig_$USER"
-    local KUBECONFIG_FILE="$HOME/.kube/config"
+save-kubeconfig-to-keepass() {
+    local keepass_kubeconfig_entry="env/kubeconfig_$USER"
+    local kubeconfig_file="$HOME/.kube/config"
 
-    if [ -n "$1" ]; then
-        KEEPASS_KUBECONFIG_ENTRY="env/kubeconfig_$1"
-        KUBECONFIG_FILE="$HOME/.kube/config.$1"
+    if [[ -n "$1" ]]; then
+        keepass_kubeconfig_entry="env/kubeconfig_$1"
+        kubeconfig_file="$HOME/.kube/config.$1"
     fi
 
-    KEEPASS_KUBECONFIG_ENTRY=$(echo "$KEEPASS_KUBECONFIG_ENTRY" | tr '[:upper:]' '[:lower:]')
+    keepass_kubeconfig_entry=$(echo "$keepass_kubeconfig_entry" | tr '[:upper:]' '[:lower:]')
 
-    if [ -f "$KUBECONFIG_FILE" ]; then
-        echo "Store $KUBECONFIG_FILE file in keepassxc: $KEEPASS_KUBECONFIG_ENTRY"
+    if [[ -f "$kubeconfig_file" ]]; then
+        echo "Store $kubeconfig_file file in keepassxc: $keepass_kubeconfig_entry"
         keepassxc-cli add \
             --key-file "$KEEPASS_DATABASE_KEY_FILE" \
             "$KEEPASS_DATABASE_FILE" \
-            "$KEEPASS_KUBECONFIG_ENTRY"
+            "$keepass_kubeconfig_entry"
         keepassxc-cli attachment-import \
             --key-file "$KEEPASS_DATABASE_KEY_FILE" \
             "$KEEPASS_DATABASE_FILE" \
-            "$KEEPASS_KUBECONFIG_ENTRY" \
-            "$(basename $KUBECONFIG_FILE)" \
-            "$KUBECONFIG_FILE"
+            "$keepass_kubeconfig_entry" \
+            "$(basename $kubeconfig_file)" \
+            "$kubeconfig_file"
     else
-        echo "No $KUBECONFIG_FILE file found."
+        echo "No $kubeconfig_file file found."
     fi
 }
 
-function load-kubeconfig-from-keepass() {
-    KEEPASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
-    KUBECONFIG_FILE="$HOME/.kube/config"
-    if [ -n "$1" ]; then
-        KEEPASS_KUBECONFIG_ENTRY=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
-        KUBECONFIG_FILE="$HOME/.kube/config.$1"
+load-kubeconfig-from-keepass() {
+    local keepass_kubeconfig_entry=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
+    local kubeconfig_file="$HOME/.kube/config"
+    if [[ -n "$1" ]]; then
+        keepass_kubeconfig_entry=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
+        kubeconfig_file="$HOME/.kube/config.$1"
     fi
-    echo "Load $KUBECONFIG_FILE file from keepassxc: $KEEPASS_KUBECONFIG_ENTRY"
+    echo "Load $kubeconfig_file file from keepassxc: $keepass_kubeconfig_entry"
     mkdir -p "$HOME/.kube/"
     keepassxc-cli attachment-export \
         --key-file "$KEEPASS_DATABASE_KEY_FILE" \
         "$KEEPASS_DATABASE_FILE" \
-        "$KEEPASS_KUBECONFIG_ENTRY" \
-        "$(basename $KUBECONFIG_FILE)" \
-        "$KUBECONFIG_FILE"
+        "$keepass_kubeconfig_entry" \
+        "$(basename $kubeconfig_file)" \
+        "$kubeconfig_file"
 }
 
 export-kubeconfig() {
-  if test -z "$1"; then echo "\$1 is empty."; exit; fi
-  if test -z "$2"; then echo "\$2 is empty."; exit; fi
+  if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+  if test -z "$2"; then echo '\$2 is empty.'; exit; fi
 
-  KUBE_USER=$1
-  KUBE_OUTPUT_FILE=$2
-  kubectl config set-cluster default --server=https://k3s.raspberrypi.build --kubeconfig=$KUBE_OUTPUT_FILE
-  kubectl config set-context default --cluster=default --user=$KUBE_USER --kubeconfig=$KUBE_OUTPUT_FILE
-  kubectl config set-credentials "$KUBE_USER" --token=$(kubectl create token $KUBE_USER --duration=87600h) --kubeconfig=$KUBE_OUTPUT_FILE
-  kubectl config use-context default --kubeconfig=$KUBE_OUTPUT_FILE
+  local kube_user=$1
+  local kube_output_file=$2
+  kubectl config set-cluster default --server=https://k3s.raspberrypi.build --kubeconfig=$kube_output_file
+  kubectl config set-context default --cluster=default --user=$kube_user --kubeconfig=$kube_output_file
+  kubectl config set-credentials "$kube_user" --token=$(kubectl create token $kube_user --duration=87600h) --kubeconfig=$kube_output_file
+  kubectl config use-context default --kubeconfig=$kube_output_file
 
-  echo "Kubeconfig exported for user $KUBE_USER to file $KUBE_OUTPUT_FILE"
+  echo "Kubeconfig exported for user $kube_user to file $kube_output_file"
 }
 
 # Host Commands
 
-function start-kind() {
-    echo "Start kind."
+start-kind() {
+    echo 'Start kind.'
     kind create cluster
 }
 
-function load-image() {
-    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+load-image() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
 
-    if kind &> /dev/null && kind get clusters | grep -q "kind"; then
-        echo "Kind cluster is available. Checking for local Docker images..."
+    if kind &> /dev/null && kind get clusters | grep -q 'kind'; then
+        echo 'Kind cluster is available. Checking for local Docker images...'
 
         if docker images -q "$1" > /dev/null; then
-            echo "Loading local Odoo image into Kind cluster..."
+            echo 'Loading local Odoo image into Kind cluster...'
             kind load docker-image "$1"
         fi
     fi
 }
 
-function delete-kind() {
-    echo "Delete kind."
+delete-kind() {
+    echo 'Delete kind.'
     kind delete cluster
 }
 
-function start-minikube() {
-    echo "Start minikube."
-    minikube start
-}
-
-function forward() {
-    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+forward() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
     "forward-$1"
 }
 
-function forward-postgres() {
-    PORT=5432
-    echo "Connect to http://localhost:$PORT url in your browser."
-    kubectl port-forward service/postgres $PORT:5432
+forward-postgres() {
+    local port=5432
+    echo "Connect to http://localhost:$port url in your browser."
+    kubectl port-forward service/postgres $port:5432
 }
 
-function forward-odoo() {
-    PORT=8080
-    echo "Open http://localhost:$PORT url in your browser."
-    kubectl port-forward service/odoo $PORT:8069
+forward-odoo() {
+    local port=8080
+    echo "Open http://localhost:$port url in your browser."
+    kubectl port-forward service/odoo $port:8069
 }
 
-function forward-odoo-staging() {
-    PORT=8080
-    echo "Open http://localhost:$PORT url in your browser."
-    kubectl port-forward service/odoo-staging $PORT:8069
+forward-odoo-staging() {
+    local port=8080
+    echo "Open http://localhost:$port url in your browser."
+    kubectl port-forward service/odoo-staging $port:8069
 }
 
-function forward-ingress-nginx() {
-    PORT=8080
-    echo "Open http://staging.odoo.knd.local:$PORT or http://odoo.knd.local:$PORT or http://odoo.local:$PORT url in your browser."
-    kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller $PORT:80
+forward-ingress-nginx() {
+    local port=8080
+    kubectl get ingresses
+    echo "Open http://\$NAMESPACE.knd.local:$port url in your browser."
+    kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller $port:80
 }
 
-function forward-haproxy-ingress() {
-    PORT=8080
-    echo "Open http://odoo.knd.local:$PORT or http://odoo.local:$POR url in your browser."
-    kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $PORT:80
+forward-haproxy-ingress() {
+    local port=8080
+    kubectl get ingresses
+    echo "Open http://\$NAMESPACE.knd.local:$port url in your browser."
+    kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $port:80
 }
 
 # Chart Commands
 
-function list-charts() {
-    for DIR in */; do
-        DIR_NAME="${DIR%/}"
-        if [[ ! "$DIR_NAME" =~ ^(public|values)$ ]] && ! git check-ignore -q "$DIR_NAME" 2>/dev/null; then
-            echo "$DIR_NAME"
+list-charts() {
+    for dir in */; do
+        dir_name="${dir%/}"
+        if [[ ! "$dir_name" =~ ^(public|values)$ ]] && ! git check-ignore -q "$dir_name" 2>/dev/null; then
+            echo "$dir_name"
         fi
     done
 }
 
-function list-external-charts() {
-    echo "cert-manager"
-    echo "cnpg"
-    echo "haproxy-ingress"
-    echo "ingress-nginx"
-    echo "k8up"
+list-external-charts() {
+    echo 'cert-manager'
+    echo 'cnpg'
+    echo 'haproxy-ingress'
+    echo 'ingress-nginx'
+    echo 'k8up'
 }
 
-function list-cluster() {
-    for FILE in values/*.yaml; do
-        KIND=$(yq eval '.kind' "$FILE")
-        ALIAS=$(yq eval '.alias' "$FILE")
-        if [[ -n "$KIND" && "$KIND" = "cluster" ]]; then
-            BASE=$(basename "$FILE" .yaml)
-            printf '%s (%s)\n' "$ALIAS" "$BASE"
+list-cluster() {
+    for file in values/*.yaml; do
+        local kind=$(yq eval '.kind' "$file")
+        local alias=$(yq eval '.alias' "$file")
+        if [[ -n "$kind" && "$kind" = 'cluster' ]]; then
+            local base=$(basename "$file" .yaml)
+            printf '%s (%s)\n' "$alias" "$base"
         fi
     done | sort
 }
 
-function switch-cluster() {
-    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+switch-cluster() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
 
-    LINK_NAME="$HOME/.kube/config"
-    echo "Remove $LINK_NAME"
-    rm "$LINK_NAME" || true
-    TARGET="$HOME/.kube/config.$1"
-    touch "$TARGET"
-    echo "Setup symlink from $LINK_NAME to $TARGET"
-    ln -s "$TARGET" "$LINK_NAME"
-    chmod 0644 "$TARGET"
+    local link_name="$HOME/.kube/config"
+    echo "Remove $link_name"
+    rm "$link_name" || true
+    local target="$HOME/.kube/config.$1"
+    touch "$target"
+    echo "Setup symlink from $link_name to $target"
+    ln -s "$target" "$link_name"
+    chmod 0644 "$target"
 
-    echo "Select namespace"
+    echo 'Select namespace'
     kubens
 }
 
-function show-context() {
+show-context() {
     basename "$(readlink "$HOME/.kube/config")" | cut -d. -f2
 }
 
-function update-dependencies() {
-    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+update-dependencies() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
     helm dependency update "$1"
 }
 
-function install-chart() {
-    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+install-chart() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
 
-    if [ "$(get-context-alias)" = "axo" ]; then
+    if [[ "$(get-context-alias)" = 'axo' ]]; then
         echo "Set oc project to $OC_PROJECT."
         oc project "$OC_PROJECT"
     fi
-    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+    local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
-    if [ "$1" = "clusterIssuer" ]; then
+    if [[ "$1" = 'clusterIssuer' ]]; then
         "install-$1" "$2"
     elif list-charts | grep -q "$1"; then
-        echo "Install chart $1 as release $RELEASE_NAME:"
-        helm install "$RELEASE_NAME" "$1" \
+        echo "Install chart $1 as release $release_name:"
+        helm install "$release_name" "$1" \
             --values "$2"
     else
         "install-$1" "$2"
     fi
 }
 
-function install-k8up() {
-    echo "Install k8up-io/k8up."
+install-k8up() {
+    echo 'Install k8up-io/k8up.'
     helm install k8up k8up-io/k8up
 }
 
-function install-cnpg() {
-    echo "Install cnpg/cloudnative-pg."
+install-cnpg() {
+    echo 'Install cnpg/cloudnative-pg.'
     helm upgrade --install cnpg \
       --namespace cnpg-system \
       --create-namespace \
       cnpg/cloudnative-pg
 }
 
-function install-ingress-nginx() {
-    echo "Install ingress-nginx/ingress-nginx:"
+install-ingress-nginx() {
+    echo 'Install ingress-nginx/ingress-nginx:'
     helm install ingress-nginx ingress-nginx/ingress-nginx \
         --create-namespace --namespace ingress-nginx
 
-    echo "External IP:"
+    echo 'External IP:'
     kubectl get svc -n ingress-nginx
 }
 
-function install-k8up() {
-    echo "Install k8up-io/k8up."
+install-k8up() {
+    echo 'Install k8up-io/k8up.'
     helm install k8up k8up-io/k8up \
         --create-namespace --namespace k8up
 }
 
-function install-cert-manager() {
-    echo "Install jetstack/cert-manager."
+install-cert-manager() {
+    echo 'Install jetstack/cert-manager.'
     helm install \
       cert-manager jetstack/cert-manager \
       --namespace cert-manager \
@@ -448,19 +443,19 @@ function install-cert-manager() {
       --set config.featureGates.ACMEHTTP01IngressPathTypeExact=false
 
     # https://github.com/Infomaniak/cert-manager-webhook-infomaniak
-    echo "Apply Infomaniak webhook"
+    echo 'Apply Infomaniak webhook'
     kubectl apply -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
 }
 
-function install-clusterIssuer() {
-    echo "Install clusterissuer."
+install-clusterIssuer() {
+    echo 'Install clusterissuer.'
     helm install clusterissuer clusterIssuer \
         --namespace cert-manager \
         --values "$1"
 }
 
-function install-haproxy-ingress() {
-    echo "Install haproxy-ingress/haproxy-ingress."
+install-haproxy-ingress() {
+    echo 'Install haproxy-ingress/haproxy-ingress.'
 
     kubectl apply -f - <<EOF
 apiVersion: networking.k8s.io/v1
@@ -475,21 +470,21 @@ EOF
         --create-namespace --namespace haproxy-ingress
 }
 
-function upgrade-release() {
-    if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+upgrade-release() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+    local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
     if list-charts | grep -q "$1"; then
-        echo "Upgrade $1 chart for release $RELEASE_NAME:"
-        helm upgrade "$RELEASE_NAME" "$1" \
+        echo "Upgrade $1 chart for release $release_name:"
+        helm upgrade "$release_name" "$1" \
             --values "$2"
     else
         "upgrade-$1" "$2"
     fi
 }
 
-function upgrade-cert-manager() {
-    echo "Upgrade jetstack/cert-manager."
+upgrade-cert-manager() {
+    echo 'Upgrade jetstack/cert-manager.'
     helm upgrade \
         cert-manager jetstack/cert-manager \
         --namespace cert-manager \
@@ -498,186 +493,186 @@ function upgrade-cert-manager() {
         --set config.featureGates.ACMEHTTP01IngressPathTypeExact=false
 
     # https://github.com/Infomaniak/cert-manager-webhook-infomaniak
-    echo "Apply Infomaniak webhook"
+    echo 'Apply Infomaniak webhook'
     kubectl apply -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
 }
 
-function upgrade-clusterIssuer() {
-    echo "Upgrade clusterIssuer."
+upgrade-clusterIssuer() {
+    echo 'Upgrade clusterIssuer.'
     helm upgrade \
         clusterissuer clusterIssuer \
         --namespace cert-manager \
         --values "$2"
 }
 
-function upgrade-ingress-nginx() {
-    if [ -n "$EXTERNAL_IP" ]; then
+upgrade-ingress-nginx() {
+    if [[ -n "$EXTERNAL_IP" ]]; then
         echo "Upgrade ingress-nginx/ingress-nginx with external IP $EXTERNAL_IP:"
         helm upgrade ingress-nginx ingress-nginx/ingress-nginx \
             --namespace ingress-nginx \
             --set controller.service.externalIPs[0]=$EXTERNAL_IP
     else
-        echo "Upgrade ingress-nginx/ingress-nginx:"
+        echo 'Upgrade ingress-nginx/ingress-nginx:'
         helm upgrade ingress-nginx ingress-nginx/ingress-nginx \
             --namespace ingress-nginx
     fi
 }
 
-function uninstall-release() {
-    if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+uninstall-release() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+    local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
-    echo "Uninstall release $RELEASE_NAME:"
-    helm uninstall "$RELEASE_NAME"
+    echo "Uninstall release $release_name:"
+    helm uninstall "$release_name"
 }
 
 # kubectl Commands
 
-function get-secrets() {
-    if [ "$1" = "postgres" ]; then
-        echo "postgres/user:"
+get-secrets() {
+    if [[ "$1" = 'postgres' ]]; then
+        echo 'postgres/user:'
         kubectl get secret postgres -o jsonpath="{.data.user}" | base64 --decode && echo
-        echo "postgres/password:"
+        echo 'postgres/password:'
         kubectl get secret postgres -o jsonpath="{.data.password}" | base64 --decode && echo
     fi
 
-    if [ "$1" = "clusterIssuer" ]; then
-        echo "cert-manager/infomaniak-api-credentials:"
+    if [[ "$1" = 'clusterIssuer' ]]; then
+        echo 'cert-manager/infomaniak-api-credentials:'
         kubectl get secret -n cert-manager infomaniak-api-token -o jsonpath="{.data.access-token}" | base64 --decode && echo
     fi
 
-    if [ "$1" = "forgejoRunner" ]; then
-        echo "forgejo-runner/forgejoInstanceToken:"
+    if [[ "$1" = 'forgejoRunner' ]]; then
+        echo 'forgejo-runner/forgejoInstanceToken:'
         kubectl get secret forgejo-runner -o jsonpath="{.data.forgejoInstanceToken}" | base64 --decode && echo
     fi
 }
 
-function exec-bash() {
-    if test -z "$1"; then echo "\$1 is empty."; exit; fi
+exec-bash() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
     kubectl exec -it "$1" -- bash
 }
 
-function logs() {
-    POD_ID=$(kubectl get pods -o=name --all-namespaces | grep "$1")
-    kubectl logs "$POD_ID"
+logs() {
+    local pod_id=$(kubectl get pods -o=name --all-namespaces | grep "$1")
+    kubectl logs "$pod_id"
 }
 
-function get-pods() {
+get-pods() {
     kubectl get pods
 }
 
-function logs-haproxy-ingress() {
-    POD_ID=$(kubectl get pods -o=name -n haproxy-ingress | grep "haproxy-ingress")
-    kubectl logs "$POD_ID" -n haproxy-ingress
+logs-haproxy-ingress() {
+    local pod_id=$(kubectl get pods -o=name -n haproxy-ingress | grep 'haproxy-ingress')
+    kubectl logs "$pod_id" -n haproxy-ingress
 }
 
-function logs-ingress-nginx() {
-    POD_ID=$(kubectl get pods -o=name -n ingress-nginx | grep "ingress-nginx")
-    kubectl logs "$POD_ID" -n ingress-nginx
+logs-ingress-nginx() {
+    local pod_id=$(kubectl get pods -o=name -n ingress-nginx | grep 'ingress-nginx')
+    kubectl logs "$pod_id" -n ingress-nginx
 }
 
 # Helm Commands
 
-function template-manifest() {
-    if test -z "$1"; then echo "\$1 is empty."; exit; fi
-    if test -z "$2"; then echo "\$2 is empty."; exit; fi
-    RELEASE_NAME="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+template-manifest() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+    if test -z "$2"; then echo '\$2 is empty.'; exit; fi
+    local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
-    echo "Template chart $1 as release ${RELEASE_NAME}..."
+    echo "Template chart $1 as release ${release_name}..."
 
-    if [ "$1" = "clusterIssuer" ]; then
-        helm --debug template "$RELEASE_NAME" clusterIssuer \
+    if [[ "$1" = 'clusterIssuer' ]]; then
+        helm --debug template "$release_name" clusterIssuer \
             --namespace cert-manager \
             --values "$2" > manifest.yaml
     elif list-charts | grep -q "$1"; then
-        helm --debug template "$RELEASE_NAME" "$1" \
+        helm --debug template "$release_name" "$1" \
             --values "$2"
     fi
 }
 
-function list() {
+list() {
     helm list
 }
 
-function package-repo() {
-    if [ -n "$1" ]; then
+package-repo() {
+    if [[ -n "$1" ]]; then
         echo "Package $1 Helm chart."
         helm package "$1"
     else
-        echo "Package all Helm charts."
+        echo 'Package all Helm charts.'
         index-repo
-        for CHART in $(list-charts); do
-             helm package "$CHART"
+        for chart in $(list-charts); do
+             helm package "$chart"
         done
     fi
 }
 
-function commit() {
+commit() {
     git config user.name 'Mint Bot'
     git config user.email 'bot@mint-system.ch'
     git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/Mint-System/Kubernetes-Build"
     git add *.tgz
-    git commit -m "feat(helm): package revision update"
-    git push || echo "No changes to commit"
+    git commit -m 'feat(helm): package revision update'
+    git push || echo 'No changes to commit'
 }
 
-function index-repo() {
-    echo "Update index.yaml"
+index-repo() {
+    echo 'Update index.yaml'
     helm repo index .
 }
 
-function add-repos(){
-    echo "Add kubernetes-build."
+add-repos(){
+    echo 'Add kubernetes-build.'
     helm repo add kubernetes-build https://kubernetes.build
 
-    echo "Add ingress-nginx."
+    echo 'Add ingress-nginx.'
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
-    echo "Add haproxy-ingress."
+    echo 'Add haproxy-ingress.'
     helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts
 
-    echo "Add jetstack."
+    echo 'Add jetstack.'
     helm repo add jetstack https://charts.jetstack.io
 
-    echo "Add cnpg."
+    echo 'Add cnpg.'
     helm repo add cnpg https://cloudnative-pg.github.io/charts
 
-    echo "Add k8up."
+    echo 'Add k8up.'
     helm repo add k8up-io https://k8up-io.github.io/k8up
 }
 
-function remove-repo(){
-    echo "Remove the kubernetes-build repo."
+remove-repo(){
+    echo 'Remove the kubernetes-build repo.'
     helm repo remove kubernetes-build
 }
 
 # Docs Commands
 
-function docs() {
-    for REPO in $(list-charts | grep -v '^deploymentUpdater$'); do
-        pnpm run generate-readme --values "$REPO/values.yaml" -r "$REPO/README.md"
+docs() {
+    for repo in $(list-charts | grep -v '^deploymentUpdater$'); do
+        pnpm run generate-readme --values "$repo/values.yaml" -r "$repo/README.md"
     done
 }
 
-function lint() {
-    for CHART in $(list-charts); do
-        helm lint "$CHART"
+lint() {
+    for chart in $(list-charts); do
+        helm lint "$chart"
     done
 }
 
-function dev-vitepress() {
+dev-vitepress() {
     cp README.md index.md
     pnpm run docs:dev
 }
 
-function build-vitepress() {
+build-vitepress() {
     cp README.md index.md
     pnpm run docs:build
     cp *.tgz .vitepress/dist
     cp index.yaml .vitepress/dist
 }
 
-function serve-vitepress() {
+serve-vitepress() {
     pnpm run docs:preview
 }
 

@@ -4,7 +4,7 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 ## Secrets
 
-Setup a `odoo-creds` secret with GitHub credentials to download private Repos.
+Setup a `odoo-creds` secret with GitHub credentials to download private repos.
 
 ```bash
 GITHUB_USERNAME="<username>"
@@ -15,20 +15,23 @@ kubectl create secret generic odoo-creds \
     -n <namespace>
 ```
 
-The K8up backup requires a `s3-credentials` secret. Here is an example for Exoscale SOS:
+The K8up backup requires a `s3-credentials` and a `backup-repo` secret. Here is an example for Exoscale SOS:
 
 ```bash
 EXOSCALE_IAM_KEY="*******"
 EXOSCALE_IAM_SECRET="*******"
 kubectl create secret generic s3-credentials \
-    --from-literal=endpoint="https://sos-ch-gva-2.exo.io" \
-    --from-literal=bucket="k8up.mintcloud.ch" \
     --from-literal=username="$EXOSCALE_IAM_KEY" \
     --from-literal=password="$EXOSCALE_IAM_SECRET" \
     -n <namespace>
 ```
 
-
+```bash
+BACKUP_REPO_PASSWORD="*******"
+kubectl create secret generic backup-repo \
+    --from-literal=password="$BACKUP_REPO_PASSWORD" \
+    -n <namespace>
+```
 
 ## Parameters
 

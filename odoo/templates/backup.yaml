@@ -26,7 +26,7 @@ spec:
       key: password
     s3:
       endpoint: {{ .Values.k8up.endpoint }}
-      bucket: {{ .Values.k8up.bucket }}
+      bucket: {{ .Values.k8up.bucket }}/{{ .Values.ingress.host }}
       accessKeyIDSecretRef:
         name: s3-credentials
         key: username
