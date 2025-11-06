@@ -4,7 +4,8 @@ on:
       - "main"
 
 jobs:
-  task-all:
+  package:
+    name: Package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
