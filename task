@@ -334,7 +334,7 @@ forward-haproxy-ingress() {
 list-charts() {
     for dir in */; do
         dir_name="${dir%/}"
-        if [[ ! "$dir_name" =~ ^(public|values)$ ]] && ! git check-ignore -q "$dir_name" 2>/dev/null; then
+        if [[ ! "$dir_name" =~ ^(public|values|test)$ ]] && ! git check-ignore -q "$dir_name" 2>/dev/null; then
             echo "$dir_name"
         fi
     done
