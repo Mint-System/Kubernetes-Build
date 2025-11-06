@@ -169,7 +169,7 @@ test-chart-odoo() {
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         update-dependencies odoo
-        install-chart odoo values/odoo.knd.local.yaml
+        install-chart odoo test/odoo.knd.local.yaml
     fi
 }
 
