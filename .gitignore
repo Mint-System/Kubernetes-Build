@@ -10,3 +10,4 @@ odoo/charts
 .env
 index.md
 values
+*.kubeconfig
