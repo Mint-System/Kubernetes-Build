@@ -44,6 +44,32 @@ cnpg:
   ##
   owner: app
 
+collabora:
+  enabled: true
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+        nginx.ingress.kubernetes.io/upstream-hash-by: "$arg_WOPISrc"
+        nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+        nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    hosts:
+        - host: "doc.nextcloud.knd.local"
+          paths:
+          - path: /
+          pathType: ImplementationSpecific
+    aliasgroups:
+        - host: "http://nextcloud.knd.local:80"
+    extra_params: --o:ssl.enable=false --o:ssl.termination=true
+  resources:
+    limits:
+        cpu: "1800m"
+        memory: "2000Mi"
+    requests:
+        cpu: "1800m"
+        memory: "2000Mi"
+
 ## @section Nextcloud parameters
 ##
 ## @param image The image for Nextcloud

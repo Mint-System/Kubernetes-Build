@@ -25,7 +25,7 @@ Start cluster with `kind`.
 task start-kind
 ```
 
-## Deploy Odoo chart
+## Prepeare cluster
 
 Add Helm chart repos.
 
@@ -42,20 +42,22 @@ task setup-hosts
 Install the CloudNativePG chart:
 
 ```bash
-task install-chart cnpg values/knd.local.yaml
+task install-chart cnpg test/knd.local.yaml
 ```
 
 Install ingress-nginx in the current cluster.
 
 ```bash
-task install-chart ingress-nginx values/knd.local.yaml
+task install-chart ingress-nginx test/knd.local.yaml
 ```
 
 Install k8up in the current cluster.
 
 ```bash
-task install-chart k8up values/knd.local.yaml
+task install-chart k8up test/knd.local.yaml
 ```
+
+## Deploy Odoo chart
 
 Load the local image into the cluster.
 
@@ -68,7 +70,31 @@ Setup secrets according to the Odoo chart readme.
 Install the Odoo chart:
 
 ```bash
-task install-chart odoo values/odoo.knd.local.yaml
+task install-chart odoo test/odoo.knd.local.yaml
+```
+
+The Odoo database will be initialized automatically.
+
+Forward the ingress-nginx port.
+
+```bash
+task forward ingress-nginx
+```
+
+## Deploy Nextcloud chart
+
+Load the local image into the cluster.
+
+```bash
+task load-image nextcloud:32-apache
+```
+
+Setup secrets according to the Nextcloud chart readme.
+
+Install the Nextcloud chart:
+
+```bash
+task install-chart nextcloud test/nextcloud.knd.local.yaml
 ```
 
 The Odoo database will be initialized automatically.
@@ -84,7 +110,7 @@ task forward ingress-nginx
 Install haproxy-ingress in the current cluster.
 
 ```bash
-task install-chart haproxy-ingress values/knd.local.yaml
+task install-chart haproxy-ingress test/knd.local.yaml
 ```
 
 Forward the haproxy-ingress port.

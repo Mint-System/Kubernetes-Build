@@ -61,26 +61,21 @@ spec:
             {{- end }}
             - name: NEXTCLOUD_DATA_DIR
               value: "/var/www/html/data"
-            - name: APACHE_DISABLE_REWRITESSL
-              value: "1"
-            # Security headers
-            - name: mod_headers
-              value: "1"
           volumeMounts:
             - name: nextcloud-data
               mountPath: /var/www/html
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 120
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 5
+          # livenessProbe:
+          #   httpGet:
+          #     path: /status.php
+          #     port: 80
+          #   initialDelaySeconds: 120
+          #   periodSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /status.php
+          #     port: 80
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 5
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:

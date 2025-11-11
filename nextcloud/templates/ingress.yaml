@@ -1,21 +1,30 @@
 {{- if .Values.ingress.enabled }}
+{{- if eq .Values.ingress.className "nginx" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-headers
+data:
+  X-Forwarded-Host: "$host"
+  X-Forwarded-For: "$proxy_add_x_forwarded_for"
+  X-Forwarded-Proto: "$scheme"
+  X-Real-IP: "$remote_addr"
+{{- end }}
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-nextcloud
+  name: nextcloud-ingress
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.className }}
     nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+    {{- if eq .Values.ingress.className "nginx" }}
+    nginx.ingress.kubernetes.io/proxy-set-headers: "custom-headers"
+    {{- end }}
     {{- if .Values.ingress.clusterIssuerRef }}
     cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
     {{- end }}
 spec:
-  {{- if .Values.ingress.clusterIssuerRef }}
-  tls:
-    - hosts:
-        - {{ .Values.ingress.host | quote }}
-      secretName: {{ .Release.Name }}-nextcloud-tls
-  {{- end }}
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
     - host: {{ .Values.ingress.host | quote }}
       http:
@@ -24,7 +33,28 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ .Release.Name }}-nextcloud
+                name: nextcloud
                 port:
                   number: 80
+  {{- if .Values.ingress.customDomain }}
+    - host: {{ .Values.ingress.customDomain | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nextcloud
+                port:
+                  number: 80
+  {{- end }}
+  {{- if .Values.ingress.clusterIssuerRef }}
+  tls:
+    - hosts:
+      - {{ .Values.ingress.host | quote }}
+      {{- if .Values.ingress.customDomain }}
+      - {{ .Values.ingress.customDomain | quote }}
+      {{- end }}
+      secretName: nextcloud-tls
+  {{- end }}
 {{- end }}

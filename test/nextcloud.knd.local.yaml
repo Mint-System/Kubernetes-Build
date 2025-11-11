@@ -1,4 +1,4 @@
 ingress:
   host: nextcloud.knd.local
   customDomain: nextcloud.local
-image: nextcloud:latest
+image: nextcloud:32-apache

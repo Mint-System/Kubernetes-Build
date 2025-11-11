@@ -1,0 +1,10 @@
+kind: deployment
+ingress:
+  host: restic.knd.local
+image: mintsystem/odoo:18.0.20251008
+staging:
+  enabled: true
+k8up:
+  enabled: true
+  endpoint: https://sos-ch-gva-2.exo.io
+  bucket: k8up.mintcloud.ch

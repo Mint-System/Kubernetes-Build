@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Name }}-fix-missing-indices
+  name: {{ .Release.Name }}-occ
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "10"
@@ -11,43 +11,38 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-      - name: nextcloud-occ
-        image: {{ .Values.image }}
-        command: ["/bin/bash", "-c"]
-        args:
-          - |
-            sleep 30  # Wait for Nextcloud to be fully ready
-            php occ db:add-missing-indices --no-interaction
-        env:
-          - name: NEXTCLOUD_ADMIN_USER
-            valueFrom:
-              secretKeyRef:
-                name: nextcloud-creds
-                key: NEXTCLOUD_ADMIN_USER
-          - name: NEXTCLOUD_ADMIN_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: nextcloud-creds
-                key: NEXTCLOUD_ADMIN_PASSWORD
-          {{- if .Values.cnpg.enabled }}
-          - name: POSTGRES_DB
-            value: {{ .Values.cnpg.database }}
-          - name: POSTGRES_USER
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Release.Name }}-postgresql-app
-                key: username
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Release.Name }}-postgresql-app
-                key: password
-          - name: POSTGRES_HOST
-            value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
-          {{- end }}
-        volumeMounts:
-          - name: nextcloud-data
-            mountPath: /var/www/html
+        - name: nextcloud-occ
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              php occ db:add-missing-indices --no-interaction
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+          env:
+            {{- if .Values.cnpg.enabled }}
+            - name: POSTGRES_DB
+              value: {{ .Values.cnpg.database }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: password
+            - name: POSTGRES_HOST
+              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
+            {{- end }}
+            - name: NEXTCLOUD_DATA_DIR
+              value: "/var/www/html/data"
+          volumeMounts:
+            - name: nextcloud-data
+              mountPath: /var/www/html
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
