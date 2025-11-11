@@ -98,7 +98,8 @@ if kubens &> /dev/null; then
     namespace=$(kubens -c)
 fi
 get-context-alias() {
-    echo "$(basename "$(readlink "$HOME/.kube/config")" | cut -d '.' -f 2)"
+    local alias="$(basename "$(readlink "$HOME/.kube/config" 2>/dev/null)" 2>/dev/null | cut -d '.' -f 2)"
+    echo "${alias:-loc}"
 }
 context_alias=$(get-context-alias)
 
