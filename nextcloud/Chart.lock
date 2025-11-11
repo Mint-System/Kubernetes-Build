@@ -1,0 +1,6 @@
+dependencies:
+- name: collabora-online
+  repository: https://collaboraonline.github.io/online/
+  version: 1.1.52
+digest: sha256:cf9c729f04791fc88514d2cddf1536dbb4d5ce4592457b1cb22c65fe0d5f1a67
+generated: "2025-11-11T17:20:38.495103228+01:00"

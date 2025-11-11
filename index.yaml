@@ -3,9 +3,9 @@ entries:
   clusterIssuer:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-06T13:54:44.1337106+01:00"
+    created: "2025-11-11T17:20:47.581181002+01:00"
     description: Mint System Cluster Issuer
-    digest: 9e629bfd74f32929fe1a94caa67840ad35ebce46d1d5c240bfca1154182a0957
+    digest: dcd5c8a11b01ff9159841cf5b48add634d96dfc4bb45115555a6e939dc3e271f
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -18,9 +18,9 @@ entries:
   deploymentUpdater:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-06T13:54:44.13379058+01:00"
+    created: "2025-11-11T17:20:47.581268977+01:00"
     description: Mint System Deployment Updater
-    digest: 4fc1872c0609439c4fcf0b86a24c0d433239b2ad227b4f8d967a1696fee62beb
+    digest: 91855cbf7288ea9026b7f0705aa55766fef2c97990f036e0e0070f34c4691160
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -33,9 +33,9 @@ entries:
   forgejoRunner:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-06T13:54:44.133926804+01:00"
+    created: "2025-11-11T17:20:47.581426223+01:00"
     description: Mint System Forgejo Runner
-    digest: 5e0c620a0366043d150fe3b683a4db6ce9e0253a307fd54a5032851b00b701ee
+    digest: 1b3fb00eca6c9c2f28374a79da17a950c98b735e9e094d8f801e9ae99f34b7aa
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -48,9 +48,9 @@ entries:
   hugo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-06T13:54:44.134037151+01:00"
+    created: "2025-11-11T17:20:47.581535658+01:00"
     description: Mint System Hugo
-    digest: 59b023d14a15cab4546b60ce310ea6abf82746024061f1c177e8091fae1f02e6
+    digest: 0516e6c112f7fe2ef72ceb5f56ed0f18998611fa6ffb40363ec88fd1222f247f
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -63,10 +63,16 @@ entries:
   nextcloud:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-06T13:54:44.134231133+01:00"
+    created: "2025-11-11T17:20:47.582789967+01:00"
+    dependencies:
+    - condition: collabora.enabled
+      name: collabora-online
+      repository: https://collaboraonline.github.io/online/
+      version: '>=0.1.0'
     description: Mint System Nextcloud
-    digest: cccf3aa100aff8507ccfecefa76e08863c947761057a920112401e201b4d2212
+    digest: b3c0c902790c4e84b96e146ca5961fa1241856464a3238847995bca44f015f9b
     home: https://kubernetes.build
+    icon: https://cdn.rawgit.com/nextcloud/docker/8971440c97a8d5a567d1c93bc7390f39f68e0a49/logo.svg
     maintainers:
     - email: support@mint-system.ch
       name: Mint System GmbH
@@ -78,7 +84,7 @@ entries:
   odoo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-06T13:54:44.13468929+01:00"
+    created: "2025-11-11T17:20:47.583206961+01:00"
     dependencies:
     - condition: postgres.enabled
       name: postgres
@@ -89,7 +95,7 @@ entries:
       repository: file://../vshnPostgres
       version: 0.1.0
     description: Mint System Odoo
-    digest: dd2da427404ff65e9d4bf7ca80e76f6a382f5dae6dd2ffd609cda07deca8feef
+    digest: 442d1479950db8bca038485c9b493a1281596d439dbbffbc80fa95b18dbe5a6b
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -102,9 +108,9 @@ entries:
   postgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-06T13:54:44.134801359+01:00"
+    created: "2025-11-11T17:20:47.583325514+01:00"
     description: Mint System Postgres
-    digest: 9a8c0478c5d2b69698a1d687d38e53433c45bffa4f71e83542ceb0d58ad27fb3
+    digest: 04822424f7b55ea87ba53af20f8dfb21fc60d2bc2b7fc3aed1f392c3ee2650ae
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -117,9 +123,9 @@ entries:
   taskfileBuild:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-06T13:54:44.134907087+01:00"
+    created: "2025-11-11T17:20:47.583432024+01:00"
     description: Mint System Vueress
-    digest: 0b5f9c3ba4693e53303bf6fb726e6269a4ec5459986a59969255545642d07318
+    digest: 635cced14dabefe457e9718b31bb1838c1bee72e8a256d2be6041d2c1756b941
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -132,9 +138,9 @@ entries:
   vshnPostgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-06T13:54:44.134985504+01:00"
+    created: "2025-11-11T17:20:47.58364246+01:00"
     description: VSHN Postgres
-    digest: bfccb8265b74391c82e05e0d7ec925636f118c8f5721a4c132a76e65435043ad
+    digest: d03c034ae4048140409a31f50fb6dd85fdfd2a3afc7ce7b643aec8ef34c96d6c
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -147,9 +153,9 @@ entries:
   vuepress:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-06T13:54:44.135073448+01:00"
+    created: "2025-11-11T17:20:47.583958093+01:00"
     description: Mint System Vueress
-    digest: 05cb40ad4c8cf741af3d6aadd0d37d4c955c101fbe132dfbdd7ab75129b67e8b
+    digest: 0e13bc55d458d7c352828b20cc7292e33dba0b18cf3be78c06d7e753064314df
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -159,4 +165,4 @@ entries:
     urls:
     - vuepress-0.1.0.tgz
     version: 0.1.0
-generated: "2025-11-06T13:54:44.133532547+01:00"
+generated: "2025-11-11T17:20:47.581020971+01:00"
