@@ -2,6 +2,11 @@
 
 This Helm chart deploys Nextcloud with PostgreSQL.
 
+## Security Headers
+
+This chart automatically configures the following security headers:
+- `Strict-Transport-Security`: max-age=15552000; includeSubDomains; preload (HSTS)
+
 ## Secrets
 
 Setup a `nextcloud-creds` secret with any additional environment variables you want to pass to Nextcloud.
