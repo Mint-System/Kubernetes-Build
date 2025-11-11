@@ -12,6 +12,17 @@ This section outlines the universal rules and expectations for any LLM agent wor
 
 **Clear Contributions:** All contributions must be submitted via a pull request with a clear, concise commit message and a brief description of the changes.
 
+## Project structure
+
+* `task`: The project is managed with this task script.
+* `<name>/`: Every folder except for `test` and `values` is a Helm chart.
+* `test`: Contains the `values.yaml` to setup the test enviroment.
+* `values`: In there are multiple `values.yaml` files of production deployments. There are two kinds `deployment` and `cluster`.
+* `*.tgz`: The packaged Helm chart for publishing.
+* `*.md`: Vuepress docs.
+  * `development.md`: Here you find details on how to setup the development enviroment.
+* `.vitepress`: Vitepress config folder.
+
 ## Environment & tooling
 
 ### Taskfile

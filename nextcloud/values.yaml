@@ -41,54 +41,14 @@ cnpg:
   ##
   owner: app
 
-## @section External Postgres parameters
-##
-postgres:
-  ## @param postgres.enabled Enable or disable external Postgres
-  ##
-  enabled: false
-  ## @param postgres.db The database name for Postgres
-  ##
-  db: nextcloud
-  ## @param postgres.user The username for Postgres
-  ##
-  user: nextcloud
-  ## @param postgres.secretRef The secret reference for Postgres
-  ##
-  secretRef: nextcloud-postgres
-  ## @param postgres.userPasswordKey The key for the user password in the secret
-  ##
-  userPasswordKey: password
-  ## @param postgres.storageClassName Set the storage class
-  ##
-  storageClassName: standard
-
 ## @section Nextcloud parameters
 ##
-## @param enabled Enable or disable Nextcloud
-##
-enabled: true
 ## @param image The image for Nextcloud
 ##
 image: nextcloud:latest
 ## @param imagePullPolicy Pull policy for Nextcloud image
 ##
 imagePullPolicy: Always
-## @param proxyMode Enable or disable proxy mode for Nextcloud
-##
-proxyMode: true
-## @param adminUser The admin username for Nextcloud
-##
-adminUser: admin
-## @param adminPassword The admin password for Nextcloud
-##
-adminPassword: ""
-## @param dbType The database type for Nextcloud
-##
-dbType: pgsql
-## @param secretRef The secret reference for Nextcloud
-##
-secretRef: nextcloud-creds
 ## @param storageClassName Set the storage class
 ##
 storageClassName: ""
@@ -99,3 +59,9 @@ k8up:
   ## @param k8up.enabled Enable or disable K8up
   ##
   enabled: false
+  ## @param k8up.endpoint S3 endpoint
+  ##
+  endpoint: ""
+  ## @param k8up.bucket S3 bucket name
+  ##
+  bucket: ""

@@ -141,18 +141,22 @@ install-vitepress() {
 
 setup-hosts() {
     echo 'Adding entries to /etc/hosts ...'
+    # Cluster
     grep -qxF '127.0.0.1 knd.local' /etc/hosts || echo '127.0.0.1 knd.local' | sudo tee -a /etc/hosts > /dev/null
-
+    # Odoo
     grep -qxF '127.0.0.1 odoo.local' /etc/hosts || echo '127.0.0.1 odoo.local' | sudo tee -a /etc/hosts > /dev/null
     grep -qxF '127.0.0.1 odoo.knd.local' /etc/hosts || echo '127.0.0.1 odoo.knd.local' | sudo tee -a /etc/hosts > /dev/null
     grep -qxF '127.0.0.1 staging.odoo.knd.local' /etc/hosts || echo '127.0.0.1 staging.odoo.knd.local' | sudo tee -a /etc/hosts > /dev/null
-
+    # Odoo with different namespace
     grep -qxF '127.0.0.1 restic.local' /etc/hosts || echo '127.0.0.1 restic.local' | sudo tee -a /etc/hosts > /dev/null
     grep -qxF '127.0.0.1 restic.knd.local' /etc/hosts || echo '127.0.0.1 restic.knd.local' | sudo tee -a /etc/hosts > /dev/null
     grep -qxF '127.0.0.1 staging.restic.knd.local' /etc/hosts || echo '127.0.0.1 staging.restic.knd.local' | sudo tee -a /etc/hosts > /dev/null
-
+    # Nextcloud
+    grep -qxF '127.0.0.1 nextcloud.local' /etc/hosts || echo '127.0.0.1 nextcloud.local' | sudo tee -a /etc/hosts > /dev/null
+    grep -qxF '127.0.0.1 nextcloud.knd.local' /etc/hosts || echo '127.0.0.1 nextcloud.knd.local' | sudo tee -a /etc/hosts > /dev/null
+    # Hugo
     grep -qxF '127.0.0.1 hugo.knd.local' /etc/hosts || echo '127.0.0.1 hugo.knd.local' | sudo tee -a /etc/hosts > /dev/null
-
+    # Vuepress
     grep -qxF '127.0.0.1 vuepress.knd.local' /etc/hosts || echo '127.0.0.1 vuepress.knd.local' | sudo tee -a /etc/hosts > /dev/null
 }
 
@@ -639,6 +643,12 @@ add-repos(){
 
     echo 'Add k8up.'
     helm repo add k8up-io https://k8up-io.github.io/k8up
+
+    echo 'Add nextcloud'
+    helm repo add nextcloud https://nextcloud.github.io/helm/
+
+    echo 'Add collabora'
+    helm repo add collabora https://collaboraonline.github.io/online/
 }
 
 remove-repo(){
