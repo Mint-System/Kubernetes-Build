@@ -1,0 +1,6 @@
+ingress:
+  host: nextcloud.knd.local
+  customDomain: nextcloud.local
+cnpg:
+  enabled: true
+image: nextcloud:latest

@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-nextcloud
+  labels:
+    app: nextcloud
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/cm.yaml") . | sha256sum }}
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: busybox:1.35
+          command: ['sh', '-c', 'until nc -z {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local 5432; do echo waiting for postgresql; sleep 2; done']
+      containers:
+        - name: nextcloud
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+          env:
+            - name: NEXTCLOUD_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-creds
+                  key: NEXTCLOUD_ADMIN_USER
+            - name: NEXTCLOUD_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-creds
+                  key: NEXTCLOUD_ADMIN_PASSWORD
+            {{- if .Values.cnpg.enabled }}
+            - name: POSTGRES_DB
+              value: {{ .Values.cnpg.database }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: password
+            - name: POSTGRES_HOST
+              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
+            {{- end }}
+            - name: NEXTCLOUD_DATA_DIR
+              value: "/var/www/html/data"
+            - name: APACHE_DISABLE_REWRITESSL
+              value: "1"
+            # Security headers
+            - name: mod_headers
+              value: "1"
+          volumeMounts:
+            - name: nextcloud-data
+              mountPath: /var/www/html
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 120
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 5
+      volumes:
+        - name: nextcloud-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-nextcloud-data

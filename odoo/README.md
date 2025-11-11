@@ -79,7 +79,7 @@ kubectl create secret generic backup-repo \
 | Name                     | Description                                   | Value                                                                                                               |
 | ------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `enabled`                | Enable or disable Odoo                        | `true`                                                                                                              |
-| `image`                  | The image for Odoo                            | `mintsystem/odoo:18.0.20251008`                                                                                     |
+| `image`                  | The image for Odoo                            | `""`                                                                                                                |
 | `imagePullPolicy`        | Pull policy for Odoo image                    | `Always`                                                                                                            |
 | `proxyMode`              | Enable or disable proxy mode for Odoo         | `true`                                                                                                              |
 | `downloadOdooEnterprise` | Enable or disable downloading Odoo Enterprise | `false`                                                                                                             |

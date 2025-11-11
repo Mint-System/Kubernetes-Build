@@ -3,6 +3,9 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: {{ default (printf "%s-postgresql" .Release.Name) .Values.cnpg.nameOverride }}
+  labels:
+    app: nextcloud
+    release: {{ .Release.Name }}
 spec:
   instances: {{ .Values.cnpg.instances }}
   storage:

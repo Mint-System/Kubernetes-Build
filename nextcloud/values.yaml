@@ -9,7 +9,7 @@ ingress:
   className: nginx
   ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
   ##
-  clusterIssuerRef:
+  clusterIssuerRef: ""
   ## @param ingress.host The host for the ingress
   ##
   host: ""
@@ -30,6 +30,9 @@ cnpg:
   ## @param cnpg.instances Number of instances (1 for single, 2+ for high availability)
   ##
   instances: 1
+  ## @param cnpg.imageName PostgreSQL image to use
+  ##
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.0
   storage:
     ## @param cnpg.storage.size Persistent volume size for each instance
     ##
@@ -45,7 +48,7 @@ cnpg:
 ##
 ## @param image The image for Nextcloud
 ##
-image: nextcloud:latest
+image: ""
 ## @param imagePullPolicy Pull policy for Nextcloud image
 ##
 imagePullPolicy: Always

@@ -78,6 +78,7 @@ help() {
     # Test
     printf "$column" 'test-chart-clusterIssuer' '' 'Test cluster issuer.'
     printf "$column" 'test-chart-odoo' '[clean]' 'Setup Odoo chart and dependencies.'
+    printf "$column" 'test-chart-nextcloud' '[clean]' 'Setup Nextcloud chart and dependencies.'
 }
 
 # Default vars
@@ -174,6 +175,23 @@ test-chart-odoo() {
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         update-dependencies odoo
         install-chart odoo test/odoo.knd.local.yaml
+    fi
+}
+
+test-chart-nextcloud() {
+    if [[ "$1" = 'clean' ]]; then
+        echo 'Cleanup environment'
+        delete-kind
+    else
+        start-kind
+        add-repos
+        info
+        install-chart ingress-nginx
+        kubectl wait --namespace ingress-nginx --for=condition=Available --timeout=60s deployments/ingress-nginx-controller
+        install-chart cnpg
+        kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
+        kubectl create secret generic nextcloud-creds --from-literal=NEXTCLOUD_ADMIN_USER="testadmin" --from-literal=NEXTCLOUD_ADMIN_PASSWORD="testpassword123"
+        install-chart nextcloud test/nextcloud.knd.local.yaml
     fi
 }
 
@@ -274,6 +292,11 @@ export-kubeconfig() {
 # Host Commands
 
 start-kind() {
+    if [[ "$context_alias" != "loc" ]]; then
+        echo "Current context alias is '$context_alias' and not 'loc'."
+        exit 1
+    fi
+
     echo 'Start kind.'
     kind create cluster
 }
@@ -317,6 +340,12 @@ forward-odoo-staging() {
     local port=8080
     echo "Open http://localhost:$port url in your browser."
     kubectl port-forward service/odoo-staging $port:8069
+}
+
+forward-nextcloud() {
+    local port=8080
+    echo "Open http://localhost:$port url in your browser."
+    kubectl port-forward service/nextcloud-nextcloud $port:80
 }
 
 forward-ingress-nginx() {
@@ -533,21 +562,24 @@ uninstall-release() {
 # kubectl Commands
 
 get-secrets() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+
     if [[ "$1" = 'postgres' ]]; then
         echo 'postgres/user:'
         kubectl get secret postgres -o jsonpath="{.data.user}" | base64 --decode && echo
         echo 'postgres/password:'
         kubectl get secret postgres -o jsonpath="{.data.password}" | base64 --decode && echo
-    fi
-
-    if [[ "$1" = 'clusterIssuer' ]]; then
+    elif [[ "$1" = 'clusterIssuer' ]]; then
         echo 'cert-manager/infomaniak-api-credentials:'
         kubectl get secret -n cert-manager infomaniak-api-token -o jsonpath="{.data.access-token}" | base64 --decode && echo
-    fi
-
-    if [[ "$1" = 'forgejoRunner' ]]; then
+    elif [[ "$1" = 'forgejoRunner' ]]; then
         echo 'forgejo-runner/forgejoInstanceToken:'
         kubectl get secret forgejo-runner -o jsonpath="{.data.forgejoInstanceToken}" | base64 --decode && echo
+    elif [[ "$1" = 'nextcloud' ]]; then
+        echo 'nextcloud/creds:'
+        kubectl get secret nextcloud-creds -o jsonpath="{.data.NEXTCLOUD_ADMIN_USER}" | base64 --decode && echo
+        echo 'nextcloud/password:'
+        kubectl get secret nextcloud-creds -o jsonpath="{.data.NEXTCLOUD_ADMIN_PASSWORD}" | base64 --decode && echo
     fi
 }
 

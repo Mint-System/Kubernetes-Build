@@ -81,7 +81,7 @@ cnpg:
 enabled: true
 ## @param image The image for Odoo
 ##
-image: mintsystem/odoo:18.0.20251008
+image: ""
 ## @param imagePullPolicy Pull policy for Odoo image
 ##
 imagePullPolicy: Always
