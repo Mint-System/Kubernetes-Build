@@ -2,13 +2,6 @@
 
 This Helm chart deploys Nextcloud with PostgreSQL.
 
-## Security Headers
-
-For enhanced security, it's recommended that you configure the following security headers:
-- `Strict-Transport-Security`: max-age=15552000; includeSubDomains; preload (HSTS)
-
-Please note that if your ingress-nginx controller has snippet directives disabled (which is common in secure environments), you will need to configure these headers at the ingress controller level or through your cluster's ingress configuration.
-
 ## Secrets
 
 Setup a `nextcloud-creds` secret with any additional environment variables you want to pass to Nextcloud.
