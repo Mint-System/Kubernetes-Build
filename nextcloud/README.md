@@ -26,13 +26,6 @@ kubectl create secret generic s3-credentials \
     -n <namespace>
 ```
 
-```bash
-BACKUP_REPO_PASSWORD=$(pwgen -c 20 1)
-kubectl create secret generic backup-repo \
-    --from-literal=password="$BACKUP_REPO_PASSWORD" \
-    -n <namespace>
-```
-
 ## Parameters
 
 ### Ingress parameters
@@ -57,12 +50,31 @@ kubectl create secret generic backup-repo \
 | `cnpg.database`     | Name of the CloudNativePG database to create                 | `nextcloud`                              |
 | `cnpg.owner`        | Name of the database user                                    | `app`                                    |
 
+### Collabora Online parameters
+
+| Name                                           | Description                                 | Value                                           |
+| ---------------------------------------------- | ------------------------------------------- | ----------------------------------------------- |
+| `collabora.enabled`                            | Enable or disable Collabora Online          | `false`                                         |
+| `collabora.ingress.enabled`                    | Enable or disable the ingress for Collabora | `true`                                          |
+| `collabora.ingress.className`                  | The class name for the ingress              | `nginx`                                         |
+| `collabora.ingress.annotations`                | Ingress annotations                         | `{}`                                            |
+| `collabora.ingress.hosts[0].host`              | Host for the ingress                        | `doc.nextcloud.knd.local`                       |
+| `collabora.ingress.hosts[0].paths[0].path`     | Path for the ingress                        | `/`                                             |
+| `collabora.ingress.hosts[0].paths[0].pathType` | Path type for the ingress                   | `ImplementationSpecific`                        |
+| `collabora.ingress.aliasgroups[0].host`        | Alias group host                            | `http://nextcloud.knd.local:80`                 |
+| `collabora.ingress.extra_params`               | Extra parameters for Collabora              | `--o:ssl.enable=false --o:ssl.termination=true` |
+| `collabora.resources.limits.cpu`               | CPU limit for Collabora                     | `1800m`                                         |
+| `collabora.resources.limits.memory`            | Memory limit for Collabora                  | `2000Mi`                                        |
+| `collabora.resources.requests.cpu`             | CPU request for Collabora                   | `1800m`                                         |
+| `collabora.resources.requests.memory`          | Memory request for Collabora                | `2000Mi`                                        |
+
 ### Nextcloud parameters
 
 | Name               | Description                     | Value    |
 | ------------------ | ------------------------------- | -------- |
 | `image`            | The image for Nextcloud         | `""`     |
 | `imagePullPolicy`  | Pull policy for Nextcloud image | `Always` |
+| `storageSize`      | Set the storage size            | `40Gi`   |
 | `storageClassName` | Set the storage class           | `""`     |
 
 ### K8up parameters

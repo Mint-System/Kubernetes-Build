@@ -26,13 +26,6 @@ kubectl create secret generic s3-credentials \
     -n <namespace>
 ```
 
-```bash
-BACKUP_REPO_PASSWORD="*******"
-kubectl create secret generic backup-repo \
-    --from-literal=password="$BACKUP_REPO_PASSWORD" \
-    -n <namespace>
-```
-
 ## Parameters
 
 ### Ingress parameters

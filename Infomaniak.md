@@ -67,3 +67,20 @@ Install the Odoo chart.
 ```bash
 task install-chart odoo values/odoo.chk.mintcloud.ch
 ```
+
+## Troubleshooting
+
+### VolumeLimitExceeded
+
+**Problem**
+
+New pods are pending. When checking the state of the pvc the following message is shown:
+
+```
+Warning  ProvisioningFailed    22s (x8 over 2m30s)  cinder.csi.openstack.org_openstack-cinder-csi-controllerplugin-7fc49d566-k8k6m_01c4c2ed-0e7c-4ca3-b7db-df8c84fc8839  failed to provision volume with StorageClass "csi-cinder-sc-retain": rpc error: code = Internal desc = CreateVolume failed with error Expected HTTP response code [202] when accessing [POST https://api.pub2.infomaniak.cloud/volume/v3/624934911cbe4e4189d060d3bc96ac76/volumes], but got 413 instead: {"overLimit": {"code": 413, "message": "VolumeLimitExceeded: Maximum number of volumes allowed (20) exceeded for quota 'volumes'.", "retryAfter": "0"}}
+Normal   ExternalProvisioning  6s (x24 over 5m30s)  persistentvolume-controller                                                                                          Waiting for a volume to be created either by the external provisioner 'cinder.csi.openstack.org' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+```
+
+**Solution**
+
+Log into OpenStack and delete unused volumes or update the quota for the project.

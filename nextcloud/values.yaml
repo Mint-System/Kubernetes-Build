@@ -44,31 +44,55 @@ cnpg:
   ##
   owner: app
 
+## @section Collabora Online parameters
+##
 collabora:
+  ## @param collabora.enabled Enable or disable Collabora Online
+  ##
   enabled: false
   ingress:
+    ## @param collabora.ingress.enabled Enable or disable the ingress for Collabora
+    ##
     enabled: true
+    ## @param collabora.ingress.className The class name for the ingress
+    ##
     className: "nginx"
-    annotations:
-        nginx.ingress.kubernetes.io/upstream-hash-by: "$arg_WOPISrc"
-        nginx.ingress.kubernetes.io/proxy-body-size: "0"
-        nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-        nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    ## @param collabora.ingress.annotations Ingress annotations
+    ##
+    annotations: {}
+    ## @param collabora.ingress.hosts[0].host Host for the ingress
+    ##
     hosts:
-        - host: "doc.nextcloud.knd.local"
-          paths:
+      - host: "doc.nextcloud.knd.local"
+        paths:
+          ## @param collabora.ingress.hosts[0].paths[0].path Path for the ingress
+          ##
           - path: /
-          pathType: ImplementationSpecific
+            ## @param collabora.ingress.hosts[0].paths[0].pathType Path type for the ingress
+            ##
+            pathType: ImplementationSpecific
     aliasgroups:
-        - host: "http://nextcloud.knd.local:80"
-    extra_params: --o:ssl.enable=false --o:ssl.termination=true
+      ## @param collabora.ingress.aliasgroups[0].host Alias group host
+      ##
+      - host: "http://nextcloud.knd.local:80"
+    ## @param collabora.ingress.extra_params Extra parameters for Collabora
+    ##
+    extra_params: "--o:ssl.enable=false --o:ssl.termination=true"
   resources:
     limits:
-        cpu: "1800m"
-        memory: "2000Mi"
+      ## @param collabora.resources.limits.cpu CPU limit for Collabora
+      ##
+      cpu: "1800m"
+      ## @param collabora.resources.limits.memory Memory limit for Collabora
+      ##
+      memory: "2000Mi"
     requests:
-        cpu: "1800m"
-        memory: "2000Mi"
+      ## @param collabora.resources.requests.cpu CPU request for Collabora
+      ##
+      cpu: "1800m"
+      ## @param collabora.resources.requests.memory Memory request for Collabora
+      ##
+      memory: "2000Mi"
 
 ## @section Nextcloud parameters
 ##
