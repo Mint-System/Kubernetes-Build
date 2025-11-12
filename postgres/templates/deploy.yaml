@@ -38,9 +38,9 @@ spec:
                   key: {{ .Values.userPasswordKey }}
           volumeMounts:
             - mountPath: /var/lib/postgresql/data/
-              name: postgresdb
+              name: postgres
               subPath: pgdata
       volumes:
-        - name: postgresdb
+        - name: postgres
           persistentVolumeClaim:
             claimName: data-postgres

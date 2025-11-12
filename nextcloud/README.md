@@ -27,7 +27,7 @@ kubectl create secret generic s3-credentials \
 ```
 
 ```bash
-BACKUP_REPO_PASSWORD="*******"
+BACKUP_REPO_PASSWORD=$(pwgen -c 20 1)
 kubectl create secret generic backup-repo \
     --from-literal=password="$BACKUP_REPO_PASSWORD" \
     -n <namespace>
@@ -72,3 +72,20 @@ kubectl create secret generic backup-repo \
 | `k8up.enabled`  | Enable or disable K8up | `false` |
 | `k8up.endpoint` | S3 endpoint            | `""`    |
 | `k8up.bucket`   | S3 bucket name         | `""`    |
+
+## Troubleshooting
+
+### The config.php is not updated
+
+**Problem**
+
+The `config.php` of Nextcloud is not updated with new env values.
+
+**Solution**
+
+Delete the `config.php` file and the pods.
+
+```bash
+kubectl exec <pod> -- rm /var/www/html/config/config.php
+kubectl delete pod <pod>
+```

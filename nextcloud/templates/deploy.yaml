@@ -62,7 +62,7 @@ spec:
             - name: NEXTCLOUD_DATA_DIR
               value: "/var/www/html/data"
           volumeMounts:
-            - name: nextcloud-data
+            - name: nextcloud
               mountPath: /var/www/html
           # livenessProbe:
           #   httpGet:
@@ -77,6 +77,6 @@ spec:
           #   initialDelaySeconds: 30
           #   periodSeconds: 5
       volumes:
-        - name: nextcloud-data
+        - name: nextcloud
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-nextcloud-data
+            claimName: data-nextcloud

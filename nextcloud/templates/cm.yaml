@@ -5,4 +5,4 @@ metadata:
   labels:
     app: nextcloud
 data:
-  NEXTCLOUD_TRUSTED_DOMAINS: {{ .Values.ingress.host | quote }}
+  NEXTCLOUD_TRUSTED_DOMAINS: "{{ .Values.ingress.host }}{{- if .Values.ingress.customDomain }} {{ .Values.ingress.customDomain }}{{- end }}"

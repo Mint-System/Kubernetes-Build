@@ -45,7 +45,7 @@ cnpg:
   owner: app
 
 collabora:
-  enabled: true
+  enabled: false
   ingress:
     enabled: true
     className: "nginx"
@@ -78,6 +78,9 @@ image: ""
 ## @param imagePullPolicy Pull policy for Nextcloud image
 ##
 imagePullPolicy: Always
+## @param storageSize Set the storage size
+##
+storageSize: "40Gi"
 ## @param storageClassName Set the storage class
 ##
 storageClassName: ""

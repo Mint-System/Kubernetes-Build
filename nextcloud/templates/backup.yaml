@@ -1,12 +1,12 @@
-{{- if and .Values.k8up.enabled .Values.cnpg.enabled }}
+{{- if and .Values.k8up.enabled }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Release.Name }}-backup-repo
+  name: backup-repo
   labels:
-    app: nextcloud
+    app: odoo
 data:
-  {{- $existingSecret := lookup "v1" "Secret" .Release.Namespace (printf "%s-backup-repo" .Release.Name) }}
+  {{- $existingSecret := lookup "v1" "Secret" .Release.Namespace "backup-repo" }}
   {{- if and $existingSecret (index $existingSecret.data "password") }}
   password: {{ index $existingSecret.data "password" }}
   {{- else }}
@@ -16,13 +16,13 @@ data:
 apiVersion: k8up.io/v1
 kind: Backup
 metadata:
-  name: {{ .Release.Name }}-nextcloud-backup
+  name: {{ .Release.Name }}-backup
 spec:
   failedJobsHistoryLimit: 2
   successfulJobsHistoryLimit: 2
   backend:
     repoPasswordSecretRef:
-      name: {{ .Release.Name }}-backup-repo
+      name: backup-repo
       key: password
     s3:
       endpoint: {{ .Values.k8up.endpoint }}
@@ -33,12 +33,4 @@ spec:
       secretAccessKeySecretRef:
         name: s3-credentials
         key: password
-  schedule: "0 2 * * *"
-  resources:
-    requests:
-      memory: "512Mi"
-      cpu: "500m"
-    limits:
-      memory: "1Gi"
-      cpu: "1000m"
 {{- end }}
