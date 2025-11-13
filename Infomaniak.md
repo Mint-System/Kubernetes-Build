@@ -15,16 +15,10 @@ export KUBECONFIG=~/.kube/config.chk
 kubectl get namespaces
 ```
 
-Switch context to `chk`.
+Switch to `chk` cluster.
 
 ```bash
-task switch-context chk
-```
-
-Create a namespace for the application.
-
-```bash
-k create <namespace>
+task switch-cluster chk
 ```
 
 ## Setup haproxy ingress
@@ -38,15 +32,15 @@ task install-chart haproxy-ingress values/chk.mintcloud.ch.yaml
 
 ## Setup cert manager
 
-Create an Infomaniak API token with domain scope: <https://manager.infomaniak.com/v3/infomaniak-api>
-
-Setup the secret according to [clusterIssuer > Secrets](/clusterIssuer/README.md#Secrets)
-
 Install cert manager with Infomaniak webhook.
 
 ```bash
 task install-chart cert-manager values/chk.mintcloud.ch.yaml
 ```
+
+Create an Infomaniak API token with domain scope: <https://manager.infomaniak.com/v3/infomaniak-api>
+
+Setup the secret according to [clusterIssuer > Secrets](/clusterIssuer/README.md#Secrets).
 
 Install cluster issuer.
 
@@ -55,6 +49,12 @@ task install-chart clusterIssuer values/chk.mintcloud.ch.yaml
 ```
 
 ## Create Odoo release
+
+Create a namespace for the application.
+
+```bash
+k create namespace <namespace>
+```
 
 Select the namespace.
 

@@ -20,8 +20,8 @@ kubectl create secret generic infomaniak-api-credentials \
 To test the Infomaniak webhook create a certificate with the `letsencrypt-dns-staging` issuer.
 
 ```bash
-    echo "Apply certificate."
-    cat <<EOF | kubectl apply -f -
+echo "Apply certificate."
+cat <<EOF | kubectl apply -f -
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate

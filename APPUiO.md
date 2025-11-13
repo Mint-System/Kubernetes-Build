@@ -28,10 +28,10 @@ Add Helm repos to the local index.
 task add-repos
 ```
 
-Switch context to `axo`.
+Switch to `axo` cluster.
 
 ```bash
-task switch-context axo
+task switch-cluster axo
 ```
 
 Install the Helm release.
