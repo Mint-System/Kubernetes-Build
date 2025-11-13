@@ -48,6 +48,14 @@ Install cluster issuer.
 task install-chart clusterIssuer values/chk.mintcloud.ch.yaml
 ```
 
+## Setup k8up
+
+Install k8up in the current cluster.
+
+```bash
+task install-chart k8up values/chk.mintcloud.ch.yaml
+```
+
 ## Create Odoo release
 
 Create a namespace for the application.
