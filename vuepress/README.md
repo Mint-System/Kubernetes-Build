@@ -6,17 +6,17 @@ This Helm chart deploys a Vuepress site.
 
 ### Ingress parameters
 
-| Name                       | Description                                  | Value     |
-| -------------------------- | -------------------------------------------- | --------- |
-| `ingress.enabled`          | Enable or disable the ingress                | `true`    |
-| `ingress.className`        | The class name for the ingress               | `haproxy` |
-| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `nil`     |
-| `ingress.host`             | The host for the ingress                     | `""`      |
-| `ingress.customDomain`     | The custom domain for the ingress            | `""`      |
+| Name                       | Description                                  | Value   |
+| -------------------------- | -------------------------------------------- | ------- |
+| `ingress.enabled`          | Enable or disable the ingress                | `true`  |
+| `ingress.className`        | The class name for the ingress               | `nginx` |
+| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `nil`   |
+| `ingress.host`             | The host for the ingress                     | `""`    |
+| `ingress.customDomain`     | The custom domain for the ingress            | `""`    |
 
-### Hugo parameters
+### Vuepress parameters
 
-| Name              | Description                | Value    |
-| ----------------- | -------------------------- | -------- |
-| `image`           | The image for Hugo         | `""`     |
-| `imagePullPolicy` | Pull policy for Hugo image | `Always` |
+| Name              | Description                    | Value    |
+| ----------------- | ------------------------------ | -------- |
+| `image`           | The image for Vuepress         | `""`     |
+| `imagePullPolicy` | Pull policy for Vuepress image | `Always` |

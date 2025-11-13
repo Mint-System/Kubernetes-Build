@@ -6,7 +6,7 @@ ingress:
   enabled: true
   ## @param ingress.className The class name for the ingress
   ##
-  className: haproxy
+  className: nginx
   ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
   ##
   clusterIssuerRef:

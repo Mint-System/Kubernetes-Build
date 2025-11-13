@@ -6,7 +6,7 @@ ingress:
   enabled: true
   ## @param ingress.className The class name for the ingress
   ##
-  className: haproxy
+  className: nginx
   ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
   ##
   clusterIssuerRef:
@@ -96,6 +96,9 @@ downloadOdooEnterprise: false
 addonsGitRepos:
   - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0
   - https://github.com/OCA/Server-Tools.git#18.0
+## @param pythonInstall List of python packages to insall
+##
+pythonInstall: []
 ## @param database The database for odoo
 ##
 database: odoo

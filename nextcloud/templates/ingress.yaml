@@ -7,8 +7,20 @@ metadata:
     {{- if .Values.ingress.clusterIssuerRef }}
     cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
     {{- end }}
+    {{- if eq .Values.ingress.className "nginx" }}
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.ingress.clusterIssuerRef }}
+  tls:
+    - hosts:
+      - {{ .Values.ingress.host | quote }}
+      {{- if .Values.ingress.customDomain }}
+      - {{ .Values.ingress.customDomain | quote }}
+      {{- end }}
+      secretName: nextcloud-tls
+  {{- end }}
   rules:
     - host: {{ .Values.ingress.host | quote }}
       http:
@@ -31,14 +43,5 @@ spec:
                 name: nextcloud
                 port:
                   number: 80
-  {{- end }}
-  {{- if .Values.ingress.clusterIssuerRef }}
-  tls:
-    - hosts:
-      - {{ .Values.ingress.host | quote }}
-      {{- if .Values.ingress.customDomain }}
-      - {{ .Values.ingress.customDomain | quote }}
-      {{- end }}
-      secretName: nextcloud-tls
   {{- end }}
 {{- end }}

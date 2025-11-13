@@ -7,8 +7,20 @@ metadata:
     {{- if .Values.ingress.clusterIssuerRef }}
     cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
     {{- end }}
+    {{- if eq .Values.ingress.className "nginx" }}
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    {{- end }}
 spec:
   ingressClassName: {{.Values.ingress.className }}
+  {{- if .Values.ingress.clusterIssuerRef }}
+  tls:
+    - hosts:
+      - {{.Values.ingress.host }}
+      {{- if .Values.ingress.customDomain }}
+      - {{ .Values.ingress.customDomain }}
+      {{- end }}
+      secretName: taskfile-build-ingress-cert
+  {{- end }}
   rules:
   - host: {{ .Values.ingress.host }}
     http:
@@ -31,14 +43,5 @@ spec:
             name: taskfile-build
             port:
               number: 80
-  {{- end }}
-  {{- if .Values.ingress.clusterIssuerRef }}
-  tls:
-    - hosts:
-      - {{.Values.ingress.host }}
-      {{- if .Values.ingress.customDomain }}
-      - {{ .Values.ingress.customDomain }}
-      {{- end }}
-      secretName: taskfile-build-ingress-cert
   {{- end }}
 {{- end }}

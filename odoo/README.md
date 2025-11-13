@@ -30,13 +30,13 @@ kubectl create secret generic s3-credentials \
 
 ### Ingress parameters
 
-| Name                       | Description                                  | Value     |
-| -------------------------- | -------------------------------------------- | --------- |
-| `ingress.enabled`          | Enable or disable the ingress                | `true`    |
-| `ingress.className`        | The class name for the ingress               | `haproxy` |
-| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `nil`     |
-| `ingress.host`             | The host for the ingress                     | `""`      |
-| `ingress.customDomain`     | The custom domain for the ingress            | `""`      |
+| Name                       | Description                                  | Value   |
+| -------------------------- | -------------------------------------------- | ------- |
+| `ingress.enabled`          | Enable or disable the ingress                | `true`  |
+| `ingress.className`        | The class name for the ingress               | `nginx` |
+| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `nil`   |
+| `ingress.host`             | The host for the ingress                     | `""`    |
+| `ingress.customDomain`     | The custom domain for the ingress            | `""`    |
 
 ### vshnPostgres parameters
 
@@ -77,6 +77,7 @@ kubectl create secret generic s3-credentials \
 | `proxyMode`              | Enable or disable proxy mode for Odoo         | `true`                                                                                                              |
 | `downloadOdooEnterprise` | Enable or disable downloading Odoo Enterprise | `false`                                                                                                             |
 | `addonsGitRepos`         | List of addon Git repositories for Odoo       | `["https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0","https://github.com/OCA/Server-Tools.git#18.0"]` |
+| `pythonInstall`          | List of python packages to insall             | `[]`                                                                                                                |
 | `database`               | The database for odoo                         | `odoo`                                                                                                              |
 | `init.lang`              | The initial language for Odoo                 | `de_CH`                                                                                                             |
 | `init.login`             | The initial username for Odoo admin account   | `""`                                                                                                                |

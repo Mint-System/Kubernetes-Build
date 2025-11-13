@@ -60,7 +60,6 @@ help() {
     printf "$column" 'get-secrets' '[chart]' 'Show secrets for chart.'
     printf "$column" 'exec-bash' '[chart]' 'Open bash shell in container.'
     printf "$column" 'logs' '[grep]' 'Select pods with grep and show logs.'
-    printf "$column" 'logs-haproxy-ingress' '' 'Show haproxy-ingress logs.'
     printf "$column" 'list' '' 'List Helm deployments.'
     printf "$column" 'get-pods' '' 'List all pods.'
     printf "$column" 'login-oc' '' 'Refresh the auth token for OpenShift.'
@@ -171,8 +170,10 @@ test-chart-odoo() {
         start-kind
         add-repos
         info
-        install-chart haproxy-ingress
-        kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
+        # install-chart haproxy-ingress
+        # kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
+        install-chart ingress-nginx
+        kubectl wait --namespace ingress-nginx --for=condition=Available --timeout=60s deployments/ingress-nginx-controller
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         update-dependencies odoo
@@ -188,8 +189,10 @@ test-chart-nextcloud() {
         start-kind
         add-repos
         info
-        install-chart haproxy-ingress
-        kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
+        # install-chart haproxy-ingress
+        # kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
+        install-chart ingress-nginx
+        kubectl wait --namespace ingress-nginx --for=condition=Available --timeout=60s deployments/ingress-nginx-controller
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         kubectl create secret generic nextcloud-creds --from-literal=NEXTCLOUD_ADMIN_USER="test" --from-literal=NEXTCLOUD_ADMIN_PASSWORD="test"
@@ -357,6 +360,13 @@ forward-haproxy-ingress() {
     kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $port:80
 }
 
+forward-ingress-nginx() {
+    local port=8080
+    kubectl get ingresses
+    echo "Open http://\$NAMESPACE.knd.local:$port url in your browser."
+    kubectl port-forward -n ingress-nginx svc/ingress-nginx $port:80
+}
+
 # Chart Commands
 
 list-charts() {
@@ -372,6 +382,7 @@ list-external-charts() {
     echo 'cert-manager'
     echo 'cnpg'
     echo 'haproxy-ingress'
+    echo 'ingress-nginx'
     echo 'k8up'
 }
 
@@ -474,18 +485,14 @@ install-clusterIssuer() {
 
 install-haproxy-ingress() {
     echo 'Install haproxy-ingress/haproxy-ingress.'
-
-    kubectl apply -f - <<EOF
-apiVersion: networking.k8s.io/v1
-kind: IngressClass
-metadata:
-  name: haproxy
-spec:
-  controller: haproxy-ingress.github.io/controller
-EOF
-
     helm install haproxy-ingress haproxy-ingress/haproxy-ingress \
         --create-namespace --namespace haproxy-ingress
+}
+
+install-ingress-nginx() {
+    echo 'Install ingress-nginx/ingress-nginx.'
+    helm install ingress-nginx ingress-nginx/ingress-nginx \
+        --create-namespace --namespace ingress-nginx
 }
 
 upgrade-release() {
@@ -630,6 +637,9 @@ add-repos(){
 
     echo 'Add haproxy-ingress.'
     helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts
+
+    echo 'Add ingress-nginx.'
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
     echo 'Add jetstack.'
     helm repo add jetstack https://charts.jetstack.io

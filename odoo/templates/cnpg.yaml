@@ -7,6 +7,9 @@ spec:
   instances: {{ .Values.cnpg.instances }}
   storage:
     size: {{ .Values.cnpg.storage.size }}
+    {{- if .Values.storageClassName }}
+    storageClass: {{ .Values.storageClassName }}
+    {{- end }}
   bootstrap:
     initdb:
       database: {{ .Values.cnpg.database }}

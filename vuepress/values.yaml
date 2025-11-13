@@ -6,7 +6,7 @@ ingress:
   enabled: true
   ## @param ingress.className The class name for the ingress
   ##
-  className: haproxy
+  className: nginx
   ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
   ##
   clusterIssuerRef:
@@ -17,11 +17,11 @@ ingress:
   ##
   customDomain: ""
 
-## @section Hugo parameters
+## @section Vuepress parameters
 ##
-## @param image The image for Hugo
+## @param image The image for Vuepress
 ##
 image: ""
-## @param imagePullPolicy Pull policy for Hugo image
+## @param imagePullPolicy Pull policy for Vuepress image
 ##
 imagePullPolicy: Always

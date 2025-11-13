@@ -20,7 +20,7 @@ Add all repos and install the haproxy ingress.
 
 ```bash
 task add-repos
-task install-chart haproxy-ingress values/exo.mintcloud.ch.yaml
+task install-chart ingress-nginx values/exo.mintcloud.ch.yaml
 ```
 
 # Setup cert manager

@@ -18,7 +18,7 @@ Add all repos and install the haproxy ingress.
 
 ```bash
 task add-repos
-task install-chart haproxy-ingress values/k3s.raspberrypi.build.yaml
+task install-chart ingress-nginx values/k3s.raspberrypi.build.yaml
 ```
 
 ## Setup cert manager

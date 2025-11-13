@@ -56,7 +56,7 @@ NAME       DATE TAKEN             PATHS                     REPOSITORY
 
 The k8up operator has backed up all persistent volumes.
 
-Let's change something and then do a restore. Forward the ingress port with `task forward haproxy-ingress` and log into Odoo, then install the To-do app.
+Let's change something and then do a restore. Forward the ingress port with `task forward ingress-nginx` and log into Odoo, then install the To-do app.
 
 Now let's restore the snapshot `9563a938`. Create a pvc for the restore:
 

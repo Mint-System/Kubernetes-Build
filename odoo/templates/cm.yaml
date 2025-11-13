@@ -6,6 +6,7 @@ metadata:
     app: odoo
 data:
   ADDONS_GIT_REPOS: {{ join "," .Values.addonsGitRepos | quote }}
+  PYTHON_INSTALL: {{ join "," .Values.pythonInstall | quote }}
   ODOO_DATABASE: {{ .Values.database }}
   ODOO_INIT_LANG: {{ .Values.init.lang | quote }}
   ODOO_INIT_LOGIN: {{ .Values.init.login | quote }}
