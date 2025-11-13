@@ -104,5 +104,5 @@ The following guideline is heavily based on the [Bash Style Guide | ysap.sh](htt
 
 **Naming**
 
-- Do prefix every object name with `{{ .Release.Name }}-`.
+- Donot  prefix every object name with `.Release.Name`.
 - The persistent volume claims have the naming pattern `data-$CHART_NAME`.

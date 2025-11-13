@@ -6,8 +6,10 @@
     "docs:preview": "vitepress preview"
   },
   "dependencies": {
-    "vitepress": "2.0.0-alpha.12",
     "@bitnami/readme-generator-for-helm": "^2.7.2",
     "vitepress-mermaid-preview": "^0.0.8"
+  },
+  "devDependencies": {
+    "vitepress": "2.0.0-alpha.13"
   }
 }
