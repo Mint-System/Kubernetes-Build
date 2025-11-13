@@ -7,9 +7,6 @@ metadata:
     {{- if .Values.ingress.clusterIssuerRef }}
     cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
     {{- end }}
-    {{- if eq .Values.ingress.className "nginx" }}
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    {{- end }}
 spec:
   ingressClassName: {{.Values.ingress.className }}
   rules:

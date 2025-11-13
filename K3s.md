@@ -18,13 +18,13 @@ Create a namespace for the application.
 k create <namespace>
 ```
 
-## Setup ingress nginx
+## Setup haproxy ingress
 
-Add all repos and install the ingress nginx.
+Add all repos and install the haproxy ingress.
 
 ```bash
 task add-repos
-task install-chart ingress-nginx values/k3s.raspberrypi.build.yaml
+task install-chart haproxy-ingress values/k3s.raspberrypi.build.yaml
 ```
 
 ## Setup cert manager

@@ -30,13 +30,13 @@ kubectl create secret generic s3-credentials \
 
 ### Ingress parameters
 
-| Name                       | Description                                  | Value   |
-| -------------------------- | -------------------------------------------- | ------- |
-| `ingress.enabled`          | Enable or disable the ingress                | `true`  |
-| `ingress.className`        | The class name for the ingress               | `nginx` |
-| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `""`    |
-| `ingress.host`             | The host for the ingress                     | `""`    |
-| `ingress.customDomain`     | The custom domain for the ingress            | `""`    |
+| Name                       | Description                                  | Value     |
+| -------------------------- | -------------------------------------------- | --------- |
+| `ingress.enabled`          | Enable or disable the ingress                | `true`    |
+| `ingress.className`        | The class name for the ingress               | `haproxy` |
+| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `""`      |
+| `ingress.host`             | The host for the ingress                     | `""`      |
+| `ingress.customDomain`     | The custom domain for the ingress            | `""`      |
 
 ### CloudNativePG parameters
 
@@ -49,24 +49,6 @@ kubectl create secret generic s3-credentials \
 | `cnpg.storage.size` | Persistent volume size for each instance                     | `8Gi`                                    |
 | `cnpg.database`     | Name of the CloudNativePG database to create                 | `nextcloud`                              |
 | `cnpg.owner`        | Name of the database user                                    | `app`                                    |
-
-### Collabora Online parameters
-
-| Name                                           | Description                                 | Value                                           |
-| ---------------------------------------------- | ------------------------------------------- | ----------------------------------------------- |
-| `collabora.enabled`                            | Enable or disable Collabora Online          | `false`                                         |
-| `collabora.ingress.enabled`                    | Enable or disable the ingress for Collabora | `true`                                          |
-| `collabora.ingress.className`                  | The class name for the ingress              | `nginx`                                         |
-| `collabora.ingress.annotations`                | Ingress annotations                         | `{}`                                            |
-| `collabora.ingress.hosts[0].host`              | Host for the ingress                        | `doc.nextcloud.knd.local`                       |
-| `collabora.ingress.hosts[0].paths[0].path`     | Path for the ingress                        | `/`                                             |
-| `collabora.ingress.hosts[0].paths[0].pathType` | Path type for the ingress                   | `ImplementationSpecific`                        |
-| `collabora.ingress.aliasgroups[0].host`        | Alias group host                            | `http://nextcloud.knd.local:80`                 |
-| `collabora.ingress.extra_params`               | Extra parameters for Collabora              | `--o:ssl.enable=false --o:ssl.termination=true` |
-| `collabora.resources.limits.cpu`               | CPU limit for Collabora                     | `1800m`                                         |
-| `collabora.resources.limits.memory`            | Memory limit for Collabora                  | `2000Mi`                                        |
-| `collabora.resources.requests.cpu`             | CPU request for Collabora                   | `1800m`                                         |
-| `collabora.resources.requests.memory`          | Memory request for Collabora                | `2000Mi`                                        |
 
 ### Nextcloud parameters
 

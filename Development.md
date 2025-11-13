@@ -45,10 +45,10 @@ Install the CloudNativePG chart:
 task install-chart cnpg test/knd.local.yaml
 ```
 
-Install ingress-nginx in the current cluster.
+Install haproxy-ingress in the current cluster.
 
 ```bash
-task install-chart ingress-nginx test/knd.local.yaml
+task install-chart haproxy-ingress test/knd.local.yaml
 ```
 
 Install k8up in the current cluster.
@@ -75,10 +75,10 @@ task install-chart odoo test/odoo.knd.local.yaml
 
 The Odoo database will be initialized automatically.
 
-Forward the ingress-nginx port.
+Forward the haproxy-ingress port.
 
 ```bash
-task forward ingress-nginx
+task forward haproxy-ingress
 ```
 
 ## Deploy Nextcloud chart
@@ -98,20 +98,6 @@ task install-chart nextcloud test/nextcloud.knd.local.yaml
 ```
 
 The Odoo database will be initialized automatically.
-
-Forward the ingress-nginx port.
-
-```bash
-task forward ingress-nginx
-```
-
-## Setup haproxy ingress
-
-Install haproxy-ingress in the current cluster.
-
-```bash
-task install-chart haproxy-ingress test/knd.local.yaml
-```
 
 Forward the haproxy-ingress port.
 

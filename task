@@ -61,7 +61,6 @@ help() {
     printf "$column" 'exec-bash' '[chart]' 'Open bash shell in container.'
     printf "$column" 'logs' '[grep]' 'Select pods with grep and show logs.'
     printf "$column" 'logs-haproxy-ingress' '' 'Show haproxy-ingress logs.'
-    printf "$column" 'logs-ingress-nginx' '' 'Show ingress-nginx logs.'
     printf "$column" 'list' '' 'List Helm deployments.'
     printf "$column" 'get-pods' '' 'List all pods.'
     printf "$column" 'login-oc' '' 'Refresh the auth token for OpenShift.'
@@ -172,8 +171,8 @@ test-chart-odoo() {
         start-kind
         add-repos
         info
-        install-chart ingress-nginx
-        kubectl wait --namespace ingress-nginx --for=condition=Available --timeout=60s deployments/ingress-nginx-controller
+        install-chart haproxy-ingress
+        kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         update-dependencies odoo
@@ -189,8 +188,8 @@ test-chart-nextcloud() {
         start-kind
         add-repos
         info
-        install-chart ingress-nginx
-        kubectl wait --namespace ingress-nginx --for=condition=Available --timeout=60s deployments/ingress-nginx-controller
+        install-chart haproxy-ingress
+        kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         kubectl create secret generic nextcloud-creds --from-literal=NEXTCLOUD_ADMIN_USER="test" --from-literal=NEXTCLOUD_ADMIN_PASSWORD="test"
@@ -351,13 +350,6 @@ forward-nextcloud() {
     kubectl port-forward service/nextcloud $port:80
 }
 
-forward-ingress-nginx() {
-    local port=8080
-    kubectl get ingresses
-    echo "Open http://\$NAMESPACE.knd.local:$port url in your browser."
-    kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller $port:80
-}
-
 forward-haproxy-ingress() {
     local port=8080
     kubectl get ingresses
@@ -380,7 +372,6 @@ list-external-charts() {
     echo 'cert-manager'
     echo 'cnpg'
     echo 'haproxy-ingress'
-    echo 'ingress-nginx'
     echo 'k8up'
 }
 
@@ -451,15 +442,6 @@ install-cnpg() {
       --namespace cnpg-system \
       --create-namespace \
       cnpg/cloudnative-pg
-}
-
-install-ingress-nginx() {
-    echo 'Install ingress-nginx/ingress-nginx:'
-    helm install ingress-nginx ingress-nginx/ingress-nginx \
-        --create-namespace --namespace ingress-nginx
-
-    echo 'External IP:'
-    kubectl get svc -n ingress-nginx
 }
 
 install-k8up() {
@@ -541,19 +523,6 @@ upgrade-clusterIssuer() {
         --values "$2"
 }
 
-upgrade-ingress-nginx() {
-    if [[ -n "$EXTERNAL_IP" ]]; then
-        echo "Upgrade ingress-nginx/ingress-nginx with external IP $EXTERNAL_IP:"
-        helm upgrade ingress-nginx ingress-nginx/ingress-nginx \
-            --namespace ingress-nginx \
-            --set controller.service.externalIPs[0]=$EXTERNAL_IP
-    else
-        echo 'Upgrade ingress-nginx/ingress-nginx:'
-        helm upgrade ingress-nginx ingress-nginx/ingress-nginx \
-            --namespace ingress-nginx
-    fi
-}
-
 uninstall-release() {
     if test -z "$1"; then echo '\$1 is empty.'; exit; fi
     local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
@@ -603,11 +572,6 @@ get-pods() {
 logs-haproxy-ingress() {
     local pod_id=$(kubectl get pods -o=name -n haproxy-ingress | grep 'haproxy-ingress')
     kubectl logs "$pod_id" -n haproxy-ingress
-}
-
-logs-ingress-nginx() {
-    local pod_id=$(kubectl get pods -o=name -n ingress-nginx | grep 'ingress-nginx')
-    kubectl logs "$pod_id" -n ingress-nginx
 }
 
 # Helm Commands
@@ -663,9 +627,6 @@ index-repo() {
 add-repos(){
     echo 'Add kubernetes-build.'
     helm repo add kubernetes-build https://kubernetes.build
-
-    echo 'Add ingress-nginx.'
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
     echo 'Add haproxy-ingress.'
     helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts

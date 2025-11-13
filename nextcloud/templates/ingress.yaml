@@ -1,25 +1,9 @@
 {{- if .Values.ingress.enabled }}
-{{- if eq .Values.ingress.className "nginx" }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: custom-headers
-data:
-  X-Forwarded-Host: "$host"
-  X-Forwarded-For: "$proxy_add_x_forwarded_for"
-  X-Forwarded-Proto: "$scheme"
-  X-Real-IP: "$remote_addr"
-{{- end }}
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nextcloud-ingress
   annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "4G"
-    {{- if eq .Values.ingress.className "nginx" }}
-    nginx.ingress.kubernetes.io/proxy-set-headers: "custom-headers"
-    {{- end }}
     {{- if .Values.ingress.clusterIssuerRef }}
     cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
     {{- end }}

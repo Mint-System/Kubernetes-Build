@@ -6,7 +6,7 @@ ingress:
   enabled: true
   ## @param ingress.className The class name for the ingress
   ##
-  className: nginx
+  className: haproxy
   ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
   ##
   clusterIssuerRef: ""
@@ -43,56 +43,6 @@ cnpg:
   ## @param cnpg.owner Name of the database user
   ##
   owner: app
-
-## @section Collabora Online parameters
-##
-collabora:
-  ## @param collabora.enabled Enable or disable Collabora Online
-  ##
-  enabled: false
-  ingress:
-    ## @param collabora.ingress.enabled Enable or disable the ingress for Collabora
-    ##
-    enabled: true
-    ## @param collabora.ingress.className The class name for the ingress
-    ##
-    className: "nginx"
-    ## @param collabora.ingress.annotations Ingress annotations
-    ##
-    annotations: {}
-    ## @param collabora.ingress.hosts[0].host Host for the ingress
-    ##
-    hosts:
-      - host: "doc.nextcloud.knd.local"
-        paths:
-          ## @param collabora.ingress.hosts[0].paths[0].path Path for the ingress
-          ##
-          - path: /
-            ## @param collabora.ingress.hosts[0].paths[0].pathType Path type for the ingress
-            ##
-            pathType: ImplementationSpecific
-    aliasgroups:
-      ## @param collabora.ingress.aliasgroups[0].host Alias group host
-      ##
-      - host: "http://nextcloud.knd.local:80"
-    ## @param collabora.ingress.extra_params Extra parameters for Collabora
-    ##
-    extra_params: "--o:ssl.enable=false --o:ssl.termination=true"
-  resources:
-    limits:
-      ## @param collabora.resources.limits.cpu CPU limit for Collabora
-      ##
-      cpu: "1800m"
-      ## @param collabora.resources.limits.memory Memory limit for Collabora
-      ##
-      memory: "2000Mi"
-    requests:
-      ## @param collabora.resources.requests.cpu CPU request for Collabora
-      ##
-      cpu: "1800m"
-      ## @param collabora.resources.requests.memory Memory request for Collabora
-      ##
-      memory: "2000Mi"
 
 ## @section Nextcloud parameters
 ##
