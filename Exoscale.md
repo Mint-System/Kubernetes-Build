@@ -51,6 +51,12 @@ task install-chart k8up values/exo.mintcloud.ch.yaml
 
 ## Create Odoo release
 
+Install the CloudNativePG chart:
+
+```bash
+task install-chart cnpg values/exo.mintcloud.ch.yaml
+```
+
 Create a namespace for the application.
 
 ```bash
