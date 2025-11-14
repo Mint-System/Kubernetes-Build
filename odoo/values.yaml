@@ -115,6 +115,9 @@ init:
 ## @param listDB Enable or disable listing databases for Odoo
 ##
 listDB: false
+## @param workers Define the amount of Odoo workers to spawn
+##
+workers: 4
 ## @param secretRef The secret reference for Odoo
 ##
 secretRef: odoo-creds

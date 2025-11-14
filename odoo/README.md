@@ -83,6 +83,7 @@ kubectl create secret generic s3-credentials \
 | `init.login`             | The initial username for Odoo admin account   | `""`                                                                                                                |
 | `init.password`          | The initial passwod for Odoo admin account    | `""`                                                                                                                |
 | `listDB`                 | Enable or disable listing databases for Odoo  | `false`                                                                                                             |
+| `workers`                | Define the amount of Odoo workers to spawn    | `4`                                                                                                                 |
 | `secretRef`              | The secret reference for Odoo                 | `odoo-creds`                                                                                                        |
 | `storageClassName`       | Set the storage class                         | `""`                                                                                                                |
 

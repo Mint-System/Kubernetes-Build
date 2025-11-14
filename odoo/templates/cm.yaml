@@ -12,3 +12,4 @@ data:
   ODOO_INIT_LOGIN: {{ .Values.init.login | quote }}
   ODOO_INIT_PASSWORD: {{ .Values.init.password | quote }}
   DB_NAME: {{ .Values.database }}
+  WORKERS: {{ .Values.workers | quote }}
