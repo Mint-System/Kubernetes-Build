@@ -15,13 +15,14 @@ This section outlines the universal rules and expectations for any LLM agent wor
 ## Project structure
 
 - `task`: The project is managed with this task script.
-- `<name>/`: Every folder except for `test` and `values` is a Helm chart.
-  - `odoo/`: Use this chart as template for other charts.
-- `test`: Contains the `values.yaml` to setup the test enviroment.
+- `<name>/`: Every folder except for `test_values` and `values` is a Helm chart.
+- `odoo/`: Use this chart as template for other charts.
+- `<name>/README.md` These files are generated with `task docs`.
+- `test_values`: Contains the `values.yaml` to setup the test enviroment.
 - `values`: In there are multiple `values.yaml` files of production deployments. There are two kinds `deployment` and `cluster`.
 - `*.tgz`: The packaged Helm chart for publishing.
 - `*.md`: Vuepress docs.
-  - `development.md`: Here you find details on how to setup the development enviroment.
+- `development.md`: Here you find details on how to setup the development enviroment.
 - `.vitepress`: Vitepress config folder.
 
 ## Environment & tooling

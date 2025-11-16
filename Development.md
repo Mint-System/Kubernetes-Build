@@ -42,19 +42,19 @@ task setup-hosts
 Install the CloudNativePG chart:
 
 ```bash
-task install-chart cnpg test/knd.local.yaml
+task install-chart cnpg test_values/knd.local.yaml
 ```
 
 Install ingress-nginx in the current cluster.
 
 ```bash
-task install-chart ingress-nginx test/knd.local.yaml
+task install-chart ingress-nginx test_values/knd.local.yaml
 ```
 
 Install k8up in the current cluster.
 
 ```bash
-task install-chart k8up test/knd.local.yaml
+task install-chart k8up test_values/knd.local.yaml
 ```
 
 ## Deploy Odoo chart
@@ -70,7 +70,7 @@ Setup secrets according to the Odoo chart readme.
 Install the Odoo chart:
 
 ```bash
-task install-chart odoo test/odoo.knd.local.yaml
+task install-chart odoo test_values/odoo.knd.local.yaml
 ```
 
 The Odoo database will be initialized automatically.
@@ -94,7 +94,7 @@ Setup secrets according to the Nextcloud chart readme.
 Install the Nextcloud chart:
 
 ```bash
-task install-chart nextcloud test/nextcloud.knd.local.yaml
+task install-chart nextcloud test_values/nextcloud.knd.local.yaml
 ```
 
 The Odoo database will be initialized automatically.

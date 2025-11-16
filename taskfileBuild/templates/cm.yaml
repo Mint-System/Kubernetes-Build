@@ -8,3 +8,6 @@ data:
   GIT_URL: {{ .Values.gitUrl }}
   TASK_COMMANDS: {{ .Values.taskCommands }}
   CADDY_ROOT: {{ .Values.caddyRoot }}
+{{- range $key, $value := .Values.additionalEnvs }}
+  {{ $key }}: {{ $value | quote }}
+{{- end }}

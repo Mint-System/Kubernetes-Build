@@ -1,0 +1,10 @@
+# Example values file showing how to use additionalEnvs to add BASE_URL
+gitUrl: "https://github.com/example/repo.git"
+taskCommands: "build"
+caddyRoot: "dist"
+
+# Add custom environment variables using additionalEnvs
+additionalEnvs:
+  BASE_URL: "https://example.com"
+  API_URL: "https://api.example.com"
+  DEBUG: "true"

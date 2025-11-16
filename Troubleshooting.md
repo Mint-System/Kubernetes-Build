@@ -13,5 +13,5 @@ psql -c "ALTER USER $PGUSER WITH PASSWORD '$PGPASSWORD';"
 Whenver there is an issue with a chart installation, you can template the chart into a file.
 
 ```bash
-task template-manifest odoo test/restic.knd.local.yaml > manifest.yaml
+task template-manifest odoo test_values/restic.knd.local.yaml > manifest.yaml
 ```

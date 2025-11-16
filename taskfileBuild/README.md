@@ -23,3 +23,4 @@ This Helm chart deploys a taskfile.build container.
 | `gitUrl`          | Repo url to pull.                       | `""`                                 |
 | `taskCommands`    | Run this commands with the task file.   | `""`                                 |
 | `caddyRoot`       | Static site path relative to repo root. | `""`                                 |
+| `additionalEnvs`  | Additional environment variables to set | `{}`                                 |

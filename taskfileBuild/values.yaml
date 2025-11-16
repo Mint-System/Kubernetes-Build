@@ -34,3 +34,6 @@ taskCommands: ""
 ## @param caddyRoot Static site path relative to repo root.
 ##
 caddyRoot: ""
+## @param additionalEnvs Additional environment variables to set
+##
+additionalEnvs: {}
