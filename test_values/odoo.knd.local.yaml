@@ -10,7 +10,7 @@ addonsGitRepos:
   - https://github.com/OCA/server-tools#18.0
   # Mint-System repositories
   - https://github.com/Mint-System/Odoo-Apps-Server-Tools#18.0
-  - https://gitlab.com/mint-system/odoo-apps-thirdparty#18.0
+  # - https://gitlab.com/mint-system/odoo-apps-thirdparty#18.0
 staging:
   enabled: true
   reset: false
