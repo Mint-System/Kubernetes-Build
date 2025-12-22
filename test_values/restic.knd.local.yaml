@@ -1,7 +1,7 @@
 kind: deployment
 ingress:
   host: restic.knd.local
-image: mintsystem/odoo:18.0.20251106
+image: mintsystem/odoo:18.0.20251121
 staging:
   enabled: true
 k8up:

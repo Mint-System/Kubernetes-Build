@@ -62,7 +62,7 @@ task install-chart k8up test_values/knd.local.yaml
 Load the local image into the cluster.
 
 ```bash
-task load-image mintsystem/odoo:18.0.20251106
+task load-image mintsystem/odoo:18.0.20251121
 ```
 
 Setup secrets according to the Odoo chart readme.

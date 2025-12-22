@@ -147,3 +147,6 @@ staging:
   ## @param staging.name Name of the staging environment (used in staging ingress: staging.name.ingress.host)
   ##
   name: staging
+  ## @param staging.enabled Clone and neutralize main database on container init
+  ##
+  reset: true

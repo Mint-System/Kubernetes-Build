@@ -2,13 +2,15 @@ kind: deployment
 ingress:
   host: odoo.knd.local
   customDomain: odoo.local
-image: mintsystem/odoo:18.0.20251106
+image: mintsystem/odoo:18.0.20251121
 initLogin: admin@example.com
 addonsGitRepos:
   # OCA Core repositories
-  - https://github.com/OCA/partner-contact.git#18.0
-  - https://github.com/OCA/server-tools.git#18.0
+  - https://github.com/OCA/partner-contact#18.0
+  - https://github.com/OCA/server-tools#18.0
   # Mint-System repositories
-  - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0
+  - https://github.com/Mint-System/Odoo-Apps-Server-Tools#18.0
+  - https://gitlab.com/mint-system/odoo-apps-thirdparty#18.0
 staging:
   enabled: true
+  reset: false

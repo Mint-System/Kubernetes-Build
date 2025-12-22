@@ -12,7 +12,7 @@ Let's assume we have successfully deployed an Odoo chart with these values:
 
 ```yaml
 kind: deployment
-image: mintsystem/odoo:18.0.20251106
+image: mintsystem/odoo:18.0.20251121
 ingress:
   host: restic.knd.local
 staging:
