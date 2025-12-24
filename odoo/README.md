@@ -34,13 +34,14 @@ kubectl create secret generic s3-credentials \
 
 ### Ingress parameters
 
-| Name                       | Description                                  | Value   |
-| -------------------------- | -------------------------------------------- | ------- |
-| `ingress.enabled`          | Enable or disable the ingress                | `true`  |
-| `ingress.className`        | The class name for the ingress               | `nginx` |
-| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `nil`   |
-| `ingress.host`             | The host for the ingress                     | `""`    |
-| `ingress.customDomain`     | The custom domain for the ingress            | `""`    |
+| Name                           | Description                                  | Value   |
+| ------------------------------ | -------------------------------------------- | ------- |
+| `ingress.enabled`              | Enable or disable the ingress                | `true`  |
+| `ingress.className`            | The class name for the ingress               | `nginx` |
+| `ingress.clusterIssuerRef`     | The cluster issuer reference for the ingress | `nil`   |
+| `ingress.host`                 | The host for the ingress                     | `""`    |
+| `ingress.customDomain`         | The custom domain for the ingress            | `""`    |
+| `ingress.staging.customDomain` | The custom domain for the staging ingress    | `""`    |
 
 ### vshnPostgres parameters
 
@@ -101,7 +102,8 @@ kubectl create secret generic s3-credentials \
 
 ### Staging parameters
 
-| Name              | Description                                                                          | Value     |
-| ----------------- | ------------------------------------------------------------------------------------ | --------- |
-| `staging.enabled` | Enable or disable staging deployment                                                 | `false`   |
-| `staging.name`    | Name of the staging environment (used in staging ingress: staging.name.ingress.host) | `staging` |
+| Name              | Description                                               | Value     |
+| ----------------- | --------------------------------------------------------- | --------- |
+| `staging.enabled` | Enable or disable staging deployment                      | `false`   |
+| `staging.name`    | Name of the staging environment (used in staging ingress) | `staging` |
+| `staging.reset`   | Clone and neutralize main database on container init      | `true`    |

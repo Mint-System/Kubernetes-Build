@@ -16,6 +16,10 @@ ingress:
   ## @param ingress.customDomain The custom domain for the ingress
   ##
   customDomain: ""
+  staging:
+    ## @param ingress.staging.customDomain The custom domain for the staging ingress
+    ##
+    customDomain: ""
 
 ## @section vshnPostgres parameters
 ##
@@ -144,9 +148,9 @@ staging:
   ## @param staging.enabled Enable or disable staging deployment
   ##
   enabled: false
-  ## @param staging.name Name of the staging environment (used in staging ingress: staging.name.ingress.host)
+  ## @param staging.name Name of the staging environment (used in staging ingress)
   ##
   name: staging
-  ## @param staging.enabled Clone and neutralize main database on container init
+  ## @param staging.reset Clone and neutralize main database on container init
   ##
   reset: true

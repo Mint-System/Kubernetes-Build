@@ -9,6 +9,7 @@ metadata:
     {{- end }}
     {{- if eq .Values.ingress.className "nginx" }}
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "128M"
     {{- end }}
 spec:
   ingressClassName: {{.Values.ingress.className }}
@@ -70,6 +71,7 @@ metadata:
     {{- end }}
     {{- if eq .Values.ingress.className "nginx" }}
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "128M"
     {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
@@ -77,6 +79,9 @@ spec:
   tls:
     - hosts:
       - {{ .Values.staging.name }}.{{ .Values.ingress.host }}
+      {{- if .Values.ingress.staging.customDomain }}
+      - {{ .Values.ingress.staging.customDomain }}
+      {{- end }}
       secretName: odoo-{{ .Values.staging.name }}-tls
   {{- end }}
   rules:
@@ -97,5 +102,24 @@ spec:
             name: odoo-{{ .Values.staging.name }}
             port:
               number: 8069
+  {{- if .Values.ingress.staging.customDomain }}
+  - host: {{.Values.ingress.staging.customDomain }}
+    http:
+      paths:
+      - path: /websocket
+        pathType: Prefix
+        backend:
+          service:
+            name: odoo-{{ .Values.staging.name }}-gevent
+            port:
+              number: 8072
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: odoo-{{ .Values.staging.name }}
+            port:
+              number: 8069
+  {{- end }}
 {{- end }}
 {{- end }}
