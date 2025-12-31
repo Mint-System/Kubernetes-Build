@@ -20,5 +20,5 @@ roleRef:
   kind: ClusterRole
   name: admin
 subjects:
-- kind: ServiceAccount
-  name: buildx
+  - kind: ServiceAccount
+    name: buildx
