@@ -6,7 +6,7 @@ Sets a service account that can update deployments.
 
 ### Forgejo Deployment action
 
-To deploy the Vupress site in a Forgejo action a kubeconfig is required.
+Use this service account to make deployments to Kuberentes. The deployment action requires a kubeconfig. Export the kubeconfig with this command:
 
 ```bash
 name=deploy-sa-token
@@ -38,3 +38,18 @@ users:
 ```
 
 Setup secret `KUBECONFIG_DEPLOY` with content of `deploy.kubeconfig`.
+
+Here is are examples of Forgejo action steps:
+
+```yaml
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: Create Kubeconfig for Deployment
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_DEPLOY }}" > $HOME/.kube/config
+```

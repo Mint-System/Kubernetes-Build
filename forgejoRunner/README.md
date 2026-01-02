@@ -17,7 +17,7 @@ kubectl create secret generic forgejo-runner \
 
 ### Forgejo Buildx action
 
-To use the Buildx builder in your Forgejo action a kubeconfig is required.
+This role also provides a service account to access the Kubernetes cluster. With Buildx you can use the cluster as build enviroment. Export the kubeconfig to provide it in the Forgejo action with this command:
 
 ```bash
 name=buildx-sa-token
@@ -49,6 +49,22 @@ users:
 ```
 
 Setup secret `KUBECONFIG_BUILDX` with content of `buildx.kubeconfig`.
+
+Here is are examples of Forgejo action steps:
+
+```yaml
+      - name: Create Kubeconfig for Buildx
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_BUILDX }}" > $HOME/.kube/config
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: kubernetes
+          driver-opts: |
+            namespace=codeberg
+```
 
 ## Parameters
 
