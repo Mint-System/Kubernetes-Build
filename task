@@ -26,12 +26,8 @@ help() {
     printf "$column" 'info' '' 'Show info about env.'
     printf "$column" 'template-dotenv' '' 'Generate .env from .env.template.'
     printf "$column" 'export-kubeconfig' '[user][path]' 'Export kubeconfig file for service account.'
-    printf "$column" 'load-kubeconfig-from-pass' '[ctx]' 'Load kubeconfig file from pass.'
     printf "$column" 'load-kubeconfig-from-keepass' '[ctx]' 'Load kubeconfig file from KeePass.'
-    printf "$column" 'load-dotenv-from-keepass' '' 'Restore content to .env from KeePass entry.'
-    printf "$column" 'save-kubeconfig-to-pass' '[ctx]' 'Save kubeconfig file in pass.'
     printf "$column" 'save-kubeconfig-to-keepass' '[ctx]' 'Save kubeconfig file in KeePass.'
-    printf "$column" 'save-dotenv-to-keepass' '' 'Store content of .env in KeePass entry.'
     # Docs
     printf "$column" 'install-vitepress' '' 'Install Node dependencies.'
     printf "$column" 'docs' '' 'Generate Helm chart readmes.'
@@ -198,86 +194,6 @@ test-chart-nextcloud() {
         kubectl create secret generic nextcloud-creds --from-literal=NEXTCLOUD_ADMIN_USER="test" --from-literal=NEXTCLOUD_ADMIN_PASSWORD="test"
         install-chart nextcloud test_values/nextcloud.knd.local.yaml
     fi
-}
-
-save-kubeconfig-to-pass() {
-    local pass_kubeconfig_entry=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
-    local kubeconfig_file="$HOME/.kube/config"
-
-    if [[ -n "$1" ]]; then
-        pass_kubeconfig_entry=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
-        kubeconfig_file="$HOME/.kube/config.$1"
-    fi
-
-    if [[ -f "$kubeconfig_file" ]]; then
-        echo "Store $kubeconfig_file file in pass: $pass_kubeconfig_entry"
-        echo -e "\n$(cat $kubeconfig_file)" | pass insert -m -f "$pass_kubeconfig_entry"
-    else
-        echo "No $kubeconfig_file file found."
-    fi
-}
-
-load-kubeconfig-from-pass() {
-    local pass_kubeconfig_entry=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
-    local kubeconfig_file="$HOME/.kube/config"
-
-    if [[ -n "$1" ]]; then
-        pass_kubeconfig_entry=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
-        kubeconfig_file="$HOME/.kube/config.$1"
-    fi
-
-    if pass find "$pass_kubeconfig_entry" >/dev/null; then
-        echo "Load $kubeconfig_file file from pass: $pass_kubeconfig_entry"
-        mkdir -p "$HOME/.kube/"
-        pass show "$pass_kubeconfig_entry" | tail -n +2 > "$kubeconfig_file"
-    else
-        echo 'Pass entry not found.'
-    fi
-}
-
-save-kubeconfig-to-keepass() {
-    local keepass_kubeconfig_entry="env/kubeconfig_$USER"
-    local kubeconfig_file="$HOME/.kube/config"
-
-    if [[ -n "$1" ]]; then
-        keepass_kubeconfig_entry="env/kubeconfig_$1"
-        kubeconfig_file="$HOME/.kube/config.$1"
-    fi
-
-    keepass_kubeconfig_entry=$(echo "$keepass_kubeconfig_entry" | tr '[:upper:]' '[:lower:]')
-
-    if [[ -f "$kubeconfig_file" ]]; then
-        echo "Store $kubeconfig_file file in keepassxc: $keepass_kubeconfig_entry"
-        keepassxc-cli add \
-            --key-file "$KEEPASS_DATABASE_KEY_FILE" \
-            "$KEEPASS_DATABASE_FILE" \
-            "$keepass_kubeconfig_entry"
-        keepassxc-cli attachment-import \
-            --key-file "$KEEPASS_DATABASE_KEY_FILE" \
-            "$KEEPASS_DATABASE_FILE" \
-            "$keepass_kubeconfig_entry" \
-            "$(basename $kubeconfig_file)" \
-            "$kubeconfig_file"
-    else
-        echo "No $kubeconfig_file file found."
-    fi
-}
-
-load-kubeconfig-from-keepass() {
-    local keepass_kubeconfig_entry=$(echo "env/kubeconfig_$USER" | tr '[:upper:]' '[:lower:]')
-    local kubeconfig_file="$HOME/.kube/config"
-    if [[ -n "$1" ]]; then
-        keepass_kubeconfig_entry=$(echo "env/kubeconfig_$1" | tr '[:upper:]' '[:lower:]')
-        kubeconfig_file="$HOME/.kube/config.$1"
-    fi
-    echo "Load $kubeconfig_file file from keepassxc: $keepass_kubeconfig_entry"
-    mkdir -p "$HOME/.kube/"
-    keepassxc-cli attachment-export \
-        --key-file "$KEEPASS_DATABASE_KEY_FILE" \
-        "$KEEPASS_DATABASE_FILE" \
-        "$keepass_kubeconfig_entry" \
-        "$(basename $kubeconfig_file)" \
-        "$kubeconfig_file"
 }
 
 export-kubeconfig() {

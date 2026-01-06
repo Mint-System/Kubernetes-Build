@@ -20,6 +20,7 @@ The Mint System collection of Helm charts.
 
 * Install [yq](https://mikefarah.gitbook.io/yq/#install)
 * Install [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+* Install [kubectx](https://kubectx.dev/)
 * bash/zsh alias `task='./task'` with optional [completion](https://taskfile.build/#completion)
 
 
