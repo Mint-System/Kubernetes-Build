@@ -28,10 +28,10 @@ spec:
             - -c
             - |
               {{- if .Values.downloadOdooEnterprise }}
-              /entrypoint.sh download-git-archive && \
+              download-git-archive
               {{- end }}
-              /entrypoint.sh clone-git-addons && \
-              /entrypoint.sh init-db
+              clone-git-addons
+              init-db
           envFrom:
             {{- if and .Values.secretRef (lookup "v1" "Secret" .Release.Namespace .Values.secretRef) }}
             - secretRef:

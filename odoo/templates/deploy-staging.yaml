@@ -28,6 +28,11 @@ spec:
             - /bin/bash
             - -c
             - |
+              {{- if .Values.downloadOdooEnterprise }}
+              download-git-archive
+              {{- end }}
+              clone-git-addons
+
               {{- if .Values.staging.reset }}
               log-entrypoint "Waiting for main Odoo deployment to be ready..."
               until curl -f http://odoo:8069/web/health > /dev/null 2>&1; do

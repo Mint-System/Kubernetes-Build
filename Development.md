@@ -2,13 +2,7 @@
 
 Setup a local Kubernetes cluster and deploy the Helm charts.
 
-## Requirements
-
-Setup the required tools:
-
-* [helm](https://helm.sh/docs/intro/install/), [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) and [kubctx](https://kubectx.dev/)
-* Setup [kind](https://kind.sigs.k8s.io/)
-* Optional: bash/zsh alias `task='./task'` with [completion](https://taskfile.build/#completion).
+## Setup
 
 Clone the repository:
 

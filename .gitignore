@@ -2,7 +2,7 @@ node_modules
 .vitepress/dist
 .vitepress/cache
 tmp
-manifest.yaml
+manifest.*
 .obsidian/appearance.json
 .obsidian/graph.json
 .obsidian/workspace.json
