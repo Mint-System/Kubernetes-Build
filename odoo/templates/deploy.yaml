@@ -31,6 +31,7 @@ spec:
               download-git-archive
               {{- end }}
               clone-git-addons
+              aggregate-git-repos
               init-db
           envFrom:
             {{- if and .Values.secretRef (lookup "v1" "Secret" .Release.Namespace .Values.secretRef) }}
