@@ -59,6 +59,8 @@ help() {
     printf "$column" 'list' '' 'List Helm deployments.'
     printf "$column" 'get-pods' '' 'List all pods.'
     printf "$column" 'login-oc' '' 'Refresh the auth token for OpenShift.'
+    printf "$column" 'suspend-job' '[name]' 'Suspend a job to stop it.'
+    printf "$column" 'unsuspend-job' '[name]' 'Unsuspend a job to run it.'
     # Helm
     printf "$column" 'add-repos' '' 'Add the required Helm repos.'
     printf "$column" 'template-manifest' '[chart][values]' 'Template all charts with Helm.'
@@ -172,8 +174,12 @@ test-chart-odoo() {
         kubectl wait --namespace ingress-nginx --for=condition=Available --timeout=60s deployments/ingress-nginx-controller
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
+        
+        docker pull mintsystem/odoo:18.0.20251222
+        load-image mintsystem/odoo:18.0.20251222
         update-dependencies odoo
         install-chart odoo test_values/odoo.knd.local.yaml
+        kubectl wait --for=condition=Available --timeout=300s deployments/odoo-odoo
     fi
 }
 
@@ -452,6 +458,22 @@ uninstall-release() {
 
     echo "Uninstall release $release_name:"
     helm uninstall "$release_name"
+}
+
+unsuspend-job() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit 1; fi
+    local job_name="$1"
+
+    echo "Running job: $job_name"
+    kubectl patch job/$job_name --type=strategic --patch '{"spec":{"suspend":false}}'
+}
+
+suspend-job() {
+    if test -z "$1"; then echo '\$1 is empty.'; exit 1; fi
+    local job_name="$1"
+
+    echo "Running job: $job_name"
+    kubectl patch job/$job_name --type=strategic --patch '{"spec":{"suspend":true}}'
 }
 
 # kubectl Commands

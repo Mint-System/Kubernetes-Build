@@ -13,4 +13,3 @@ addonsGitRepos:
   # - https://gitlab.com/mint-system/odoo-apps-thirdparty#18.0
 staging:
   enabled: true
-  reset: false

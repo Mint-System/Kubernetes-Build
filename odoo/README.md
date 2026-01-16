@@ -30,6 +30,14 @@ kubectl create secret generic s3-credentials \
     -n <namespace>
 ```
 
+## Jobs
+
+There is suspended `<release>-staging-reset` job that copies the main database and volume to the staging enviroment. Then the job neutralizes the Odoo databse. Patch the job to run it:
+
+```bash
+kubectl patch job/<release>-staging-reset --type=strategic --patch '{"spec":{"suspend":false}}'
+```
+
 ## Parameters
 
 ### Ingress parameters
@@ -106,4 +114,3 @@ kubectl create secret generic s3-credentials \
 | ----------------- | --------------------------------------------------------- | --------- |
 | `staging.enabled` | Enable or disable staging deployment                      | `false`   |
 | `staging.name`    | Name of the staging environment (used in staging ingress) | `staging` |
-| `staging.reset`   | Clone and neutralize main database on container init      | `true`    |

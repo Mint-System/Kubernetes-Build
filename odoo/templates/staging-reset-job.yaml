@@ -1,0 +1,138 @@
+{{- if .Values.staging.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.staging.name }}-reset
+  labels:
+    app: odoo-{{ .Values.staging.name }}-reset
+spec:
+  suspend: true
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: {{ .Values.staging.name }}-reset
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command:
+            - /bin/bash
+            - -c
+            - |
+              /entrypoint.sh ls
+              # log-entrypoint "Waiting for main Odoo deployment to be ready..."
+              # until curl -f http://odoo:8069/web/health > /dev/null 2>&1; do
+              #   log-entrypoint "Waiting for main Odoo service to respond..."
+              #   sleep 5
+              # done
+              # log-entrypoint "Main Odoo deployment is ready!"
+              log-entrypoint "Clone and neutralize Odoo staging database from main database..."
+              log-entrypoint "Check if staging database already exists and drop it..."
+
+              DB_EXISTS=$(PGPASSWORD=$PGPASSWORD psql -h $PGHOST -U $PGUSER -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='{{ .Values.database }}-{{ .Values.staging.name }}';" 2>/dev/null)
+              if [ "$DB_EXISTS" = "1" ]; then
+                log-entrypoint "Terminating connections to existing staging database..."
+                PGPASSWORD=$PGPASSWORD psql -h $PGHOST -U $PGUSER -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{{ .Values.database }}-{{ .Values.staging.name }}' AND pid <> pg_backend_pid();" || true
+
+                log-entrypoint "Dropping existing staging database..."
+                PGPASSWORD=$PGPASSWORD psql -h $PGHOST -U $PGUSER -d postgres -c "DROP DATABASE \"{{ .Values.database }}-{{ .Values.staging.name }}\";"
+              fi
+
+              log-entrypoint "Terminate any active connections to the source database..."
+              PGPASSWORD=$PGPASSWORD psql -h $PGHOST -U $PGUSER -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{{ .Values.cnpg.database }}' AND pid <> pg_backend_pid();" || true
+
+              log-entrypoint "Copying staging database with template..."
+              PGPASSWORD=$PGPASSWORD psql -h $PGHOST -U $PGUSER -d postgres -c "CREATE DATABASE \"{{ .Values.database }}-{{ .Values.staging.name }}\" WITH TEMPLATE \"{{ .Values.cnpg.database }}\";"
+
+              log-entrypoint "Neutralizing staging database with Odoo neutralize command..."
+              odoo neutralize -d {{ .Values.database }}-{{ .Values.staging.name }} --stop-after-init
+
+              log-entrypoint "Copy data from /main-data/ to /staging-data..."
+              cp -r /main-data/* /staging-data/
+
+              log-entrypoint "Rename filestore from {{ .Values.database }} to {{ .Values.database }}-{{ .Values.staging.name }}."
+              mv /staging-data/filestore/{{ .Values.database }} /staging-data/filestore/{{ .Values.database }}-{{ .Values.staging.name }}
+
+              log-entrypoint "Clone and neutralization staging database completed for {{ .Values.staging.name }}."
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+          env:
+            {{- if .Values.cnpg.enabled }}
+            - name: PGHOST
+              value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql-app
+                  key: password
+            {{- end }}
+            {{- if .Values.postgres.enabled }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretRef }}
+                  key: {{ .Values.postgres.userPasswordKey }}
+            - name: PGHOST
+              value: postgres.{{ .Release.Namespace }}.svc.cluster.local
+            - name: PGUSER
+              value: {{ .Values.postgres.user }}
+            {{- end }}
+            {{- if .Values.vshnPostgres.enabled }}
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_HOST
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_PORT
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_USER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vshnPostgres.secretRef }}
+                  key: POSTGRESQL_PASSWORD
+            - name: PGSSLMODE
+              value: verify-ca
+            - name: PGSSLROOTCERT
+              value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
+            {{- end }}
+          volumeMounts:
+            - mountPath: /main-data
+              name: odoo-main
+              subPath: odoodata
+            - mountPath: /staging-data
+              name: odoo-staging
+              subPath: odoodata
+            {{- if .Values.vshnPostgres.enabled }}
+            - name: {{ .Values.vshnPostgres.secretRef }}
+              readOnly: true
+              mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
+            {{- end }}
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      volumes:
+        - name: odoo-staging
+          persistentVolumeClaim:
+            claimName: data-odoo-staging
+        - name: odoo-main
+          persistentVolumeClaim:
+            claimName: data-odoo-main
+        {{- if .Values.vshnPostgres.enabled }}
+        - name: {{ .Values.vshnPostgres.secretRef }}
+          secret:
+            secretName: {{ .Values.vshnPostgres.secretRef }}
+        {{- end }}
+{{- end }}

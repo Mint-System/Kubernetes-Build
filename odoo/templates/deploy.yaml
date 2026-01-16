@@ -27,6 +27,7 @@ spec:
             - /bin/bash
             - -c
             - |
+              /entrypoint.sh ls
               {{- if .Values.downloadOdooEnterprise }}
               download-git-archive
               {{- end }}
