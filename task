@@ -73,8 +73,8 @@ help() {
     printf "$column" 'update-with-llm' '[glob][prompt]' 'Feed files matching glob to LLM and apply changes.'
     # Test
     printf "$column" 'test-chart-clusterIssuer' '' 'Test cluster issuer.'
-    printf "$column" 'test-chart-odoo' '[clean]' 'Setup Odoo chart and dependencies.'
-    printf "$column" 'test-chart-nextcloud' '[clean]' 'Setup Nextcloud chart and dependencies.'
+    printf "$column" 'test-chart-odoo' '[cleanup]' 'Setup Odoo chart and dependencies.'
+    printf "$column" 'test-chart-nextcloud' '[cleanup]' 'Setup Nextcloud chart and dependencies.'
 }
 
 # Default vars
@@ -161,7 +161,7 @@ setup-hosts() {
 }
 
 test-chart-odoo() {
-    if [[ "$1" = 'clean' ]]; then
+    if [[ "$1" = 'cleanup' ]]; then
         echo 'Cleanup environment'
         delete-kind
     else
@@ -184,7 +184,7 @@ test-chart-odoo() {
 }
 
 test-chart-nextcloud() {
-    if [[ "$1" = 'clean' ]]; then
+    if [[ "$1" = 'cleanup' ]]; then
         echo 'Cleanup environment'
         delete-kind
     else
