@@ -50,7 +50,8 @@ spec:
               cp -r /main-data/* /staging-data/
 
               log-entrypoint "Rename filestore from {{ .Values.database }} to {{ .Values.database }}-{{ .Values.staging.name }}."
-              mv -f /staging-data/filestore/{{ .Values.database }} /staging-data/filestore/{{ .Values.database }}-{{ .Values.staging.name }}
+              rm -rf /staging-data/filestore/{{ .Values.database }}-{{ .Values.staging.name }}
+              mv /staging-data/filestore/{{ .Values.database }} /staging-data/filestore/{{ .Values.database }}-{{ .Values.staging.name }}
 
               log-entrypoint "Clone and neutralization staging database completed for {{ .Values.staging.name }}."
           envFrom:
