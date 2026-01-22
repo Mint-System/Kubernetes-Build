@@ -5,10 +5,6 @@ metadata:
   name: {{ .Release.Name }}-{{ .Values.staging.name }}-reset
   labels:
     app: odoo-{{ .Values.staging.name }}-reset
-  annotations:
-    "helm.sh/hook": "post-install,post-upgrade"
-    "helm.sh/hook-delete-policy": "before-hook-creation"
-    "helm.sh/hook-weight": "1"
 spec:
   suspend: true
   template:
