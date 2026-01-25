@@ -13,8 +13,8 @@ help() {
     echo
 
     # Define column widths
-    local cmd_width=26
-    local opt_width=16
+    local cmd_width=28
+    local opt_width=15
     local desc_width=50
     local column="| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n"
     # Print table header
@@ -36,7 +36,8 @@ help() {
     printf "$column" 'build-vitepress' '' 'Build site with VitePress.'
     printf "$column" 'serve-vitepress' '' 'Serve VitePress build.'
     # Host
-    printf "$column" 'start-kind' '' 'Start kind Kubernetes cluster.'
+    printf "$column" 'start' '' 'Start kind Kubernetes cluster.'
+    printf "$column" 'start-and-prepare' '' 'Start and prepare Kubernetes cluster.'
     printf "$column" 'load-image' '[tag]' 'Load Docker image into kind cluster.'
     printf "$column" 'delete-kind' '' 'Delete kind Kubernetes cluster.'
     printf "$column" 'setup-hosts' '' 'Update hosts file.'
@@ -165,18 +166,8 @@ test-chart-odoo() {
         echo 'Cleanup environment'
         delete-kind
     else
-        start-kind
-        add-repos
-        info
-        # install-chart haproxy-ingress
-        # kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
-        install-chart ingress-nginx
-        kubectl wait --namespace ingress-nginx --for=condition=Available --timeout=60s deployments/ingress-nginx-controller
-        install-chart cnpg
-        kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
-        
-        docker pull mintsystem/odoo:18.0.20251222
-        load-image mintsystem/odoo:18.0.20251222
+        start-and-prepare
+
         update-dependencies odoo
         install-chart odoo test_values/odoo.knd.local.yaml
         kubectl wait --for=condition=Available --timeout=300s deployments/odoo-odoo
@@ -188,7 +179,7 @@ test-chart-nextcloud() {
         echo 'Cleanup environment'
         delete-kind
     else
-        start-kind
+        start
         add-repos
         info
         # install-chart haproxy-ingress
@@ -218,7 +209,7 @@ export-kubeconfig() {
 
 # Host Commands
 
-start-kind() {
+start() {
     if [[ "$context_alias" != "loc" ]]; then
         echo "Current context alias is '$context_alias' and not 'loc'."
         exit 1
@@ -226,6 +217,30 @@ start-kind() {
 
     echo 'Start kind.'
     kind create cluster
+}
+
+start-and-prepare() {
+    start
+    add-repos
+    info
+
+    # install-chart haproxy-ingress
+    # kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
+    
+    echo "Install ingress-nginx."
+    install-chart ingress-nginx
+    kubectl wait --namespace ingress-nginx --for=condition=Available --timeout=60s deployments/ingress-nginx-controller
+    
+    echo "Install the CloudNativePG."
+    install-chart cnpg
+    kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
+    
+    echo "Install k8up."
+    install-chart k8up
+
+    echo "Load Odoo image."
+    docker pull mintsystem/odoo:18.0.20260119
+    load-image mintsystem/odoo:18.0.20260119
 }
 
 load-image() {
@@ -362,11 +377,6 @@ install-chart() {
     else
         "install-$1" "$2"
     fi
-}
-
-install-k8up() {
-    echo 'Install k8up-io/k8up.'
-    helm install k8up k8up-io/k8up
 }
 
 install-cnpg() {

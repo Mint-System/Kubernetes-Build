@@ -11,53 +11,23 @@ git clone git@github.com:Mint-System/Kubernetes-Build.git
 cd Kubernetes-Build
 ```
 
-## Start Kubernetes cluster
-
-Start cluster with `kind`.
-
-```bash
-task start-kind
-```
-
-## Prepeare cluster
-
-Add Helm chart repos.
-
-```bash
-task add-repos
-```
-
 Setup the local hostnames.
 
 ```bash
 task setup-hosts
 ```
 
-Install the CloudNativePG chart:
+## Start and prepare Kubernetes cluster
+
+The following command will start the kind cluster and install the base charts.
 
 ```bash
-task install-chart cnpg test_values/knd.local.yaml
+task start-and-prepare
 ```
 
-Install ingress-nginx in the current cluster.
-
-```bash
-task install-chart ingress-nginx test_values/knd.local.yaml
-```
-
-Install k8up in the current cluster.
-
-```bash
-task install-chart k8up test_values/knd.local.yaml
-```
+It also load the Odoo image into the cluster.
 
 ## Deploy Odoo chart
-
-Load the local image into the cluster.
-
-```bash
-task load-image mintsystem/odoo:18.0.20260119
-```
 
 Setup secrets according to the Odoo chart readme.
 

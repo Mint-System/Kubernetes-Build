@@ -19,7 +19,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
       - name: Clone taskfile
         run: ./task clone-taskfile
-      - name: Test ODoo chart
+      - name: Test Odoo chart
         run: ./task test-chart-odoo
       # - name: Test Nextcloud chart
       #   run: ./task test-chart-nextcloud
