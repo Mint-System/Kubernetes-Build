@@ -86,6 +86,7 @@ kubectl patch job/<release>-staging-reset --type=strategic --patch '{"spec":{"su
 | ------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `enabled`                | Enable or disable Odoo                        | `true`                                                                                                              |
 | `image`                  | The image for Odoo                            | `""`                                                                                                                |
+| `replicas`               | Number of Odoo replicas                       | `1`                                                                                                                 |
 | `imagePullPolicy`        | Pull policy for Odoo image                    | `Always`                                                                                                            |
 | `proxyMode`              | Enable or disable proxy mode for Odoo         | `true`                                                                                                              |
 | `downloadOdooEnterprise` | Enable or disable downloading Odoo Enterprise | `false`                                                                                                             |

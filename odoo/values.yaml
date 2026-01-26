@@ -86,6 +86,9 @@ enabled: true
 ## @param image The image for Odoo
 ##
 image: ""
+## @param replicas Number of Odoo replicas
+##
+replicas: 1
 ## @param imagePullPolicy Pull policy for Odoo image
 ##
 imagePullPolicy: Always

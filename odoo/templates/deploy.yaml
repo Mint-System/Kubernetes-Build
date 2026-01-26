@@ -9,6 +9,7 @@ metadata:
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app: odoo
