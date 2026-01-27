@@ -73,6 +73,10 @@ The [Development](./Development.md) covers everything to start developing the He
 
 Have a look at the [Backup](./Backup.md) page to learn about how the services make backups.
 
+## Monitoring
+
+Checkout the [Monitor](./Monitor.md) page to learn about how services are monitored.
+
 ## Troubleshooting
 
 Problems and solutions are documented in the [Troubleshooting](./Troubleshooting.md) document.
