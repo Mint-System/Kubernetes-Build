@@ -336,13 +336,14 @@ list-cluster() {
 
 switch-cluster() {
     if test -z "$1"; then echo '\$1 is empty.'; exit; fi
-
     local link_name="$HOME/.kube/config"
+    local target="$PWD/values/config/config.$1"
+
     echo "Remove $link_name"
     rm "$link_name" || true
-    local target="$HOME/.kube/config.$1"
-    touch "$target"
+    
     echo "Setup symlink from $link_name to $target"
+    touch "$target"
     ln -s "$target" "$link_name"
     chmod 0644 "$target"
 
