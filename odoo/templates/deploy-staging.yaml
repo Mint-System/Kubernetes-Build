@@ -22,7 +22,7 @@ spec:
     spec:
       initContainers:
         - name: init
-          image: {{ .Values.image }}
+          image: {{ or .Values.staging.image .Values.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           command:
             - /bin/bash
@@ -106,7 +106,7 @@ spec:
             runAsGroup: 0
       containers:
         - name: odoo
-          image: {{ .Values.image }}
+          image: {{ or .Values.staging.image .Values.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
           - containerPort: 8069

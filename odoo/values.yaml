@@ -151,6 +151,9 @@ staging:
   ## @param staging.enabled Enable or disable staging deployment
   ##
   enabled: false
+  ## @param staging.image The image for Odoo staging
+  ##
+  image: ""
   ## @param staging.name Name of the staging environment (used in staging ingress)
   ##
   name: staging

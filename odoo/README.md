@@ -114,4 +114,5 @@ kubectl patch job/<release>-staging-reset --type=strategic --patch '{"spec":{"su
 | Name              | Description                                               | Value     |
 | ----------------- | --------------------------------------------------------- | --------- |
 | `staging.enabled` | Enable or disable staging deployment                      | `false`   |
+| `staging.image`   | The image for Odoo staging                                | `""`      |
 | `staging.name`    | Name of the staging environment (used in staging ingress) | `staging` |
