@@ -337,7 +337,7 @@ list-cluster() {
 switch-cluster() {
     if test -z "$1"; then echo '\$1 is empty.'; exit; fi
     local link_name="$HOME/.kube/config"
-    local target="$PWD/values/config/config.$1"
+    local target="$PWD/values/.kube/config.$1"
 
     echo "Remove $link_name"
     rm "$link_name" || true
