@@ -27,9 +27,9 @@ kubectl create secret generic prometheus-remote-write-credentials \
 
 ### Remote write configuration
 
-| Name              | Description                    | Value                                         |
-| ----------------- | ------------------------------ | --------------------------------------------- |
-| `remoteWrite.url` | The remote write endpoint URL. | `https://prometheus.example.com/api/v1/write` |
+| Name              | Description                    | Value |
+| ----------------- | ------------------------------ | ----- |
+| `remoteWrite.url` | The remote write endpoint URL. | `""`  |
 
 ### Resources requests and limits
 

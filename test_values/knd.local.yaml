@@ -1,2 +1,4 @@
 kind: cluster
 alias: loc
+remoteWrite:
+  url: https://prometheus.mint-system.ch/api/v1/write

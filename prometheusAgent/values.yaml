@@ -8,7 +8,7 @@ replicas: 1
 ## @section Remote write configuration
 ## @param remoteWrite.url The remote write endpoint URL.
 remoteWrite:
-  url: "https://prometheus.example.com/api/v1/write"
+  url: ""
 ## @skip scrapeConfigs Prometheus scrape configuration in YAML format
 scrapeConfigs: |
   - job_name: 'kubernetes-pods'
@@ -33,7 +33,6 @@ scrapeConfigs: |
         target_label: kubernetes_namespace
       - source_labels: [__meta_kubernetes_pod_name]
         target_label: kubernetes_pod_name
-
   - job_name: 'kubernetes-nodes'
     kubernetes_sd_configs:
       - role: node

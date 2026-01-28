@@ -50,6 +50,7 @@ List of charts:
 * [odoo](/odoo/README.md)
 * [nextcloud](/nextcloud/README.md)
 * [postgres](/postgres/README.md)
+* [prometheusAgent](/prometheusAgent/README.md)
 * [vshnPostgres](/vshnPostgres/README.md)
 * [hugo](/hugo/README.md)
 * [vuepress](/vuepress/README.md)
