@@ -598,6 +598,8 @@ package-repo() {
         helm package "$1"
     else
         echo 'Package all Helm charts.'
+        update-dependencies odoo
+        update-dependencies prometheusAgent
         index-repo
         for chart in $(list-charts); do
              helm package "$chart"

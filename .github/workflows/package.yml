@@ -9,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run task update dependencies
-        run: ./task update-dependencies odoo
       - name: Run task package-repo
         run: ./task package-repo
       - name: Run task commit
