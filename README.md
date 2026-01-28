@@ -11,10 +11,11 @@ Kubernetes Build
 
 The Mint System collection of Helm charts.
 
-* 🚀 **Install**: Install Helm repository and get started with Odoo.
-* 🛠️ **Develop**: Deploy Odoo and Postgres to a local Kubernetes cluster.
-* 🏗️ **Build**: Fork and build your own Helm charts.
-* 🚀 **Deploy**: Configure and deploy Helm charts to remote clusters.
+- **Install**: Install Helm repository and get started with Odoo.
+- **Develop**: Deploy Odoo and Postgres to a local Kubernetes cluster.
+- **Build**: Fork and build your own Helm charts.
+- **Deploy**: Configure and deploy Helm charts to remote clusters.
+- **Bootstrap**: Bootstrap new Kubernetes clusters.
 
 ## Requirements
 
