@@ -309,7 +309,7 @@ forward-ingress-nginx() {
 list-charts() {
     for dir in */; do
         dir_name="${dir%/}"
-        if [[ ! "$dir_name" =~ ^(public|values|test_values)$ ]] && ! git check-ignore -q "$dir_name" 2>/dev/null; then
+        if [ -f "$dir/Chart.yaml" ]; then
             echo "$dir_name"
         fi
     done
