@@ -8,9 +8,8 @@ data:
       scrape_interval: 15s
       external_labels:
         agent: "k8s-agent"
-    agent_mode: true
     scrape_configs:
-{{ .Values.scrapeConfigs | indent 6 }}
+{{ .Values.scrapeConfigs | indent 4 }}
     remote_write:
       - url: "{{ .Values.remoteWrite.url }}"
         basic_auth:

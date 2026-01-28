@@ -16,10 +16,10 @@ spec:
       containers:
         - name: prometheus-agent
           image: "{{ .Values.image }}"
-          imagePullPolicy: {{ .Values.pullPolicy }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - --config.file=/etc/prometheus/prometheus.yml
-            - --storage.tsdb.path=/data
+            - --storage.agent.path=/data
             - --web.enable-lifecycle
             - --web.enable-admin-api
             - --enable-feature=agent
