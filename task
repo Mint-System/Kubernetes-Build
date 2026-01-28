@@ -330,14 +330,47 @@ list-external-charts() {
 }
 
 list-cluster() {
-    for file in values/*.yaml; do
-        local kind=$(yq eval '.kind' "$file")
-        local alias=$(yq eval '.alias' "$file")
-        if [[ -n "$kind" && "$kind" = 'cluster' ]]; then
-            local base=$(basename "$file" .yaml)
-            printf '%s (%s)\n' "$alias" "$base"
-        fi
-    done | sort
+    local -a rows
+    local max_name=4 max_alias=5 max_base=4
+
+    # Collect all rows and compute max widths
+    for file in $(grep -l "^kind: cluster$" values/*.yaml 2>/dev/null); do
+        local name=$(yq eval '.name' "$file" 2>/dev/null)
+        local alias=$(yq eval '.alias' "$file" 2>/dev/null)
+        local base=$(basename "$file" .yaml)
+
+        [[ -z "$name" ]] && name="(not set)"
+        [[ -z "$alias" ]] && alias="(not set)"
+
+        rows+=("$name|$alias|$base")
+
+        # Update max widths
+        (( ${#name} > max_name )) && max_name=${#name}
+        (( ${#alias} > max_alias )) && max_alias=${#alias}
+        (( ${#base} > max_base )) && max_base=${#base}
+    done
+
+    [[ ${#rows[@]} -eq 0 ]] && {
+        echo "No cluster files found."
+        return
+    }
+
+    printf '| %-*s | %-*s | %-*s |\n' \
+        "$max_name" "Name" \
+        "$max_alias" "Alias" \
+        "$max_base" "Base"
+
+    printf '|-%*s-|-%*s-|-%*s-|\n' \
+        "$max_name" "$(printf '%*s' "$max_name" '' | tr ' ' '-')" \
+        "$max_alias" "$(printf '%*s' "$max_alias" '' | tr ' ' '-')" \
+        "$max_base" "$(printf '%*s' "$max_base" '' | tr ' ' '-')"
+
+    printf '%s\n' "${rows[@]}" | sort | while IFS='|' read -r name alias base; do
+        printf '| %-*s | %-*s | %-*s |\n' \
+            "$max_name" "$name" \
+            "$max_alias" "$alias" \
+            "$max_base" "$base"
+    done
 }
 
 switch-cluster() {
