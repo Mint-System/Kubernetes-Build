@@ -1,73 +1,50 @@
 ## @section Ingress parameters
-##
 ingress:
   ## @param ingress.enabled Enable or disable the ingress
-  ##
   enabled: true
   ## @param ingress.className The class name for the ingress
-  ##
   className: nginx
   ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
-  ##
   clusterIssuerRef: ""
   ## @param ingress.host The host for the ingress
-  ##
   host: ""
   ## @param ingress.customDomain The custom domain for the ingress
-  ##
   customDomain: ""
 
 ## @section CloudNativePG parameters
-##
 cnpg:
   ## @param cnpg.enabled Enable or disable CloudNativePG
-  ##
   enabled: true
   ## @param cnpg.nameOverride Override the name of the CloudNativePG cluster
   ## Default: "{release-name}-postgresql"
-  ##
   nameOverride: ""
   ## @param cnpg.instances Number of instances (1 for single, 2+ for high availability)
-  ##
   instances: 1
   ## @param cnpg.imageName PostgreSQL image to use
-  ##
   imageName: ghcr.io/cloudnative-pg/postgresql:16.0
   storage:
     ## @param cnpg.storage.size Persistent volume size for each instance
-    ##
     size: 8Gi
   ## @param cnpg.database Name of the CloudNativePG database to create
-  ##
   database: nextcloud
   ## @param cnpg.owner Name of the database user
-  ##
   owner: app
 
 ## @section Nextcloud parameters
-##
 ## @param image The image for Nextcloud
-##
 image: ""
 ## @param imagePullPolicy Pull policy for Nextcloud image
-##
 imagePullPolicy: Always
 ## @param storageSize Set the storage size
-##
 storageSize: "40Gi"
 ## @param storageClassName Set the storage class
-##
 storageClassName: ""
 
 ## @section K8up parameters
-##
 k8up:
   ## @param k8up.enabled Enable or disable K8up
-  ##
   enabled: false
   ## @param k8up.endpoint S3 endpoint
-  ##
   endpoint: ""
   ## @param k8up.bucket S3 bucket name
-  ##
   bucket: ""

@@ -1,17 +1,11 @@
 ## @section  Forgejo Runner parameters
-##
 ## @param image The image for  Forgejo Runner
-##
 image: code.forgejo.org/forgejo/runner:9
 ## @param imagePullPolicy Pull policy for  Forgejo Runner image
-##
 imagePullPolicy: Always
 ## @param forgejoInstanceUrl Forgejo instance url.
-##
 forgejoInstanceUrl: https://codeberg.org
 ## @param secretRef The secret reference for the Forgejo Runner
-##
 secretRef: forgejo-runner
 ## @param storageClassName Set the storage class
-##
 storageClassName: ""

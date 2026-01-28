@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-agent
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: prometheus-agent
+  template:
+    metadata:
+      labels:
+        app: prometheus-agent
+    spec:
+      serviceAccountName: prometheus-agent
+      containers:
+        - name: prometheus-agent
+          image: "{{ .Values.image }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=/data
+            - --web.enable-lifecycle
+            - --web.enable-admin-api
+            - --enable-feature=agent
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/prometheus
+            - name: storage-volume
+              mountPath: /data
+            - name: remote-write-secret
+              mountPath: /etc/prometheus
+              readOnly: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: prometheus-agent-config
+        - name: storage-volume
+          emptyDir: {}
+        - name: remote-write-secret
+          secret:
+            secretName: prometheus-remote-write-credentials
+            items:
+              - key: username
+                path: remote-write-username
+              - key: password
+                path: remote-write-password
