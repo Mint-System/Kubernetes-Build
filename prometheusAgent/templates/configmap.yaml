@@ -13,5 +13,5 @@ data:
     remote_write:
       - url: "{{ .Values.remoteWrite.url }}"
         basic_auth:
-          username_file: /etc/prometheus/remote-write-username
-          password_file: /etc/prometheus/remote-write-password
+          username_file: /etc/prometheus/secret/remote-write-username
+          password_file: /etc/prometheus/secret/remote-write-password

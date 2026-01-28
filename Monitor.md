@@ -18,6 +18,21 @@ Install the chart.
 task install-chart prometheusAgent test_values/knd.local.yaml
 ```
 
+## Optional: Enable Kube-State-Metrics
+
+To collect Kubernetes object state metrics (pods, deployments, services, etc.), enable kube-state-metrics in your values file:
+
+```yaml
+kube-state-metrics:
+  enabled: true
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi
+```
+
 ## Checking Metrics
 
 To verify the prometheus-agent is running and sending metrics:
