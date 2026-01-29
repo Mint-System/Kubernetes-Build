@@ -358,7 +358,7 @@ list-cluster() {
     printf '| %-*s | %-*s | %-*s |\n' \
         "$max_name" "Name" \
         "$max_alias" "Alias" \
-        "$max_base" "Base"
+        "$max_base" "Cname"
 
     printf '|-%*s-|-%*s-|-%*s-|\n' \
         "$max_name" "$(printf '%*s' "$max_name" '' | tr ' ' '-')" \
