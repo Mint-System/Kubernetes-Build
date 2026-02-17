@@ -15,7 +15,7 @@ Read the `AGENTS.md` and `README.md` to get understanding of the project.
 Create a new command `task generate-kubconfig <name>`. According to the description in `deploymentUpdater/README.md` this command
 generates a kubeconfig.
 
-When I run `task generate-kubconfig deploy` it generates a new kubeconfig in `values/.kube/config.<cluster>-deploy`. The active cluster is `task show-cluster`.
+When I run `task generate-kubconfig deploy` it generates a new kubeconfig in `values/.kube/config.<cluster-deploy`. The active cluster is `task show-cluster`.
 
 ## Worklog
 
@@ -27,7 +27,7 @@ When I run `task generate-kubconfig deploy` it generates a new kubeconfig in `va
    - Takes a name parameter
    - Gets the current cluster using show-cluster
    - Extracts server, CA, token, and namespace from the service account secret
-   - Generates a kubeconfig file in values/.kube/config.<cluster>-<name>
+   - Generates a kubeconfig file in `values/.kube/config.<cluster>-<name>`
 6. Installed the deploymentUpdater chart to create the required service account
 7. Tested the command successfully
 

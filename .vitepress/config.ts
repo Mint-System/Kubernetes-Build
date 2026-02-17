@@ -10,7 +10,6 @@ export default defineConfig({
     search: {
       provider: "local",
     },
-    srcExclude: ["AGENTS.md"],
     nav: [
       { text: "Home", link: "/" },
       { text: "Odoo Build", link: "https://odoo.build/" },
