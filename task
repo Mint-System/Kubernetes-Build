@@ -238,9 +238,10 @@ start-and-prepare() {
     echo "Install k8up."
     install-chart k8up
 
-    echo "Load Odoo image."
-    docker pull mintsystem/odoo:18.0.20260209
-    load-image mintsystem/odoo:18.0.20260209
+    #FIXME: This does not work in GitHub runner env.
+    # echo "Load Odoo image."
+    # docker pull mintsystem/odoo:18.0.20260209
+    # load-image mintsystem/odoo:18.0.20260209
 }
 
 load-image() {
