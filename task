@@ -8,73 +8,94 @@ help() {
     echo 'commands:'
     echo
 
-    # Define column widths
-    local cmd_width=28
-    local opt_width=15
-    local desc_width=50
-    local column="| %-${cmd_width}s | %-${opt_width}s | %-${desc_width}s |\n"
-    # Print table header
-    printf "$column" 'Command' 'Option' 'Description'
-    echo "|$(printf '%*s' $((cmd_width + 2)) '' | tr ' ' '-')|$(printf '%*s' $((opt_width + 2)) '' | tr ' ' '-')|$(printf '%*s' $((desc_width + 2)) '' | tr ' ' '-')|"
+    local -a rows
+    local max_cmd=7 max_opt=6 max_desc=11
 
+    rows+=("Command|Option|Description")
+    
     # Env
-    printf "$column" 'version' '' 'Show version of required tools.'
-    printf "$column" 'info' '' 'Show info about env.'
-    printf "$column" 'template-dotenv' '' 'Generate .env from .env.template.'
-    printf "$column" 'export-kubeconfig' '[user][path]' 'Export kubeconfig file for service account.'
-    printf "$column" 'generate-kubconfig' '[name]' 'Generate kubeconfig for deploymentUpdater.'
-    printf "$column" 'load-kubeconfig-from-keepass' '[ctx]' 'Load kubeconfig file from KeePass.'
-    printf "$column" 'save-kubeconfig-to-keepass' '[ctx]' 'Save kubeconfig file in KeePass.'
+    rows+=("version||Show version of required tools.")
+    rows+=("info||Show info about env.")
+    rows+=("template-dotenv||Generate .env from .env.template.")
+    rows+=("export-kubeconfig|[user][path]|Export kubeconfig file for service account.")
+    rows+=("generate-kubconfig|[name]|Generate kubeconfig for deploymentUpdater.")
+    rows+=("load-kubeconfig-from-keepass|[ctx]|Load kubeconfig file from KeePass.")
+    rows+=("save-kubeconfig-to-keepass|[ctx]|Save kubeconfig file in KeePass.")
     # Docs
-    printf "$column" 'install-vitepress' '' 'Install Node dependencies.'
-    printf "$column" 'docs' '' 'Generate Helm chart readmes.'
-    printf "$column" 'lint' '' 'Lint Helm charts.'
-    printf "$column" 'dev-vitepress' '' 'Start VitePress dev server.'
-    printf "$column" 'build-vitepress' '' 'Build site with VitePress.'
-    printf "$column" 'serve-vitepress' '' 'Serve VitePress build.'
+    rows+=("install-vitepress||Install Node dependencies.")
+    rows+=("docs||Generate Helm chart readmes.")
+    rows+=("lint||Lint Helm charts.")
+    rows+=("dev-vitepress||Start VitePress dev server.")
+    rows+=("build-vitepress||Build site with VitePress.")
+    rows+=("serve-vitepress||Serve VitePress build.")
     # Host
-    printf "$column" 'start' '' 'Start kind Kubernetes cluster.'
-    printf "$column" 'start-and-prepare' '' 'Start and prepare Kubernetes cluster.'
-    printf "$column" 'load-image' '[tag]' 'Load Docker image into kind cluster.'
-    printf "$column" 'delete-kind' '' 'Delete kind Kubernetes cluster.'
-    printf "$column" 'setup-hosts' '' 'Update hosts file.'
-    printf "$column" 'forward' '[chart]' 'Forward port.'
+    rows+=("start||Start kind Kubernetes cluster.")
+    rows+=("start-and-prepare||Start and prepare Kubernetes cluster.")
+    rows+=("load-image|[tag]|Load Docker image into kind cluster.")
+    rows+=("delete-kind||Delete kind Kubernetes cluster.")
+    rows+=("setup-hosts||Update hosts file.")
+    rows+=("forward|[chart]|Forward port.")
     # Chart
-    printf "$column" 'list-charts' '' 'List local Helm charts.'
-    printf "$column" 'list-external-charts' '' 'List external Helm charts.'
-    printf "$column" 'list-cluster' '' 'List clusters.'
-    printf "$column" 'list-context' '' 'List kubeconfig files.'
-    printf "$column" 'switch-context' '' 'Switch kubeconfig file.'
-    printf "$column" 'show-context' '' 'Show active kubeconfig.'
-    printf "$column" 'show-cluster' '' 'Show active cluster.'
-    printf "$column" 'get-context-alias' '' 'Get alias of current context.'
-    printf "$column" 'update-dependencies' '[chart]' 'Update dependencies for a chart.'
-    printf "$column" 'install-chart' '[chart][values]' 'Install Helm chart.'
-    printf "$column" 'upgrade-release' '[chart][values]' 'Upgrade Helm release.'
-    printf "$column" 'uninstall-release' '[release]' 'Uninstall Helm release.'
+    rows+=("list-charts||List local Helm charts.")
+    rows+=("list-external-charts||List external Helm charts.")
+    rows+=("list-cluster||List clusters.")
+    rows+=("list-context||List kubeconfig files.")
+    rows+=("switch-context||Switch kubeconfig file.")
+    rows+=("show-context||Show active kubeconfig.")
+    rows+=("show-cluster||Show active cluster.")
+    rows+=("get-context-alias||Get alias of current context.")
+    rows+=("update-dependencies|[chart]|Update dependencies for a chart.")
+    rows+=("install-chart|[chart][values]|Install Helm chart.")
+    rows+=("upgrade-release|[chart][values]|Upgrade Helm release.")
+    rows+=("uninstall-release|[release]|Uninstall Helm release.")
     # kubectl
-    printf "$column" 'get-secrets' '[chart]' 'Show secrets for chart.'
-    printf "$column" 'exec-bash' '[chart]' 'Open bash shell in container.'
-    printf "$column" 'logs' '[grep]' 'Select pods with grep and show logs.'
-    printf "$column" 'list' '' 'List Helm deployments.'
-    printf "$column" 'get-pods' '' 'List all pods.'
-    printf "$column" 'login-oc' '' 'Refresh the auth token for OpenShift.'
-    printf "$column" 'suspend-job' '[name]' 'Suspend a job to stop it.'
-    printf "$column" 'unsuspend-job' '[name]' 'Unsuspend a job to run it.'
+    rows+=("get-secrets|[chart]|Show secrets for chart.")
+    rows+=("exec-bash|[chart]|Open bash shell in container.")
+    rows+=("logs|[grep]|Select pods with grep and show logs.")
+    rows+=("list||List Helm deployments.")
+    rows+=("get-pods||List all pods.")
+    rows+=("login-oc||Refresh the auth token for OpenShift.")
+    rows+=("suspend-job|[name]|Suspend a job to stop it.")
+    rows+=("unsuspend-job|[name]|Unsuspend a job to run it.")
     # Helm
-    printf "$column" 'add-repos' '' 'Add the required Helm repos.'
-    printf "$column" 'template-manifest' '[chart][values]' 'Template all charts with Helm.'
-    printf "$column" 'package-repo' '[chart]' 'Package Helm charts.'
-    printf "$column" 'index-repo' '' 'Index Helm chart.'
-    printf "$column" 'remove-repo' '' 'Remove the kubernetes-build repo.'
-    printf "$column" 'commit' '' 'Commit .tgz files.'
+    rows+=("add-repos||Add the required Helm repos.")
+    rows+=("template-manifest|[chart][values]|Template all charts with Helm.")
+    rows+=("package-repo|[chart]|Package Helm charts.")
+    rows+=("index-repo||Index Helm chart.")
+    rows+=("remove-repo||Remove the kubernetes-build repo.")
+    rows+=("commit||Commit .tgz files.")
     # LLM
-    printf "$column" 'commit-with-llm' '' 'Commit with llm generated commit message.'
-    printf "$column" 'update-with-llm' '[glob][prompt]' 'Feed files matching glob to LLM and apply changes.'
+    rows+=("commit-with-llm||Commit with llm generated commit message.")
+    rows+=("update-with-llm|[glob][prompt]|Feed files matching glob to LLM and apply changes.")
     # Test
-    printf "$column" 'test-chart-clusterIssuer' '' 'Test cluster issuer.'
-    printf "$column" 'test-chart-odoo' '[cleanup]' 'Setup Odoo chart and dependencies.'
-    printf "$column" 'test-chart-nextcloud' '[cleanup]' 'Setup Nextcloud chart and dependencies.'
+    rows+=("test-chart-clusterIssuer||Test cluster issuer.")
+    rows+=("test-chart-odoo|[cleanup]|Setup Odoo chart and dependencies.")
+    rows+=("test-chart-nextcloud|[cleanup]|Setup Nextcloud chart and dependencies.")
+
+    for row in "${rows[@]}"; do
+        IFS='|' read -r cmd opt desc <<< "$row"
+        (( ${#cmd} > max_cmd )) && max_cmd=${#cmd}
+        (( ${#opt} > max_opt )) && max_opt=${#opt}
+        (( ${#desc} > max_desc )) && max_desc=${#desc}
+    done
+
+    printf '| %-*s | %-*s | %-*s |\n' \
+        "$max_cmd" "Command" \
+        "$max_opt" "Option" \
+        "$max_desc" "Description"
+
+    printf '|-%*s-|-%*s-|-%*s-|\n' \
+        "$max_cmd" "$(printf '%*s' "$max_cmd" '' | tr ' ' '-')" \
+        "$max_opt" "$(printf '%*s' "$max_opt" '' | tr ' ' '-')" \
+        "$max_desc" "$(printf '%*s' "$max_desc" '' | tr ' ' '-')"
+
+    for row in "${rows[@]:1}"; do
+        IFS='|' read -r cmd opt desc <<< "$row"
+        printf '| %-*s | %-*s | %-*s |\n' \
+            "$max_cmd" "$cmd" \
+            "$max_opt" "$opt" \
+            "$max_desc" "$desc"
+    done
 }
 
 # Default vars
