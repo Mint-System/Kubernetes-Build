@@ -18,7 +18,7 @@ kubectl get namespaces
 Switch to `chk` cluster.
 
 ```bash
-task switch-cluster chk
+task switch-context chk-admin
 ```
 
 ## Setup haproxy ingress

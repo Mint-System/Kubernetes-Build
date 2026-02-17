@@ -45,8 +45,9 @@ help() {
     # Chart
     printf "$column" 'list-charts' '' 'List local Helm charts.'
     printf "$column" 'list-external-charts' '' 'List external Helm charts.'
-    printf "$column" 'list-cluster' '' 'List contexts.'
-    printf "$column" 'switch-cluster' '' 'Switch kubeconfig file.'
+    printf "$column" 'list-cluster' '' 'List clusters.'
+    printf "$column" 'list-context' '' 'List kubeconfig files.'
+    printf "$column" 'switch-context' '' 'Switch kubeconfig file.'
     printf "$column" 'show-context' '' 'Show active kubeconfig.'
     printf "$column" 'get-context-alias' '' 'Get alias of current context.'
     printf "$column" 'update-dependencies' '[chart]' 'Update dependencies for a chart.'
@@ -334,18 +335,15 @@ list-cluster() {
     local -a rows
     local max_name=4 max_alias=5 max_base=4
 
-    # Collect all rows and compute max widths
     for file in $(grep -l "^kind: cluster$" values/*.yaml 2>/dev/null); do
         local name=$(yq eval '.name' "$file" 2>/dev/null)
         local alias=$(yq eval '.alias' "$file" 2>/dev/null)
         local base=$(basename "$file" .yaml)
-
         [[ -z "$name" ]] && name="(not set)"
         [[ -z "$alias" ]] && alias="(not set)"
 
         rows+=("$name|$alias|$base")
 
-        # Update max widths
         (( ${#name} > max_name )) && max_name=${#name}
         (( ${#alias} > max_alias )) && max_alias=${#alias}
         (( ${#base} > max_base )) && max_base=${#base}
@@ -374,7 +372,41 @@ list-cluster() {
     done
 }
 
-switch-cluster() {
+list-context() {
+    local -a rows
+    local max_name=4 max_path=4
+
+    for file in values/.kube/config.*; do
+        [[ ! -f "$file" ]] && continue
+        local name=$(basename "$file" | sed 's/^config\.//')
+        
+        rows+=("$name|$file")
+
+        (( ${#name} > max_name )) && max_name=${#name}
+        (( ${#file} > max_path )) && max_path=${#file}
+    done
+
+    [[ ${#rows[@]} -eq 0 ]] && {
+        echo "No context files found in values/.kube/config.*"
+        return
+    }
+
+    printf '| %-*s | %-*s |\n' \
+        "$max_name" "Name" \
+        "$max_path" "Path"
+
+    printf '|-%*s-|-%*s-|\n' \
+        "$max_name" "$(printf '%*s' "$max_name" '' | tr ' ' '-')" \
+        "$max_path" "$(printf '%*s' "$max_path" '' | tr ' ' '-')"
+
+    printf '%s\n' "${rows[@]}" | sort | while IFS='|' read -r name path; do
+        printf '| %-*s | %-*s |\n' \
+            "$max_name" "$name" \
+            "$max_path" "$path"
+    done
+}
+
+switch-context() {
     if test -z "$1"; then echo '\$1 is empty.'; exit; fi
     local link_name="$HOME/.kube/config"
     local target="$PWD/values/.kube/config.$1"

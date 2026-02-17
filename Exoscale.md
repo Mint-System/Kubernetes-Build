@@ -11,7 +11,7 @@ Download the Kubeconfig file and move it.
 Switch to `exo` cluster.
 
 ```bash
-task switch-cluster exo
+task switch-context exo-admin
 ```
 
 ## Setup haproxy ingress

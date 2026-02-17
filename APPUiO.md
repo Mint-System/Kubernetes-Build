@@ -31,7 +31,7 @@ task add-repos
 Switch to `axo` cluster.
 
 ```bash
-task switch-cluster axo
+task switch-context axo-admin
 ```
 
 Install the Helm release.

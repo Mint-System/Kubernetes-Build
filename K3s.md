@@ -9,7 +9,7 @@ Setup Kubeconfig with alias `rpi`.
 Switch to `rpi` cluster.
 
 ```bash
-task switch-cluster rpi
+task switch-context rpi-admin
 ```
 
 ## Setup haproxy ingress
