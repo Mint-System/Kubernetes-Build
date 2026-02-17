@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-if [[ -a '.env' ]]; then
-    source .env
-fi
-
 help() {
     echo
     echo 'task <command> [options]'
@@ -26,6 +22,7 @@ help() {
     printf "$column" 'info' '' 'Show info about env.'
     printf "$column" 'template-dotenv' '' 'Generate .env from .env.template.'
     printf "$column" 'export-kubeconfig' '[user][path]' 'Export kubeconfig file for service account.'
+    printf "$column" 'generate-kubconfig' '[name]' 'Generate kubeconfig for deploymentUpdater.'
     printf "$column" 'load-kubeconfig-from-keepass' '[ctx]' 'Load kubeconfig file from KeePass.'
     printf "$column" 'save-kubeconfig-to-keepass' '[ctx]' 'Save kubeconfig file in KeePass.'
     # Docs
@@ -49,6 +46,7 @@ help() {
     printf "$column" 'list-context' '' 'List kubeconfig files.'
     printf "$column" 'switch-context' '' 'Switch kubeconfig file.'
     printf "$column" 'show-context' '' 'Show active kubeconfig.'
+    printf "$column" 'show-cluster' '' 'Show active cluster.'
     printf "$column" 'get-context-alias' '' 'Get alias of current context.'
     printf "$column" 'update-dependencies' '[chart]' 'Update dependencies for a chart.'
     printf "$column" 'install-chart' '[chart][values]' 'Install Helm chart.'
@@ -206,6 +204,43 @@ export-kubeconfig() {
   kubectl config use-context default --kubeconfig=$kube_output_file
 
   echo "Kubeconfig exported for user $kube_user to file $kube_output_file"
+}
+
+generate-kubconfig() {
+  if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+
+  local name="$1"
+  local cluster=$(show-cluster)
+  local kubeconfig_file="values/.kube/config.${cluster}-${name}"
+  local secret_name="${name}-sa-token"
+
+  local server=$(kubectl config view --minify --output 'jsonpath={.clusters[0].cluster.server}')
+  local ca=$(kubectl get secret/$secret_name -o jsonpath='{.data.ca\.crt}')
+  local token=$(kubectl get secret/$secret_name -o jsonpath='{.data.token}' | base64 --decode)
+  local namespace=$(kubectl get secret/$secret_name -o jsonpath='{.data.namespace}' | base64 --decode)
+
+  echo "
+apiVersion: v1
+kind: Config
+clusters:
+- name: default-cluster
+  cluster:
+    certificate-authority-data: ${ca}
+    server: ${server}
+contexts:
+- name: default-context
+  context:
+    cluster: default-cluster
+    namespace: ${namespace}
+    user: default-user
+current-context: default-context
+users:
+- name: default-user
+  user:
+    token: ${token}
+" > "$kubeconfig_file"
+
+  echo "Kubeconfig generated for $name at $kubeconfig_file"
 }
 
 # Host Commands
@@ -425,6 +460,10 @@ switch-context() {
 
 show-context() {
     basename "$(readlink "$HOME/.kube/config")" | cut -d. -f2
+}
+
+show-cluster() {
+    basename "$(readlink "$HOME/.kube/config")" | cut -d. -f2 | cut -d- -f1 
 }
 
 update-dependencies() {

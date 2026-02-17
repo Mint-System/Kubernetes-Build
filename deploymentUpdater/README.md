@@ -1,12 +1,12 @@
 # Mint System Deployment Updater
 
-Sets a service account that can update deployments.
+Cluster-wide service account that can update deployments.
 
 ## Integration
 
 ### Forgejo Deployment action
 
-Use this service account to make deployments to Kuberentes. The deployment action requires a kubeconfig. Export the kubeconfig with this command:
+Use this service account to make deployments to Kubernetes. The deployment action requires a kubeconfig. Export the kubeconfig with this command:
 
 ```bash
 name=deploy-sa-token
