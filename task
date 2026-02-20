@@ -55,8 +55,7 @@ help() {
     rows+=("list||List Helm deployments.")
     rows+=("get-pods||List all pods.")
     rows+=("login-oc||Refresh the auth token for OpenShift.")
-    rows+=("suspend-job|[name]|Suspend a job to stop it.")
-    rows+=("unsuspend-job|[name]|Unsuspend a job to run it.")
+    rows+=("run-job|[name]|Make a copy and unsuspends the job.")
     # Helm
     rows+=("add-repos||Add the required Helm repos.")
     rows+=("template-manifest|[chart][values]|Template all charts with Helm.")
@@ -111,8 +110,8 @@ keepass_entry=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
 if kubectl &> /dev/null; then
     current_context=$(kubectl config current-context 2> /dev/null) || current_context=""
 fi
-if kubens &> /dev/null; then
-    namespace=$(kubens -c)
+if kubectl-ctx &> /dev/null; then
+    namespace=$(kubectl-ctx -c)
 fi
 get-context-alias() {
     local alias="$(basename "$(readlink "$HOME/.kube/config" 2>/dev/null)" 2>/dev/null | cut -d '.' -f 2)"
@@ -476,7 +475,7 @@ switch-context() {
     chmod 0644 "$target"
 
     echo 'Select namespace'
-    kubens
+    kubectl-ctx
 }
 
 show-context() {
@@ -603,20 +602,13 @@ uninstall-release() {
     helm uninstall "$release_name"
 }
 
-unsuspend-job() {
+run-job() {
     if test -z "$1"; then echo '\$1 is empty.'; exit 1; fi
     local job_name="$1"
 
-    echo "Running job: $job_name"
-    kubectl patch job/$job_name --type=strategic --patch '{"spec":{"suspend":false}}'
-}
-
-suspend-job() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit 1; fi
-    local job_name="$1"
-
-    echo "Running job: $job_name"
-    kubectl patch job/$job_name --type=strategic --patch '{"spec":{"suspend":true}}'
+    echo "Run job: $job_name"
+    kubectl create job --from=job/${job_name} ${job_name}-run
+    kubectl patch job/${job_name}-run --type=strategic --patch '{"spec":{"suspend":false}}'
 }
 
 # kubectl Commands
