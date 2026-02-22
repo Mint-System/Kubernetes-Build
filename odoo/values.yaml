@@ -70,8 +70,8 @@ proxyMode: true
 downloadOdooEnterprise: false
 ## @param addonsGitRepos List of addon Git repositories for Odoo
 addonsGitRepos:
-  - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0
-  - https://github.com/OCA/Server-Tools.git#18.0
+  - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git
+  - https://github.com/OCA/Server-Tools.git
 ## @param pythonInstall List of python packages to insall
 pythonInstall: []
 ## @param database The database for odoo

@@ -82,24 +82,24 @@ kubectl patch job/<release>-staging-reset --type=strategic --patch '{"spec":{"su
 
 ### Odoo parameters
 
-| Name                     | Description                                   | Value                                                                                                               |
-| ------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `enabled`                | Enable or disable Odoo                        | `true`                                                                                                              |
-| `image`                  | The image for Odoo                            | `""`                                                                                                                |
-| `replicas`               | Number of Odoo replicas                       | `1`                                                                                                                 |
-| `imagePullPolicy`        | Pull policy for Odoo image                    | `Always`                                                                                                            |
-| `proxyMode`              | Enable or disable proxy mode for Odoo         | `true`                                                                                                              |
-| `downloadOdooEnterprise` | Enable or disable downloading Odoo Enterprise | `false`                                                                                                             |
-| `addonsGitRepos`         | List of addon Git repositories for Odoo       | `["https://github.com/Mint-System/Odoo-Apps-Server-Tools.git#18.0","https://github.com/OCA/Server-Tools.git#18.0"]` |
-| `pythonInstall`          | List of python packages to insall             | `[]`                                                                                                                |
-| `database`               | The database for odoo                         | `odoo`                                                                                                              |
-| `init.lang`              | The initial language for Odoo                 | `de_CH`                                                                                                             |
-| `init.login`             | The initial username for Odoo admin account   | `""`                                                                                                                |
-| `init.password`          | The initial passwod for Odoo admin account    | `""`                                                                                                                |
-| `listDB`                 | Enable or disable listing databases for Odoo  | `false`                                                                                                             |
-| `workers`                | Define the amount of Odoo workers to spawn    | `4`                                                                                                                 |
-| `secretRef`              | The secret reference for Odoo                 | `odoo-creds`                                                                                                        |
-| `storageClassName`       | Set the storage class                         | `""`                                                                                                                |
+| Name                     | Description                                   | Value                                                                                                     |
+| ------------------------ | --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `enabled`                | Enable or disable Odoo                        | `true`                                                                                                    |
+| `image`                  | The image for Odoo                            | `""`                                                                                                      |
+| `replicas`               | Number of Odoo replicas                       | `1`                                                                                                       |
+| `imagePullPolicy`        | Pull policy for Odoo image                    | `Always`                                                                                                  |
+| `proxyMode`              | Enable or disable proxy mode for Odoo         | `true`                                                                                                    |
+| `downloadOdooEnterprise` | Enable or disable downloading Odoo Enterprise | `false`                                                                                                   |
+| `addonsGitRepos`         | List of addon Git repositories for Odoo       | `["https://github.com/Mint-System/Odoo-Apps-Server-Tools.git","https://github.com/OCA/Server-Tools.git"]` |
+| `pythonInstall`          | List of python packages to insall             | `[]`                                                                                                      |
+| `database`               | The database for odoo                         | `odoo`                                                                                                    |
+| `init.lang`              | The initial language for Odoo                 | `de_CH`                                                                                                   |
+| `init.login`             | The initial username for Odoo admin account   | `""`                                                                                                      |
+| `init.password`          | The initial passwod for Odoo admin account    | `""`                                                                                                      |
+| `listDB`                 | Enable or disable listing databases for Odoo  | `false`                                                                                                   |
+| `workers`                | Define the amount of Odoo workers to spawn    | `4`                                                                                                       |
+| `secretRef`              | The secret reference for Odoo                 | `odoo-creds`                                                                                              |
+| `storageClassName`       | Set the storage class                         | `""`                                                                                                      |
 
 ### K8up parameters
 

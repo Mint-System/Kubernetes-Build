@@ -27,9 +27,9 @@ kubectl create secret generic prometheus-remote-write-credentials \
 
 ### Remote write configuration
 
-| Name              | Description                    | Value |
-| ----------------- | ------------------------------ | ----- |
-| `remoteWrite.url` | The remote write endpoint URL. | `""`  |
+| Name              | Description                    | Value                                            |
+| ----------------- | ------------------------------ | ------------------------------------------------ |
+| `remoteWrite.url` | The remote write endpoint URL. | `https://prometheus.mint-system.ch/api/v1/write` |
 
 ### Resources requests and limits
 
@@ -39,3 +39,12 @@ kubectl create secret generic prometheus-remote-write-credentials \
 | `resources.requests.cpu`    | CPU request for the container    | `250m`  |
 | `resources.limits.memory`   | Memory limit for the container   | `128Mi` |
 | `resources.limits.cpu`      | CPU limit for the container      | `500m`  |
+
+### Kube-state-metrics configuration
+
+| Name                                           | Description                            | Value   |
+| ---------------------------------------------- | -------------------------------------- | ------- |
+| `kube-state-metrics.enabled`                   | Enable kube-state-metrics as sub-chart | `true`  |
+| `kube-state-metrics.resources.requests.memory` | Memory request for the container       | `32Mi`  |
+| `kube-state-metrics.resources.requests.cpu`    | CPU request for the container          | `10m`   |
+| `kube-state-metrics.resources.limits.memory`   | Memory limit for the container         | `128Mi` |
