@@ -107,17 +107,19 @@ CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
 
 pass_entry=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
 keepass_entry=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
-if kubectl &> /dev/null; then
-    current_context=$(kubectl config current-context 2> /dev/null) || current_context=""
-fi
-if kubectl-ctx &> /dev/null; then
-    namespace=$(kubectl-ctx -c)
-fi
+
+get-namespace() {
+    if kubectl-ctx &> /dev/null; then
+        echo $(kubectl-ctx -c 2> /dev/null)
+    fi
+}
+namespace="$(get-namespace)"
+
 get-context-alias() {
     local alias="$(basename "$(readlink "$HOME/.kube/config" 2>/dev/null)" 2>/dev/null | cut -d '.' -f 2)"
     echo "${alias:-loc}"
 }
-context_alias=$(get-context-alias)
+context_alias="$(get-context-alias)"
 
 # Import commands
 
@@ -148,8 +150,7 @@ version() {
 
 info() {
     echo "OpenShift-Project: $OC_PROJECT"
-    echo "Current-Context: $current_context"
-    echo "Context-Alias: $context_alias"
+    echo "Context-Alias: $(get-context-alias)"
     echo "Namespace: $namespace"
 }
 
@@ -295,9 +296,9 @@ start-and-prepare() {
     install-chart k8up
 
     #FIXME: This does not work in GitHub runner env.
-    # echo "Load Odoo image."
-    # docker pull mintsystem/odoo:18.0.20260209
-    # load-image mintsystem/odoo:18.0.20260209
+    echo "Load Odoo image."
+    docker pull mintsystem/odoo:18.0.20260209
+    load-image mintsystem/odoo:18.0.20260209
 }
 
 load-image() {
