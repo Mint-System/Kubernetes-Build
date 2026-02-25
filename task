@@ -476,7 +476,7 @@ switch-context() {
     chmod 0644 "$target"
 
     echo 'Select namespace'
-    kubectl-ctx
+    kubectl-ns
 }
 
 show-context() {
