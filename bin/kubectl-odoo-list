@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -e
+
+script=$(basename "$0")
+version="1.0.1"
+
+help() {
+    echo
+    echo "$script v$version"
+    echo
+    echo 'Description: List Odoo database in Kubernetes cluster.'
+    echo "Syntax: $script <deployment>"
+    echo "Example: $script odoo"
+    echo 'Options:'
+    echo "  help  Show $script manual."
+    echo
+}
+
+if [[ "$1" == 'help' ]]; then
+    help
+    exit 0
+fi
+
+deployment="$1"
+
+[[ -z "$deployment" ]] && { echo 'Error: Parameter deployment is empty'; exit 1; }
+
+pod_id=$(kubectl get pods -l app="$deployment" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+
+if [[ -z "$pod_id" ]]; then
+    echo "Error: No pod found for deployment '$deployment'"
+    exit 1
+fi
+
+kubectl_exec="kubectl exec $pod_id -- /bin/bash -c"
+
+$kubectl_exec "psql postgresql://\$PGUSER:\$PGPASSWORD@\$PGHOST/postgres -tAc \"SELECT datname FROM pg_database WHERE datistemplate = false AND datname NOT IN ('postgres', 'template0', 'template1');\""
