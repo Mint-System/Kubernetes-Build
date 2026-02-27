@@ -9,7 +9,7 @@ help() {
     echo "$script v$version"
     echo
     echo 'Description: Backup Odoo database in Kubernetes cluster.'
-    echo "Syntax: $script <deployment> <database>"
+    echo "Syntax: $script <label> <database>"
     echo "Example: $script odoo odoo"
     echo 'Options:'
     echo "  help  Show $script manual."
@@ -21,16 +21,16 @@ if [[ "$1" == 'help' ]]; then
     exit 0
 fi
 
-deployment="$1"
+label="$1"
 database="$2"
 
-[[ -z "$deployment" ]] && { echo 'Error: Parameter deployment is empty'; exit 1; }
+[[ -z "$label" ]] && { echo 'Error: Parameter label is empty'; exit 1; }
 [[ -z "$database" ]] && { echo 'Error: Parameter database is empty'; exit 1; }
 
-pod_id=$(kubectl get pods -l app="$deployment" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+pod_id=$(kubectl get pods -l app="$label" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
 
 if [[ -z "$pod_id" ]]; then
-    echo "Error: No pod found for deployment '$deployment'"
+    echo "Error: No pod found with label '$label'"
     exit 1
 fi
 
