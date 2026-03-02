@@ -110,7 +110,7 @@ keepass_entry=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
 
 get-namespace() {
     if kubectl-ctx &> /dev/null; then
-        echo $(kubectl-ctx -c 2> /dev/null)
+        echo $(kubectl-ns -c 2> /dev/null)
     fi
 }
 namespace="$(get-namespace)"
