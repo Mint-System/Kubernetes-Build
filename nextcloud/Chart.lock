@@ -1,6 +1,6 @@
 dependencies:
-- name: collabora-online
-  repository: https://collaboraonline.github.io/online/
-  version: 1.1.52
-digest: sha256:cf9c729f04791fc88514d2cddf1536dbb4d5ce4592457b1cb22c65fe0d5f1a67
-generated: "2025-11-11T17:20:38.495103228+01:00"
+- name: nextcloud
+  repository: https://nextcloud.github.io/helm/
+  version: 9.0.3
+digest: sha256:2b71f15f1fbbcde04a98062b98e5b544bcc5907cdf7951285e1fa5bbaacd4a59
+generated: "2026-03-27T14:44:23.021068855+01:00"

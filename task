@@ -345,7 +345,7 @@ forward-odoo-staging() {
 forward-nextcloud() {
     local port=8080
     echo "Open http://localhost:$port url in your browser."
-    kubectl port-forward service/nextcloud $port:80
+    kubectl port-forward service/nextcloud $port:8080
 }
 
 forward-haproxy-ingress() {
@@ -630,9 +630,9 @@ get-secrets() {
         kubectl get secret forgejo-runner -o jsonpath="{.data.forgejoInstanceToken}" | base64 --decode && echo
     elif [[ "$1" = 'nextcloud' ]]; then
         echo 'nextcloud/creds:'
-        kubectl get secret nextcloud-creds -o jsonpath="{.data.NEXTCLOUD_ADMIN_USER}" | base64 --decode && echo
+        kubectl get secret nextcloud -o jsonpath="{.data.nextcloud-username}" | base64 --decode && echo
         echo 'nextcloud/password:'
-        kubectl get secret nextcloud-creds -o jsonpath="{.data.NEXTCLOUD_ADMIN_PASSWORD}" | base64 --decode && echo
+        kubectl get secret nextcloud -o jsonpath="{.data.nextcloud-password}" | base64 --decode && echo
     fi
 }
 
@@ -729,8 +729,8 @@ add-repos(){
     echo 'Add nextcloud'
     helm repo add nextcloud https://nextcloud.github.io/helm/
 
-    echo 'Add collabora'
-    helm repo add collabora https://collaboraonline.github.io/online/
+    # echo 'Add collabora'
+    # helm repo add collabora https://collaboraonline.github.io/online/
 }
 
 remove-repo(){

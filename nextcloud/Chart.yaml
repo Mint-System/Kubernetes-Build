@@ -2,7 +2,6 @@ apiVersion: v2
 name: nextcloud
 description: Mint System Nextcloud
 home: https://kubernetes.build
-icon: https://cdn.rawgit.com/nextcloud/docker/8971440c97a8d5a567d1c93bc7390f39f68e0a49/logo.svg
 maintainers:
   - name: Mint System GmbH
     email: support@mint-system.ch
@@ -10,7 +9,7 @@ type: application
 version: 0.1.0
 appVersion: "1.0.0"
 dependencies:
-  - name: collabora-online
-    version: ">=0.1.0"
-    repository: "https://collaboraonline.github.io/online/"
-    condition: collabora.enabled
+  - name: nextcloud
+    version: 9.0.3
+    repository: https://nextcloud.github.io/helm/
+    condition: nextcloud.enabled

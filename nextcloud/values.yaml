@@ -1,23 +1,30 @@
-## @section Ingress parameters
-ingress:
-  ## @param ingress.enabled Enable or disable the ingress
+## @section Nextcloud parameters
+nextcloud:
+  ## @param nextcloud.enabled Enable or disable Nextcloud
   enabled: true
-  ## @param ingress.className The class name for the ingress
-  className: nginx
-  ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
-  clusterIssuerRef: ""
-  ## @param ingress.host The host for the ingress
+  ## @param nextcloud.host The host for Nextcloud and Ingress
   host: ""
-  ## @param ingress.customDomain The custom domain for the ingress
-  customDomain: ""
+  externalDatabase:
+    ## @param nextcloud.externalDatabase.enabled Enable or disable external database usage
+    enabled: true
+    ## @param nextcloud.externalDatabase.type Type of external database (e.g., postgresql, mysql)
+    type: postgresql
+    ## @param nextcloud.externalDatabase.host Hostname or service name of the external database
+    host: nextcloud-postgresql-rw
+    ## @param nextcloud.externalDatabase.database Name of the database to use
+    database: nextcloud
+    existingSecret:
+      ## @param nextcloud.externalDatabase.existingSecret.enabled Enable or disable using an existing secret for database credentials
+      enabled: true
+      ## @param nextcloud.externalDatabase.existingSecret.name Name of the existing Kubernetes secret
+      name: nextcloud-postgresql-app
+      ## @param nextcloud.externalDatabase.existingSecret.passwordKey Key in the secret containing the database password
+      passwordKey: password
 
 ## @section CloudNativePG parameters
 cnpg:
   ## @param cnpg.enabled Enable or disable CloudNativePG
   enabled: true
-  ## @param cnpg.nameOverride Override the name of the CloudNativePG cluster
-  ## Default: "{release-name}-postgresql"
-  nameOverride: ""
   ## @param cnpg.instances Number of instances (1 for single, 2+ for high availability)
   instances: 1
   ## @param cnpg.imageName PostgreSQL image to use
@@ -29,16 +36,6 @@ cnpg:
   database: nextcloud
   ## @param cnpg.owner Name of the database user
   owner: app
-
-## @section Nextcloud parameters
-## @param image The image for Nextcloud
-image: ""
-## @param imagePullPolicy Pull policy for Nextcloud image
-imagePullPolicy: Always
-## @param storageSize Set the storage size
-storageSize: "40Gi"
-## @param storageClassName Set the storage class
-storageClassName: ""
 
 ## @section K8up parameters
 k8up:

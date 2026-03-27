@@ -1,5 +1,5 @@
 kind: deployment
-ingress:
+nextcloud:
   host: nextcloud.knd.local
-  customDomain: nextcloud.local
-image: nextcloud:32-apache
+  username: "admin"
+  password: "admin"

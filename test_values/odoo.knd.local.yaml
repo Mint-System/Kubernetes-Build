@@ -4,7 +4,8 @@ ingress:
   host: odoo.knd.local
   customDomain: odoo.local
 image: mintsystem/odoo:18.0.20251222
-initLogin: admin@example.com
+init:
+  login: admin@example.com
 addonsGitRepos:
   # OCA Core repositories
   - https://github.com/OCA/partner-contact#18.0

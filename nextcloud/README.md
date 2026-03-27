@@ -28,36 +28,30 @@ kubectl create secret generic s3-credentials \
 
 ## Parameters
 
-### Ingress parameters
+### Nextcloud parameters
 
-| Name                       | Description                                  | Value   |
-| -------------------------- | -------------------------------------------- | ------- |
-| `ingress.enabled`          | Enable or disable the ingress                | `true`  |
-| `ingress.className`        | The class name for the ingress               | `nginx` |
-| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `""`    |
-| `ingress.host`             | The host for the ingress                     | `""`    |
-| `ingress.customDomain`     | The custom domain for the ingress            | `""`    |
+| Name                                                    | Description                                                         | Value                      |
+| ------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------- |
+| `nextcloud.enabled`                                     | Enable or disable Nextcloud                                         | `true`                     |
+| `nextcloud.host`                                        | The host for Nextcloud and Ingress                                  | `""`                       |
+| `nextcloud.externalDatabase.enabled`                    | Enable or disable external database usage                           | `true`                     |
+| `nextcloud.externalDatabase.type`                       | Type of external database (e.g., postgresql, mysql)                 | `postgresql`               |
+| `nextcloud.externalDatabase.host`                       | Hostname or service name of the external database                   | `nextcloud-postgresql-rw`  |
+| `nextcloud.externalDatabase.database`                   | Name of the database to use                                         | `nextcloud`                |
+| `nextcloud.externalDatabase.existingSecret.enabled`     | Enable or disable using an existing secret for database credentials | `true`                     |
+| `nextcloud.externalDatabase.existingSecret.name`        | Name of the existing Kubernetes secret                              | `nextcloud-postgresql-app` |
+| `nextcloud.externalDatabase.existingSecret.passwordKey` | Key in the secret containing the database password                  | `password`                 |
 
 ### CloudNativePG parameters
 
 | Name                | Description                                                  | Value                                    |
 | ------------------- | ------------------------------------------------------------ | ---------------------------------------- |
 | `cnpg.enabled`      | Enable or disable CloudNativePG                              | `true`                                   |
-| `cnpg.nameOverride` | Override the name of the CloudNativePG cluster               | `""`                                     |
 | `cnpg.instances`    | Number of instances (1 for single, 2+ for high availability) | `1`                                      |
 | `cnpg.imageName`    | PostgreSQL image to use                                      | `ghcr.io/cloudnative-pg/postgresql:16.0` |
 | `cnpg.storage.size` | Persistent volume size for each instance                     | `8Gi`                                    |
 | `cnpg.database`     | Name of the CloudNativePG database to create                 | `nextcloud`                              |
 | `cnpg.owner`        | Name of the database user                                    | `app`                                    |
-
-### Nextcloud parameters
-
-| Name               | Description                     | Value    |
-| ------------------ | ------------------------------- | -------- |
-| `image`            | The image for Nextcloud         | `""`     |
-| `imagePullPolicy`  | Pull policy for Nextcloud image | `Always` |
-| `storageSize`      | Set the storage size            | `40Gi`   |
-| `storageClassName` | Set the storage class           | `""`     |
 
 ### K8up parameters
 
