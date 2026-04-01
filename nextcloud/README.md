@@ -7,23 +7,19 @@ This Helm chart deploys Nextcloud with PostgreSQL.
 Setup a `nextcloud-creds` secret with any additional environment variables you want to pass to Nextcloud.
 
 ```bash
-NEXTCLOUD_ADMIN_USER="admin"
-NEXTCLOUD_ADMIN_PASSWORD="*******"
 kubectl create secret generic nextcloud-creds \
-    --from-literal=NEXTCLOUD_ADMIN_USER="$NEXTCLOUD_ADMIN_USER" \
-    --from-literal=NEXTCLOUD_ADMIN_PASSWORD="$NEXTCLOUD_ADMIN_PASSWORD" \
-    -n <namespace>
+    --from-literal=NEXTCLOUD_ADMIN_USER="$nextcloud_admin_user" \
+    --from-literal=NEXTCLOUD_ADMIN_PASSWORD="$nextcloud_admin_password" \
+    -n $namespace
 ```
 
 The K8up backup requires a `s3-credentials` and a `backup-repo` secret. Here is an example for Exoscale SOS:
 
 ```bash
-EXOSCALE_IAM_KEY="*******"
-EXOSCALE_IAM_SECRET="*******"
 kubectl create secret generic s3-credentials \
-    --from-literal=username="$EXOSCALE_IAM_KEY" \
-    --from-literal=password="$EXOSCALE_IAM_SECRET" \
-    -n <namespace>
+    --from-literal=username="$exoscale_iam_key" \
+    --from-literal=password="$exoscale_iam_secret" \
+    -n $namespace
 ```
 
 ## Parameters

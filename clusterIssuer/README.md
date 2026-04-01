@@ -7,9 +7,8 @@ This chart deploys cluster issuers for prod and staging and for dns and http.
 To use the Infomaniak resolver setup a `infomaniak-api-credentials` secret with the API token.
 
 ```bash
-INFOMANIAK_API_TOKEN="*******"
 kubectl create secret generic infomaniak-api-credentials \
-    --from-literal=api-token="$INFOMANIAK_API_TOKEN" \
+    --from-literal=api-token="$infomaniak_api_token" \
     -n cert-manager
 ```
 
