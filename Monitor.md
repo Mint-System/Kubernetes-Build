@@ -5,7 +5,7 @@ Setup Prometheus agent for your cluster.
 Create a namespace.
 
 ```bash
-kubens prometheus
+ kubectl-ns prometheus
 ```
 
 Setup the credentials according to the prometheusAgent [README](/prometheusAgent/README.md).

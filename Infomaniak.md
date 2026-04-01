@@ -73,7 +73,7 @@ k create namespace <namespace>
 Select the namespace.
 
 ```bash
-kubens
+kubectl-ns
 ```
 
 Install the Odoo chart.

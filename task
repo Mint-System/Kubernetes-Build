@@ -383,7 +383,7 @@ list-external-charts() {
     echo 'cert-manager'
     echo 'cnpg'
     echo 'haproxy-ingress'
-    echo 'ingress-nginx'
+    echo 'ingress-nginx (deprecated)'
     echo 'k8up'
 }
 

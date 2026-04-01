@@ -12,15 +12,6 @@ Switch to `rpi` cluster.
 task switch-context rpi-admin
 ```
 
-## Setup haproxy ingress
-
-Add all repos and install the haproxy ingress.
-
-```bash
-task add-repos
-task install-chart ingress-nginx values/k3s.raspberrypi.build.yaml
-```
-
 ## Setup cert manager
 
 Install cert manager.
@@ -46,7 +37,7 @@ k create namespace <namespace>
 Select the namespace.
 
 ```bash
-kubens
+kubectl-ns
 ```
 
 Install the Hugo chart.
