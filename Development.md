@@ -39,10 +39,16 @@ task install-chart odoo test_values/odoo.knd.local.yaml
 
 The Odoo database will be initialized automatically.
 
-Forward the ingress-nginx port.
+Select the default namespace.
 
 ```bash
-task forward ingress-nginx
+kubectl-ns default
+```
+
+Forward the traefik port.
+
+```bash
+task forward traefik
 ```
 
 ## Deploy Nextcloud chart
@@ -63,8 +69,8 @@ task install-chart nextcloud test_values/nextcloud.knd.local.yaml
 
 The Odoo database will be initialized automatically.
 
-Forward the ingress-nginx port.
+Forward the traefik port.
 
 ```bash
-task forward ingress-nginx
+task forward traefik
 ```

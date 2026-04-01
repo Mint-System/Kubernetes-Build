@@ -36,8 +36,17 @@ In `Development.md` replace every instance of `ingress-nginx` with `traefik`.
 
 ## Worklog
 
-==Fill this in as you work on the task==
+- Added install-traefik command to install the Traefik chart
+- Added forward-traefik command to enable task forward traefik
+- Updated add-repos to add Traefik repo and comment out ingress-nginx
+- Updated uninstall-release to include switch case for external charts
+- Added uninstall-ingress-nginx command to uninstall ingress-nginx release
+- Updated list-external-charts to include traefik
+- Updated test-chart-nextcloud to use traefik
+- Updated start-and-prepare to use traefik
+- In Exoscale.md, replaced install-chart ingress-nginx with install-chart traefik
+- In Development.md, replaced all instances of ingress-nginx with traefik
 
 ## Summary
 
-==Fill this once you completed the task==
+Successfully replaced ingress-nginx with Traefik across the codebase. All necessary commands and documentation have been updated to use Traefik instead of ingress-nginx. The system is now configured to use Traefik as the ingress controller.

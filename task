@@ -204,8 +204,8 @@ test-chart-nextcloud() {
         info
         # install-chart haproxy-ingress
         # kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
-        install-chart ingress-nginx
-        kubectl wait --namespace ingress-nginx --for=condition=Available --timeout=60s deployments/ingress-nginx-controller
+        install-chart traefik
+        kubectl wait --namespace traefik --for=condition=Available --timeout=60s deployments/traefik
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         kubectl create secret generic nextcloud-creds --from-literal=NEXTCLOUD_ADMIN_USER="test" --from-literal=NEXTCLOUD_ADMIN_PASSWORD="test"
@@ -284,9 +284,9 @@ start-and-prepare() {
     # install-chart haproxy-ingress
     # kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
     
-    echo "Install ingress-nginx."
-    install-chart ingress-nginx
-    kubectl wait --namespace ingress-nginx --for=condition=Available --timeout=60s deployments/ingress-nginx-controller
+    echo "Install traefik."
+    install-chart traefik
+    kubectl wait --namespace traefik --for=condition=Available --timeout=60s deployments/traefik
     
     echo "Install the CloudNativePG."
     install-chart cnpg
@@ -351,14 +351,14 @@ forward-nextcloud() {
 forward-haproxy-ingress() {
     local port=8080
     kubectl get ingresses
-    echo "Open http://\$NAMESPACE.knd.local:$port url in your browser."
+    echo "Open http://\$namespace.knd.local:$port url in your browser."
     kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $port:80
 }
 
 forward-ingress-nginx() {
     local port=8080
     kubectl get ingresses
-    echo "Open http://\$NAMESPACE.knd.local:$port url in your browser."
+    echo "Open http://\$namespace.knd.local:$port url in your browser."
     kubectl port-forward -n ingress-nginx svc/ingress-nginx $port:80
 }
 
@@ -366,6 +366,13 @@ forward-prometheusagent() {
     local port=9090
     echo "Connect to http://localhost:$port to access the Prometheus agent."
     kubectl port-forward -n prometheus deployment/prometheus-agent $port:9090
+}
+
+forward-traefik() {
+    local port=8080
+    kubectl get ingresses
+    echo "Open http://\$namespace.knd.local:$port url in your browser."
+    kubectl port-forward -n traefik svc/traefik $port:80
 }
 
 # Chart Commands
@@ -385,6 +392,7 @@ list-external-charts() {
     echo 'haproxy-ingress'
     echo 'ingress-nginx (deprecated)'
     echo 'k8up'
+    echo 'traefik'
 }
 
 list-cluster() {
@@ -560,6 +568,12 @@ install-ingress-nginx() {
         --create-namespace --namespace ingress-nginx
 }
 
+install-traefik() {
+    echo 'Install traefik/traefik.'
+    helm install traefik traefik/traefik \
+        --create-namespace --namespace traefik
+}
+
 upgrade-release() {
     if test -z "$1"; then echo '\$1 is empty.'; exit; fi
     local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
@@ -600,7 +614,20 @@ uninstall-release() {
     local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
     echo "Uninstall release $release_name:"
-    helm uninstall "$release_name"
+    
+    case "$release_name" in
+        "ingress-nginx")
+            uninstall-ingress-nginx
+            ;;
+        *)
+            helm uninstall "$release_name"
+            ;;
+    esac
+}
+
+uninstall-ingress-nginx() {
+    echo 'Uninstall ingress-nginx release.'
+    helm uninstall ingress-nginx --namespace ingress-nginx
 }
 
 run-job() {
@@ -714,8 +741,8 @@ add-repos(){
     echo 'Add haproxy-ingress.'
     helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts
 
-    echo 'Add ingress-nginx.'
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    # echo 'Add ingress-nginx.'
+    # helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
     echo 'Add jetstack.'
     helm repo add jetstack https://charts.jetstack.io
@@ -725,6 +752,9 @@ add-repos(){
 
     echo 'Add k8up.'
     helm repo add k8up-io https://k8up-io.github.io/k8up
+
+    echo 'Add traefik.'
+    helm repo add traefik https://helm.traefik.io/traefik
 
     echo 'Add nextcloud'
     helm repo add nextcloud https://nextcloud.github.io/helm/

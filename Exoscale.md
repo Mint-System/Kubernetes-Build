@@ -20,7 +20,7 @@ Add all repos and install the haproxy ingress.
 
 ```bash
 task add-repos
-task install-chart ingress-nginx values/exo.mintcloud.ch.yaml
+task install-chart traefik values/exo.mintcloud.ch.yaml
 ```
 
 # Setup cert manager
@@ -60,13 +60,8 @@ task install-chart cnpg values/exo.mintcloud.ch.yaml
 Create a namespace for the application.
 
 ```bash
-k create namespace <namespace>
-```
-
-Select the namespace.
-
-```bash
-kubectl-ns
+kubectl create namespace <namespace>
+kubectl-ns <namespace>
 ```
 
 Install the Odoo chart.

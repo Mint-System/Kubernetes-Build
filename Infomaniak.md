@@ -67,13 +67,8 @@ task install-chart cnpg values/chk.mintcloud.ch.yaml
 Create a namespace for the application.
 
 ```bash
-k create namespace <namespace>
-```
-
-Select the namespace.
-
-```bash
-kubectl-ns
+kubectl create namespace <namespace>
+kubectl-ns <namespace>
 ```
 
 Install the Odoo chart.
