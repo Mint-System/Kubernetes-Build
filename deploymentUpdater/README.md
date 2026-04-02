@@ -9,35 +9,10 @@ Cluster-wide service account that can update deployments.
 Use this service account to make deployments to Kubernetes. The deployment action requires a kubeconfig. Export the kubeconfig with this command:
 
 ```bash
-name=deploy-sa-token
-server=$(kubectl config view --minify --output 'jsonpath={.clusters[0].cluster.server}')
-ca=$(kubectl get secret/$name -o jsonpath='{.data.ca\.crt}')
-token=$(kubectl get secret/$name -o jsonpath='{.data.token}' | base64 --decode)
-namespace=$(kubectl get secret/$name -o jsonpath='{.data.namespace}' | base64 --decode)
-
-echo "
-apiVersion: v1
-kind: Config
-clusters:
-- name: default-cluster
-  cluster:
-    certificate-authority-data: ${ca}
-    server: ${server}
-contexts:
-- name: default-context
-  context:
-    cluster: default-cluster
-    namespace: default
-    user: default-user
-current-context: default-context
-users:
-- name: default-user
-  user:
-    token: ${token}
-" > deploy.kubeconfig
+task generate-kubconfig deploy
 ```
 
-Setup secret `KUBECONFIG_DEPLOY` with content of `deploy.kubeconfig`.
+Setup secret `KUBECONFIG_DEPLOY` with content of the created kubeconfig.
 
 Here is are examples of Forgejo action steps:
 

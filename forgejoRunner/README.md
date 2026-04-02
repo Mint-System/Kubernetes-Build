@@ -20,6 +20,10 @@ kubectl create secret generic forgejo-runner \
 This role also provides a service account to access the Kubernetes cluster. With Buildx you can use the cluster as build enviroment. Export the kubeconfig to provide it in the Forgejo action with this command:
 
 ```bash
+task generate-kubconfig buildx
+```
+
+```bash
 name=buildx-sa-token
 server=$(kubectl config view --minify --output 'jsonpath={.clusters[0].cluster.server}')
 ca=$(kubectl get secret/$name -o jsonpath='{.data.ca\.crt}')
@@ -48,7 +52,7 @@ users:
 " > buildx.kubeconfig
 ```
 
-Setup secret `KUBECONFIG_BUILDX` with content of `buildx.kubeconfig`.
+Setup secret `KUBECONFIG_BUILDX` with content of the created kubeconfig.
 
 Here is are examples of Forgejo action steps:
 

@@ -240,8 +240,7 @@ generate-kubconfig() {
   local token=$(kubectl get secret/$secret_name -o jsonpath='{.data.token}' | base64 --decode)
   local namespace=$(kubectl get secret/$secret_name -o jsonpath='{.data.namespace}' | base64 --decode)
 
-  echo "
-apiVersion: v1
+  echo "apiVersion: v1
 kind: Config
 clusters:
 - name: default-cluster
@@ -258,8 +257,7 @@ current-context: default-context
 users:
 - name: default-user
   user:
-    token: ${token}
-" > "$kubeconfig_file"
+    token: ${token}" > "$kubeconfig_file"
 
   echo "Kubeconfig generated for $name at $kubeconfig_file"
 }
