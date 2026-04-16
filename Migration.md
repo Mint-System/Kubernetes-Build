@@ -68,7 +68,7 @@ kubectl get ingress $name -o yaml | grep -A1 ingressClassName
 Verify that your applications are accessible through Traefik:
 
 ```bash
-curl -I -H "Host: your-app.example.com" http://<traefik-service-ip>
+curl -I -H "Host: app.example.com" http://<traefik-service-ip>
 ```
 
 ## Update DNS
@@ -78,13 +78,13 @@ Update DNS entries of your application.
 Ensure the new IP is resolved.
 
 ```bash
-nslookup your-app.example.com 9.9.9.9
+nslookup app.example.com 9.9.9.9
 ```
 
 Verify that your applications is routed correctly:
 
 ```bash
-curl -I https://your-app.example.com
+curl -I https://app.example.com
 ```
 
 
@@ -105,7 +105,7 @@ kubectl get ingress --all-namespaces -o jsonpath='{range .items[*]}{.metadata.na
 Verify that your applications are accessible through Traefik:
 
 ```bash
-curl -H "Host: your-app.example.com" http://<traefik-service-ip>
+curl -H "Host: app.example.com" http://<traefik-service-ip>
 ```
 
 ## Uninstall ingress-nginx
