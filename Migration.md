@@ -31,10 +31,10 @@ Check that Traefik is running:
 kubectl get pods -n traefik
 ```
 
-List the ingress classes.
+Ensure traefik is the new default.
 
 ```bash
-kubectl get ingressclass
+kubectl get ingressclass traefik -o jsonpath='{.metadata.annotations.ingressclass\.kubernetes\.io/is-default-class}'
 ```
 
 List the service.
@@ -87,7 +87,6 @@ Verify that your applications is routed correctly:
 curl -I https://app.example.com
 ```
 
-
 ## Bulk-Update Ingress Resources
 
 List all ingresses:
@@ -106,6 +105,14 @@ Verify that your applications are accessible through Traefik:
 
 ```bash
 curl -H "Host: app.example.com" http://<traefik-service-ip>
+```
+
+## upgrade Cluster Issuer
+
+If you deployed a cluster issuer, update the release:
+
+```bash
+task upgrade-chart clusterIssuer <values>
 ```
 
 ## Uninstall ingress-nginx

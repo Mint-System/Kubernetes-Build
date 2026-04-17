@@ -21,4 +21,11 @@ spec:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
           ports:
-          - containerPort: 80
+            - containerPort: 80
+          volumeMounts:
+            - name: app-data
+              mountPath: /app
+      volumes:
+        - name: app-data
+          persistentVolumeClaim:
+            claimName: data-taskfile-build

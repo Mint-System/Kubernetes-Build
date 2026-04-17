@@ -14,9 +14,21 @@ Switch to `exo` cluster.
 task switch-context exo-admin
 ```
 
-## Setup haproxy ingress
+## Check default storage class name
 
-Add all repos and install the haproxy ingress.
+The default storage class name has be be `exoscale-sbs`
+
+```bash
+kubectl get storageclass
+```
+
+## Set default ingress class name
+
+
+
+## Setup traefik ingress
+
+Add all repos and install the traefik ingress.
 
 ```bash
 task add-repos

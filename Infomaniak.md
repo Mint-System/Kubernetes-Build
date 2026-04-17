@@ -21,13 +21,21 @@ Switch to `chk` cluster.
 task switch-context chk-admin
 ```
 
-## Setup haproxy ingress
+## Check default storage class name
 
-Add all repos and install the haproxy ingress.
+The default storage class name has be be `csi-cinder-sc-retain`
+
+```bash
+kubectl get storageclass
+```
+
+## Setup traefik ingress
+
+Add all repos and install the traefik ingress.
 
 ```bash
 task add-repos
-task install-chart ingress-nginx values/chk.mintcloud.ch.yaml
+task install-chart traefik values/chk.mintcloud.ch.yaml
 ```
 
 ## Setup cert manager
