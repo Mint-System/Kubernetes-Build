@@ -1,4 +1,6 @@
-# Migration from ingress-nginx to Traefik
+# Migration
+
+##  From ingress-nginx to Traefik
 
 This guide will help you migrate your Kubernetes cluster from using ingress-nginx to Traefik as your ingress controller.
 
@@ -43,7 +45,11 @@ List the service.
 kubectl get svc -n traefik
 ```
 
-Note that the Treafik service has a different extrnal IP address.
+Note that the Treafik service has a different external IP address.
+
+```bash
+traefik_service_ip=$(kubectl get svc -n traefik traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
 
 ## Update Ingress Resource
 
@@ -65,17 +71,31 @@ Verify the patch:
 kubectl get ingress $name -o yaml | grep -A1 ingressClassName
 ```
 
-Verify that your applications are accessible through Traefik:
+Verify that your application is accessible through Traefik:
 
 ```bash
-curl -I -H "Host: app.example.com" http://<traefik-service-ip>
+curl -I -H "Host: app.example.com" http://$traefik_service_ip
+```
+
+To route it externally we need to update the application's DNS entry.
+
+You can also update all ingress resources at once.
+
+```bash
+kubectl get ingress --all-namespaces
+```
+
+Patch all ingresses to use Traefik:
+
+```bash
+kubectl get ingress --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.metadata.namespace}{"\n"}{end}' | while read name namespace; do kubectl patch ingress "$name" -n "$namespace" -p '{"spec":{"ingressClassName":"traefik"}}'; done
 ```
 
 ## Update DNS
 
-Update DNS entries of your application.
+Update DNS entries of your applications to point to the new Treafik IP.
 
-Ensure the new IP is resolved.
+Ensure the new IP address is resolved.
 
 ```bash
 nslookup app.example.com 9.9.9.9
@@ -87,32 +107,12 @@ Verify that your applications is routed correctly:
 curl -I https://app.example.com
 ```
 
-## Bulk-Update Ingress Resources
-
-List all ingresses:
-
-```bash
-kubectl get ingress --all-namespaces
-```
-
-Patch the ingress class to use Traefik:
-
-```bash
-kubectl get ingress --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.metadata.namespace}{"\n"}{end}' | while read name namespace; do kubectl patch ingress "$name" -n "$namespace" -p '{"spec":{"ingressClassName":"traefik"}}'; done
-```
-
-Verify that your applications are accessible through Traefik:
-
-```bash
-curl -H "Host: app.example.com" http://<traefik-service-ip>
-```
-
-## upgrade Cluster Issuer
+## Upgrade Cluster Issuer
 
 If you deployed a cluster issuer, update the release:
 
 ```bash
-task upgrade-chart clusterIssuer <values>
+task upgrade-chart clusterIssuer $values
 ```
 
 ## Uninstall ingress-nginx
@@ -122,12 +122,4 @@ Once you've verified that Traefik is working correctly, you can uninstall ingres
 ```bash
 kubectl-ns ingress-nginx
 task uninstall-release ingress-nginx
-```
-
-## Troubleshooting
-
-If your applications are not accessible, check the Traefik logs:
-
-```bash
-kubectl logs -n kube-system -l app.kubernetes.io/name=traefik
 ```

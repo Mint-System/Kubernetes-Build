@@ -79,6 +79,10 @@ Have a look at the [Backup](./Backup.md) page to learn about how the services ma
 
 Checkout the [Monitor](./Monitor.md) page to learn about how services are monitored.
 
+## Migration
+
+To execute migrations have a look at [Migration](Migration.md).
+
 ## Troubleshooting
 
 Problems and solutions are documented in the [Troubleshooting](./Troubleshooting.md) document.
