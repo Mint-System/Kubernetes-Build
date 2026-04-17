@@ -120,6 +120,7 @@ task upgrade-chart clusterIssuer <values>
 Once you've verified that Traefik is working correctly, you can uninstall ingress-nginx:
 
 ```bash
+kubectl-ns ingress-nginx
 task uninstall-release ingress-nginx
 ```
 
