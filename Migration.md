@@ -112,7 +112,8 @@ curl -I https://app.example.com
 If you deployed a cluster issuer, update the release:
 
 ```bash
-task upgrade-chart clusterIssuer $values
+kubectl-ns cert-manager
+task upgrade-release clusterIssuer $values
 ```
 
 ## Uninstall ingress-nginx
