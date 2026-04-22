@@ -23,10 +23,16 @@ task switch-context chk-admin
 
 ## Check default storage class name
 
-The default storage class name has be be `csi-cinder-sc-retain`
+The default storage class name has to be `csi-cinder-sc-retain`.
 
 ```bash
 kubectl get storageclass
+```
+
+Set default storage class.
+
+```bash
+kubectl patch storageclass csi-cinder-sc-retain -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
 
 ## Setup traefik ingress

@@ -16,10 +16,16 @@ task switch-context exo-admin
 
 ## Check default storage class name
 
-The default storage class name has be be `exoscale-sbs`
+The default storage class name has to be `exoscale-sbs`.
 
 ```bash
 kubectl get storageclass
+```
+
+Set default storage class.
+
+```bash
+kubectl patch storageclass exoscale-sbs -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
 
 ## Set default ingress class name
