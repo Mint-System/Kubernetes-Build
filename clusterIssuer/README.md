@@ -38,6 +38,12 @@ EOF
 
 ## Parameters
 
+### Ingress parameters
+
+| Name                | Description                    | Value |
+| ------------------- | ------------------------------ | ----- |
+| `ingress.className` | The class name for the ingress | `""`  |
+
 ### Cluster Issuer parameters
 
 | Name          | Description                | Value |

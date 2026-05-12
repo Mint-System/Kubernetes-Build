@@ -91,7 +91,7 @@ kubectl patch job/<release>-staging-reset --type=strategic --patch '{"spec":{"su
 | `init.login`             | The initial username for Odoo admin account   | `""`                                                                                                      |
 | `init.password`          | The initial passwod for Odoo admin account    | `""`                                                                                                      |
 | `listDB`                 | Enable or disable listing databases for Odoo  | `false`                                                                                                   |
-| `workers`                | Define the amount of Odoo workers to spawn    | `4`                                                                                                       |
+| `workers`                | Define the amount of Odoo workers to spawn    | `5`                                                                                                       |
 | `secretRef`              | The secret reference for Odoo                 | `odoo-creds`                                                                                              |
 | `storageClassName`       | Set the storage class                         | `""`                                                                                                      |
 
