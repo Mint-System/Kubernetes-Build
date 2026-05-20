@@ -26,10 +26,10 @@ kubectl create secret generic s3-credentials \
 
 ## Jobs
 
-There is suspended `<release>-staging-reset` job that copies the main database and volume to the staging enviroment. Then the job neutralizes the Odoo database. Patch the job to run it:
+There is suspended `<release>-staging-reset` job that copies the main database and volume to the staging enviroment. Then the job neutralizes the Odoo database. To run the job:
 
 ```bash
-kubectl patch job/<release>-staging-reset --type=strategic --patch '{"spec":{"suspend":false}}'
+kubectl create job --from=cronjob/<release>-staging-reset <release>-staging-reset-run
 ```
 
 ## Parameters

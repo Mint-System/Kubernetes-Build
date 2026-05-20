@@ -41,9 +41,8 @@ help() {
     rows+=("list-cluster||List clusters.")
     rows+=("list-context||List kubeconfig files.")
     rows+=("switch-context||Switch kubeconfig file.")
-    rows+=("show-context||Show active kubeconfig.")
-    rows+=("show-cluster||Show active cluster.")
-    rows+=("get-context-alias||Get alias of current context.")
+    rows+=("get-context||Show active kubeconfig.")
+    rows+=("get-cluster||Show active cluster.")
     rows+=("update-dependencies|[chart]|Update dependencies for a chart.")
     rows+=("install-chart|[chart][values]|Install Helm chart.")
     rows+=("upgrade-release|[chart][values]|Upgrade Helm release.")
@@ -55,7 +54,7 @@ help() {
     rows+=("list||List Helm deployments.")
     rows+=("get-pods||List all pods.")
     rows+=("login-oc||Refresh the auth token for OpenShift.")
-    rows+=("run-job|[name]|Make a copy and unsuspends the job.")
+    rows+=("run-job|[name]|Make a copy of job.")
     # Helm
     rows+=("add-repos||Add the required Helm repos.")
     rows+=("template-manifest|[chart][values]|Template all charts with Helm.")
@@ -115,11 +114,11 @@ get-namespace() {
 }
 namespace="$(get-namespace)"
 
-get-context-alias() {
+get-context() {
     local alias="$(basename "$(readlink "$HOME/.kube/config" 2>/dev/null)" 2>/dev/null | cut -d '.' -f 2)"
     echo "${alias:-loc}"
 }
-context_alias="$(get-context-alias)"
+context_alias="$(get-context)"
 
 # Import commands
 
@@ -150,7 +149,7 @@ version() {
 
 info() {
     echo "OpenShift-Project: $OC_PROJECT"
-    echo "Context-Alias: $(get-context-alias)"
+    echo "Context-Alias: $(get-context)"
     echo "Namespace: $namespace"
 }
 
@@ -231,7 +230,7 @@ generate-kubconfig() {
   if test -z "$1"; then echo '\$1 is empty.'; exit; fi
 
   local name="$1"
-  local cluster=$(show-cluster)
+  local cluster=$(get-cluster)
   local kubeconfig_file="values/.kube/config.${cluster}-${name}"
   local secret_name="${name}-sa-token"
 
@@ -294,9 +293,9 @@ start-and-prepare() {
     install-chart k8up
 
     #FIXME: This does not work in GitHub runner env.
-    # echo "Load Odoo image."
-    # docker pull mintsystem/odoo:18.0.20260409
-    # load-image mintsystem/odoo:18.0.20260409
+    echo "Load Odoo image."
+    docker pull mintsystem/odoo:19.0.20260504 
+    load-image mintsystem/odoo:19.0.20260504
 }
 
 load-image() {
@@ -490,11 +489,7 @@ switch-context() {
     kubectl-ns
 }
 
-show-context() {
-    basename "$(readlink "$HOME/.kube/config")" | cut -d. -f2
-}
-
-show-cluster() {
+get-cluster() {
     basename "$(readlink "$HOME/.kube/config")" | cut -d. -f2 | cut -d- -f1 
 }
 
@@ -506,7 +501,7 @@ update-dependencies() {
 install-chart() {
     if test -z "$1"; then echo '\$1 is empty.'; exit; fi
 
-    if [[ "$(get-context-alias)" = 'axo' ]]; then
+    if [[ "$(get-context)" = 'axo' ]]; then
         echo "Set oc project to $OC_PROJECT."
         oc project "$OC_PROJECT"
     fi
@@ -638,8 +633,8 @@ run-job() {
     local job_name="$1"
 
     echo "Run job: $job_name"
-    kubectl create job --from=job/${job_name} ${job_name}-run
-    kubectl patch job/${job_name}-run --type=strategic --patch '{"spec":{"suspend":false}}'
+    kubectl delete job ${job_name}-run --ignore-not-found
+    kubectl create job --from=cronjob/${job_name} ${job_name}-run
 }
 
 # kubectl Commands
@@ -692,7 +687,7 @@ template-manifest() {
     if test -z "$2"; then echo '\$2 is empty.'; exit; fi
     local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 
-    echo "Template chart $1 as release ${release_name}..."
+    # echo "Template chart $1 as release ${release_name}..."
 
     if [[ "$1" = 'clusterIssuer' ]]; then
         helm --debug template "$release_name" clusterIssuer \

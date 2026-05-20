@@ -20,6 +20,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/cm.yaml") . | sha256sum }}
     spec:
+      enableServiceLinks: false # If enabled can cause env var conflicts
       initContainers:
         - name: init
           image: {{ .Values.image }}
