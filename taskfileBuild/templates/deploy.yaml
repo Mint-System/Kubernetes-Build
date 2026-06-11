@@ -20,6 +20,16 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-configmap
+          {{- if .Values.additionalEnvs }}
+          env:
+            {{- range .Values.additionalEnvs }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.args }}
+          args: {{ .Values.args | splitList " " | toJson }}
+          {{- end }}
           ports:
             - containerPort: 80
           volumeMounts:
