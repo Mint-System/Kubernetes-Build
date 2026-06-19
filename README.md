@@ -21,8 +21,9 @@ The Mint System collection of Helm charts.
 
 - [yq](https://mikefarah.gitbook.io/yq/#install)
 - [helm](https://helm.sh/docs/intro/install/)
+  - [helm-secrets](https://github.com/jkroepke/helm-secrets)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
-- [kubectx](https://kubectx.dev/)
+  - [kubectx](https://kubectx.dev/)
 - [kind](https://kind.sigs.k8s.io/)
 - bash/zsh alias `task='./task'` with optional [completion](https://taskfile.build/#completion)
 
