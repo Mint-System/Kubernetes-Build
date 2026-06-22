@@ -16,12 +16,12 @@ This Helm chart deploys a taskfile.build container.
 
 ### taskfile.build parameters
 
-| Name               | Description                             | Value                                |
-| ------------------ | --------------------------------------- | ------------------------------------ |
-| `image`            | The image for taskfile.build            | `janikvonrotz/taskfile.build:latest` |
-| `imagePullPolicy`  | Pull policy for taskfile.build image    | `Always`                             |
-| `gitUrl`           | Repo url to pull.                       | `""`                                 |
-| `taskCommands`     | Run this commands with the task file.   | `""`                                 |
-| `caddyRoot`        | Static site path relative to repo root. | `""`                                 |
-| `additionalEnvs`   | Additional environment variables to set | `{}`                                 |
-| `storageClassName` | Set the storage class                   | `""`                                 |
+| Name               | Description                             | Value                              |
+| ------------------ | --------------------------------------- | ---------------------------------- |
+| `image`            | The image for taskfile.build            | `mintsystem/taskfile.build:latest` |
+| `imagePullPolicy`  | Pull policy for taskfile.build image    | `Always`                           |
+| `gitUrl`           | Repo url to pull.                       | `""`                               |
+| `taskCommands`     | Run this commands with the task file.   | `""`                               |
+| `caddyRoot`        | Static site path relative to repo root. | `""`                               |
+| `additionalEnvs`   | Additional environment variables to set | `{}`                               |
+| `storageClassName` | Set the storage class                   | `""`                               |

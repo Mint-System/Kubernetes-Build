@@ -13,7 +13,7 @@ ingress:
 
 ## @section taskfile.build parameters
 ## @param image The image for taskfile.build
-image: "janikvonrotz/taskfile.build:latest"
+image: "mintsystem/taskfile.build:latest"
 ## @param imagePullPolicy Pull policy for taskfile.build image
 imagePullPolicy: Always
 ## @param gitUrl Repo url to pull.
