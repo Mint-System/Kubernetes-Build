@@ -1,19 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-help() {
-    echo
-    echo 'task <command> [options]'
-    echo
-    echo 'commands:'
-    echo
-
+help-table() {
     local -a rows
     local max_cmd=7 max_opt=6 max_desc=11
 
     rows+=("Command|Option|Description")
-    
-    # Env
+    rows+=("===ENV===| | ")
     rows+=("version||Show version of required tools.")
     rows+=("info||Show info about env.")
     rows+=("template-dotenv||Generate .env from .env.template.")
@@ -21,21 +14,21 @@ help() {
     rows+=("generate-kubconfig|[name]|Generate kubeconfig for deploymentUpdater.")
     rows+=("load-kubeconfig-from-keepass|[ctx]|Load kubeconfig file from KeePass.")
     rows+=("save-kubeconfig-to-keepass|[ctx]|Save kubeconfig file in KeePass.")
-    # Docs
+    rows+=("===DOCS===| | ")
     rows+=("install-vitepress||Install Node dependencies.")
     rows+=("docs||Generate Helm chart readmes.")
     rows+=("lint||Lint Helm charts.")
     rows+=("dev-vitepress||Start VitePress dev server.")
     rows+=("build-vitepress||Build site with VitePress.")
     rows+=("serve-vitepress||Serve VitePress build.")
-    # Host
+    rows+=("===HOST===| | ")
     rows+=("start||Start kind Kubernetes cluster.")
     rows+=("start-and-prepare||Start and prepare Kubernetes cluster.")
     rows+=("load-image|[tag]|Load Docker image into kind cluster.")
     rows+=("delete-kind||Delete kind Kubernetes cluster.")
     rows+=("setup-hosts||Update hosts file.")
     rows+=("forward|[chart]|Forward port.")
-    # Chart
+    rows+=("===CHART===| | ")
     rows+=("list-charts||List local Helm charts.")
     rows+=("list-external-charts||List external Helm charts.")
     rows+=("list-cluster||List clusters.")
@@ -47,7 +40,7 @@ help() {
     rows+=("install-chart|[chart][values]|Install Helm chart.")
     rows+=("upgrade-release|[chart][values]|Upgrade Helm release.")
     rows+=("uninstall-release|[release]|Uninstall Helm release.")
-    # kubectl
+    rows+=("===KUBECTL===| | ")
     rows+=("get-secrets|[chart]|Show secrets for chart.")
     rows+=("exec-bash|[chart]|Open bash shell in container.")
     rows+=("logs|[grep]|Select pods with grep and show logs.")
@@ -55,17 +48,17 @@ help() {
     rows+=("get-pods||List all pods.")
     rows+=("login-oc||Refresh the auth token for OpenShift.")
     rows+=("run-job|[name]|Make a copy of job.")
-    # Helm
+    rows+=("===HELM===| | ")
     rows+=("add-repos||Add the required Helm repos.")
     rows+=("template-manifest|[chart][values]|Template all charts with Helm.")
     rows+=("package-repo|[chart]|Package Helm charts.")
     rows+=("index-repo||Index Helm chart.")
     rows+=("remove-repo||Remove the kubernetes-build repo.")
     rows+=("commit||Commit .tgz files.")
-    # LLM
+    rows+=("===LLM===| | ")
     rows+=("commit-with-llm||Commit with llm generated commit message.")
     rows+=("update-with-llm|[glob][prompt]|Feed files matching glob to LLM and apply changes.")
-    # Test
+    rows+=("===TEST===| | ")
     rows+=("test-chart-clusterIssuer||Test cluster issuer.")
     rows+=("test-chart-odoo|[cleanup]|Setup Odoo chart and dependencies.")
     rows+=("test-chart-nextcloud|[cleanup]|Setup Nextcloud chart and dependencies.")
@@ -87,13 +80,57 @@ help() {
         "$max_opt" "$(printf '%*s' "$max_opt" '' | tr ' ' '-')" \
         "$max_desc" "$(printf '%*s' "$max_desc" '' | tr ' ' '-')"
 
+    local first_row=true
     for row in "${rows[@]:1}"; do
         IFS='|' read -r cmd opt desc <<< "$row"
-        printf '| %-*s | %-*s | %-*s |\n' \
-            "$max_cmd" "$cmd" \
-            "$max_opt" "$opt" \
-            "$max_desc" "$desc"
+        if [[ "$cmd" =~ ^===.*===$ ]]; then
+            group_name="${cmd/===/}"
+            group_name="${group_name/===/}"
+            
+            if [ "$first_row" = true ]; then
+                first_row=false
+            else
+                printf '|-%*s-|-%*s-|-%*s-|\n' \
+                    "$max_cmd" "$(printf '%*s' "$max_cmd" '' | tr ' ' '-')" \
+                    "$max_opt" "$(printf '%*s' "$max_opt" '' | tr ' ' '-')" \
+                    "$max_desc" "$(printf '%*s' "$max_desc" '' | tr ' ' '-')"
+            fi
+            
+            local left_pad=$(( (max_cmd - ${#group_name}) / 2 ))
+            local right_pad=$(( max_cmd - left_pad - ${#group_name} ))
+            printf '| %*s%s%*s | %*s | %*s |\n' \
+                "$left_pad" "" \
+                "$group_name" \
+                "$right_pad" "" \
+                "$max_opt" "" \
+                "$max_desc" ""
+            
+            printf '|-%*s-|-%*s-|-%*s-|\n' \
+                "$max_cmd" "$(printf '%*s' "$max_cmd" '' | tr ' ' '-')" \
+                "$max_opt" "$(printf '%*s' "$max_opt" '' | tr ' ' '-')" \
+                "$max_desc" "$(printf '%*s' "$max_desc" '' | tr ' ' '-')"
+        else
+            first_row=false
+            printf '| %-*s | %-*s | %-*s |\n' \
+                "$max_cmd" "$cmd" \
+                "$max_opt" "$opt" \
+                "$max_desc" "$desc"
+        fi
     done
+}
+
+help() {
+    echo
+    if [[ -n "$1" ]]; then
+        help-table | grep -i "$1" | column -t -s'|'
+    else
+        echo 'task <command> [options]'
+        echo
+        echo 'commands:'
+        echo
+        help-table
+    fi
+    echo
 }
 
 # Default vars
