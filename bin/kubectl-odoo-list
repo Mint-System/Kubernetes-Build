@@ -25,6 +25,7 @@ label="$1"
 
 [[ -z "$label" ]] && { echo 'Error: Parameter label is empty'; exit 1; }
 
+echo "Search for pod with label 'app=$label'"
 pod_id=$(kubectl get pods -l app="$label" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
 
 if [[ -z "$pod_id" ]]; then
@@ -32,6 +33,7 @@ if [[ -z "$pod_id" ]]; then
     exit 1
 fi
 
+echo "Found pod: $pod_id"
 kubectl_exec="kubectl exec $pod_id -- /bin/bash -c"
 
 $kubectl_exec "psql postgresql://\$PGUSER:\$PGPASSWORD@\$PGHOST/postgres -tAc \"SELECT datname FROM pg_database WHERE datistemplate = false AND datname NOT IN ('postgres', 'template0', 'template1');\""
