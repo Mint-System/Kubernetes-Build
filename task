@@ -331,8 +331,8 @@ start-and-prepare() {
 
     #FIXME: This does not work in GitHub runner env.
     echo "Load Odoo image."
-    docker pull mintsystem/odoo:19.0.20260619 
-    load-image mintsystem/odoo:19.0.20260619
+    docker pull mintsystem/odoo:19.0.20260630 
+    load-image mintsystem/odoo:19.0.20260630
 }
 
 load-image() {
