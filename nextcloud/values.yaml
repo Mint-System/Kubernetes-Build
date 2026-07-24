@@ -1,10 +1,30 @@
+## @section Ingress parameters
+ingress:
+  ## @param ingress.enabled Enable or disable the ingress
+  enabled: true
+  ## @param ingress.className The class name for the ingress
+  className: ""
+  ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
+  clusterIssuerRef:
+  ## @param ingress.host The host for the ingress
+  host: ""
+
 ## @section Nextcloud parameters
 nextcloud:
   ## @param nextcloud.enabled Enable or disable Nextcloud
   enabled: true
+  ingress:
+    ## @param nextcloud.ingress.enabled Enable or disable the Nextcloud subchart ingress
+    enabled: false
   nextcloud:
     ## @param nextcloud.nextcloud.host The host for Nextcloud and Ingress
     host: ""
+    ## @param nextcloud.nextcloud.existingSecret.enabled Use an existing secret for credentials
+    existingSecret:
+      ## @param nextcloud.nextcloud.existingSecret.enabled Enable or disable using an existing secret
+      enabled: true
+      ## @param nextcloud.nextcloud.existingSecret.secretName Name of the existing Kubernetes secret
+      secretName: nextcloud-creds
   externalDatabase:
     ## @param nextcloud.externalDatabase.enabled Enable or disable external database usage
     enabled: true

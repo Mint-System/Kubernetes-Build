@@ -42,7 +42,7 @@ help-table() {
     rows+=("upgrade-release|[chart][values]|Upgrade Helm release.")
     rows+=("uninstall-release|[release]|Uninstall Helm release.")
     rows+=("===KUBECTL===| | ")
-    rows+=("get-secrets|[chart]|Show secrets for chart.")
+    rows+=("show-secrets|[chart]|Show secrets for chart.")
     rows+=("exec-bash|[chart]|Open bash shell in container.")
     rows+=("logs|[grep]|Select pods with grep and show logs.")
     rows+=("list||List Helm deployments.")
@@ -718,8 +718,8 @@ run-job() {
 
 # kubectl Commands
 
-get-secrets() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+show-secrets() {
+    if test -z "$1"; then echo '\$1/chart is empty.'; exit; fi
 
     if [[ "$1" = 'postgres' ]]; then
         echo 'postgres/user:'
@@ -734,9 +734,9 @@ get-secrets() {
         kubectl get secret forgejo-runner -o jsonpath="{.data.forgejoInstanceToken}" | base64 --decode && echo
     elif [[ "$1" = 'nextcloud' ]]; then
         echo 'nextcloud/creds:'
-        kubectl get secret nextcloud -o jsonpath="{.data.nextcloud-username}" | base64 --decode && echo
+        kubectl get secret nextcloud-creds -o jsonpath="{.data.nextcloud-username}" | base64 --decode && echo
         echo 'nextcloud/password:'
-        kubectl get secret nextcloud -o jsonpath="{.data.nextcloud-password}" | base64 --decode && echo
+        kubectl get secret nextcloud-creds -o jsonpath="{.data.nextcloud-password}" | base64 --decode && echo
     fi
 }
 

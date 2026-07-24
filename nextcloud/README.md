@@ -8,8 +8,8 @@ Setup a `nextcloud-creds` secret with any additional environment variables you w
 
 ```bash
 kubectl create secret generic nextcloud-creds \
-    --from-literal=NEXTCLOUD_ADMIN_USER="$nextcloud_admin_user" \
-    --from-literal=NEXTCLOUD_ADMIN_PASSWORD="$nextcloud_admin_password" \
+    --from-literal=nextcloud-username="$nextcloud_admin_user" \
+    --from-literal=nextcloud-password="$nextcloud_admin_password" \
     -n $namespace
 ```
 
@@ -24,12 +24,27 @@ kubectl create secret generic s3-credentials \
 
 ## Parameters
 
+### Ingress parameters
+
+| Name                       | Description                                  | Value  |
+| -------------------------- | -------------------------------------------- | ------ |
+| `ingress.enabled`          | Enable or disable the ingress                | `true` |
+| `ingress.className`        | The class name for the ingress               | `""`   |
+| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `nil`  |
+| `ingress.host`             | The host for the ingress                     | `""`   |
+
 ### Nextcloud parameters
 
 | Name                                                    | Description                                                         | Value                      |
 | ------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------- |
 | `nextcloud.enabled`                                     | Enable or disable Nextcloud                                         | `true`                     |
+| `nextcloud.ingress.enabled`                             | Enable or disable the Nextcloud subchart ingress                    | `false`                    |
 | `nextcloud.nextcloud.host`                              | The host for Nextcloud and Ingress                                  | `""`                       |
+| `nextcloud.nextcloud.existingSecret.enabled`            | Use an existing secret for credentials                              | `true`                     |
+| `nextcloud.nextcloud.existingSecret.enabled`            | Enable or disable using an existing secret                          | `true`                     |
+| `nextcloud.nextcloud.existingSecret.secretName`         | Name of the existing Kubernetes secret                              | `nextcloud-creds`          |
+| `nextcloud.nextcloud.existingSecret.usernameKey`        | Key in the secret for the admin username                            | `NEXTCLOUD_ADMIN_USER`     |
+| `nextcloud.nextcloud.existingSecret.passwordKey`        | Key in the secret for the admin password                            | `NEXTCLOUD_ADMIN_PASSWORD` |
 | `nextcloud.externalDatabase.enabled`                    | Enable or disable external database usage                           | `true`                     |
 | `nextcloud.externalDatabase.type`                       | Type of external database (e.g., postgresql, mysql)                 | `postgresql`               |
 | `nextcloud.externalDatabase.host`                       | Hostname or service name of the external database                   | `nextcloud-postgresql-rw`  |
