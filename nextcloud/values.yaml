@@ -25,6 +25,9 @@ nextcloud:
       enabled: true
       ## @param nextcloud.nextcloud.existingSecret.secretName Name of the existing Kubernetes secret
       secretName: nextcloud-creds
+    mail:
+      ## @param nextcloud.nextcloud.mail.enabled Whether to enable/disable email settings
+      enabled: true
   externalDatabase:
     ## @param nextcloud.externalDatabase.enabled Enable or disable external database usage
     enabled: true

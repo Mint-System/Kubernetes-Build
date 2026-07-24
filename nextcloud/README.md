@@ -10,6 +10,9 @@ Setup a `nextcloud-creds` secret with any additional environment variables you w
 kubectl create secret generic nextcloud-creds \
     --from-literal=nextcloud-username="$nextcloud_admin_user" \
     --from-literal=nextcloud-password="$nextcloud_admin_password" \
+    --from-literal=smtp-host="$smtp_host" \
+    --from-literal=smtp-username="$smtp_username" \
+    --from-literal=smtp-password="$smtp_password" \
     -n $namespace
 ```
 
@@ -43,8 +46,7 @@ kubectl create secret generic s3-credentials \
 | `nextcloud.nextcloud.existingSecret.enabled`            | Use an existing secret for credentials                              | `true`                     |
 | `nextcloud.nextcloud.existingSecret.enabled`            | Enable or disable using an existing secret                          | `true`                     |
 | `nextcloud.nextcloud.existingSecret.secretName`         | Name of the existing Kubernetes secret                              | `nextcloud-creds`          |
-| `nextcloud.nextcloud.existingSecret.usernameKey`        | Key in the secret for the admin username                            | `NEXTCLOUD_ADMIN_USER`     |
-| `nextcloud.nextcloud.existingSecret.passwordKey`        | Key in the secret for the admin password                            | `NEXTCLOUD_ADMIN_PASSWORD` |
+| `nextcloud.nextcloud.mail.enabled`                      | Whether to enable/disable email settings                            | `true`                     |
 | `nextcloud.externalDatabase.enabled`                    | Enable or disable external database usage                           | `true`                     |
 | `nextcloud.externalDatabase.type`                       | Type of external database (e.g., postgresql, mysql)                 | `postgresql`               |
 | `nextcloud.externalDatabase.host`                       | Hostname or service name of the external database                   | `nextcloud-postgresql-rw`  |
