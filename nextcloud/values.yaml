@@ -28,6 +28,9 @@ nextcloud:
     mail:
       ## @param nextcloud.nextcloud.mail.enabled Whether to enable/disable email settings
       enabled: true
+  phpClientHttpsFix:
+    ## @param nextcloud.phpClientHttpsFix.enabled Fix HTTPS protocol detection behind reverse proxy
+    enabled: true
   externalDatabase:
     ## @param nextcloud.externalDatabase.enabled Enable or disable external database usage
     enabled: true

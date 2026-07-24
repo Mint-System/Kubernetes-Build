@@ -47,6 +47,7 @@ kubectl create secret generic s3-credentials \
 | `nextcloud.nextcloud.existingSecret.enabled`            | Enable or disable using an existing secret                          | `true`                     |
 | `nextcloud.nextcloud.existingSecret.secretName`         | Name of the existing Kubernetes secret                              | `nextcloud-creds`          |
 | `nextcloud.nextcloud.mail.enabled`                      | Whether to enable/disable email settings                            | `true`                     |
+| `nextcloud.phpClientHttpsFix.enabled`                   | Fix HTTPS protocol detection behind reverse proxy                   | `true`                     |
 | `nextcloud.externalDatabase.enabled`                    | Enable or disable external database usage                           | `true`                     |
 | `nextcloud.externalDatabase.type`                       | Type of external database (e.g., postgresql, mysql)                 | `postgresql`               |
 | `nextcloud.externalDatabase.host`                       | Hostname or service name of the external database                   | `nextcloud-postgresql-rw`  |
