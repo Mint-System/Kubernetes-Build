@@ -29,7 +29,7 @@ kubectl create secret generic s3-credentials \
 | Name                                                    | Description                                                         | Value                      |
 | ------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------- |
 | `nextcloud.enabled`                                     | Enable or disable Nextcloud                                         | `true`                     |
-| `nextcloud.host`                                        | The host for Nextcloud and Ingress                                  | `""`                       |
+| `nextcloud.nextcloud.host`                              | The host for Nextcloud and Ingress                                  | `""`                       |
 | `nextcloud.externalDatabase.enabled`                    | Enable or disable external database usage                           | `true`                     |
 | `nextcloud.externalDatabase.type`                       | Type of external database (e.g., postgresql, mysql)                 | `postgresql`               |
 | `nextcloud.externalDatabase.host`                       | Hostname or service name of the external database                   | `nextcloud-postgresql-rw`  |

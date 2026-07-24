@@ -12,3 +12,4 @@ prometheusAgent/charts
 index.md
 values
 *.kubeconfig
+pnpm-workspace.yaml

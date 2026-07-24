@@ -1,4 +1,5 @@
 kind: deployment
+chart: odoo
 ingress:
   host: restic.knd.local
 image: mintsystem/odoo:18.0.20260409

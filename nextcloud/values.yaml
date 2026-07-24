@@ -2,8 +2,9 @@
 nextcloud:
   ## @param nextcloud.enabled Enable or disable Nextcloud
   enabled: true
-  ## @param nextcloud.host The host for Nextcloud and Ingress
-  host: ""
+  nextcloud:
+    ## @param nextcloud.nextcloud.host The host for Nextcloud and Ingress
+    host: ""
   externalDatabase:
     ## @param nextcloud.externalDatabase.enabled Enable or disable external database usage
     enabled: true

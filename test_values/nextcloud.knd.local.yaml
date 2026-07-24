@@ -1,5 +1,7 @@
 kind: deployment
+chart: nextcloud
 nextcloud:
-  host: nextcloud.knd.local
-  username: "admin"
-  password: "admin"
+  nextcloud:
+    host: nextcloud.knd.local
+    username: "admin"
+    password: "admin"

@@ -32,6 +32,7 @@ help-table() {
     rows+=("list-charts||List local Helm charts.")
     rows+=("list-external-charts||List external Helm charts.")
     rows+=("list-cluster||List clusters.")
+    rows+=("list-deployment||List deployments.")
     rows+=("list-context||List kubeconfig files.")
     rows+=("switch-context||Switch kubeconfig file.")
     rows+=("get-context||Show active kubeconfig.")
@@ -467,6 +468,47 @@ list-cluster() {
             "$max_name" "$name" \
             "$max_alias" "$alias" \
             "$max_base" "$base"
+    done
+}
+
+list-deployment() {
+    local -a rows
+    local max_namespace=9 max_cluster=7 max_chart=5
+
+    for file in $(grep -l "^kind: deployment$" values/*.yaml 2>/dev/null); do
+        local base=$(basename "$file" .yaml)
+        local namespace="${base%%.*}"
+        local cluster="${base#*.}"
+        local chart=$(yq eval '.chart' "$file" 2>/dev/null)
+        [[ "${chart}" == "null" ]] && chart=""
+
+        rows+=("$namespace|$cluster|$chart")
+
+        (( ${#namespace} > max_namespace )) && max_namespace=${#namespace}
+        (( ${#cluster} > max_cluster )) && max_cluster=${#cluster}
+        (( ${#chart} > max_chart )) && max_chart=${#chart}
+    done
+
+    [[ ${#rows[@]} -eq 0 ]] && {
+        echo "No deployment files found."
+        return
+    }
+
+    printf '| %-*s | %-*s | %-*s |\n' \
+        "$max_namespace" "Namespace" \
+        "$max_cluster" "Cluster" \
+        "$max_chart" "Chart"
+
+    printf '|-%*s-|-%*s-|-%*s-|\n' \
+        "$max_namespace" "$(printf '%*s' "$max_namespace" '' | tr ' ' '-')" \
+        "$max_cluster" "$(printf '%*s' "$max_cluster" '' | tr ' ' '-')" \
+        "$max_chart" "$(printf '%*s' "$max_chart" '' | tr ' ' '-')"
+
+    printf '%s\n' "${rows[@]}" | sort | while IFS='|' read -r namespace cluster chart; do
+        printf '| %-*s | %-*s | %-*s |\n' \
+            "$max_namespace" "$namespace" \
+            "$max_cluster" "$cluster" \
+            "$max_chart" "$chart"
     done
 }
 
