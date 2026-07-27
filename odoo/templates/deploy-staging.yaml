@@ -91,10 +91,7 @@ spec:
               value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
             {{- end }}
           volumeMounts:
-            - mountPath: /main-data
-              name: odoo-main
-              subPath: odoodata
-            - mountPath: /staging-data
+            - mountPath: /var/lib/odoo/
               name: odoo-staging
               subPath: odoodata
             {{- if .Values.vshnPostgres.enabled }}
@@ -191,9 +188,6 @@ spec:
         - name: odoo-staging
           persistentVolumeClaim:
             claimName: data-odoo-staging
-        - name: odoo-main
-          persistentVolumeClaim:
-            claimName: data-odoo-main
         {{- if .Values.vshnPostgres.enabled }}
         - name: {{ .Values.vshnPostgres.secretRef }}
           secret:

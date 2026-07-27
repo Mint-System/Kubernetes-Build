@@ -55,5 +55,5 @@ $kubectl_exec "pg_dump '$database' > '$backup_dir/${database}.sql'"
 
 echo "The PostgreSQL database backup has finished: ${database}.sql"
 
-echo "Copy to local: kubectl cp $pod_id:$backup_dir/${database}.sql ./${database}.sql"
+echo "Copy to local: kubectl cp $pod_id:$backup_dir/${database}.sql ./tmp/${database}.sql"
 echo "Remove backup file when done: kubectl exec $pod_id -- rm '$backup_dir/${database}.sql'"
