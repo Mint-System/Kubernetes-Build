@@ -23,8 +23,6 @@ The K8up backup requires a `s3-credentials` and a `backup-repo` secret. Here is 
 
 ```bash
 kubectl create secret generic s3-credentials \
-    --from-literal=endpoint="https://sos-ch-gva-2.exo.io" \
-    --from-literal=bucket="$exoscale_bucket" \
     --from-literal=username="$exoscale_iam_key" \
     --from-literal=password="$exoscale_iam_secret" \
     -n $namespace
@@ -52,6 +50,7 @@ kubectl create secret generic s3-credentials \
 | `nextcloud.nextcloud.existingSecret.enabled`            | Enable or disable using an existing secret                          | `true`                     |
 | `nextcloud.nextcloud.existingSecret.secretName`         | Name of the existing Kubernetes secret                              | `nextcloud-creds`          |
 | `nextcloud.nextcloud.mail.enabled`                      | Whether to enable/disable email settings                            | `true`                     |
+| `nextcloud.persistence.enabled`                         | Enable persistence using PVC                                        | `true`                     |
 | `nextcloud.phpClientHttpsFix.enabled`                   | Fix HTTPS protocol detection behind reverse proxy                   | `true`                     |
 | `nextcloud.internalDatabase.enabled`                    | Enable or disable the internal SQLite database                      | `false`                    |
 | `nextcloud.externalDatabase.enabled`                    | Enable or disable external database usage                           | `true`                     |

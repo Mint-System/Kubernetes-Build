@@ -19,8 +19,6 @@ The K8up backup requires a `s3-credentials` and a `backup-repo` secret. Here is 
 
 ```bash
 kubectl create secret generic s3-credentials \
-    --from-literal=endpoint="https://sos-ch-gva-2.exo.io" \
-    --from-literal=bucket="$exoscale_bucket" \
     --from-literal=username="$exoscale_iam_key" \
     --from-literal=password="$exoscale_iam_secret" \
     -n $namespace

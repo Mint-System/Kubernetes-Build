@@ -28,6 +28,9 @@ nextcloud:
     mail:
       ## @param nextcloud.nextcloud.mail.enabled Whether to enable/disable email settings
       enabled: true
+  ## @param nextcloud.persistence.enabled Enable persistence using PVC
+  persistence: 
+    enabled: true
   phpClientHttpsFix:
     ## @param nextcloud.phpClientHttpsFix.enabled Fix HTTPS protocol detection behind reverse proxy
     enabled: true
