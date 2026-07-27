@@ -44,7 +44,7 @@ NAME          SCHEDULE REF   COMPLETION   PREBACKUP              AGE
 odoo-backup                  Succeeded    NoPreBackupPodsFound   4m2s
 ```
 
-Under the Odoo the k8up backup operator uses restic. Lets list the restic snapshots:
+Under the hood the k8up backup operator uses restic. Lets list the restic snapshots:
 
 ```bash
 *[main][~/Kubernetes-Build]$ kubectl get snapshots
@@ -54,9 +54,9 @@ NAME       DATE TAKEN             PATHS                     REPOSITORY
 9563a938   2025-11-04T18:35:01Z   /data/data-odoo-main      s3:https://sos-ch-gva-2.exo.io/k8up.mintcloud.ch/restic.knd.local
 ```
 
-The k8up operator has backed up all persistent volumes.
+The k8up operator has backuped all persistent volumes.
 
-Let's change something and then do a restore. Forward the ingress port with `task forward ingress-nginx` and log into Odoo, then install the To-do app.
+Let's change something and then execute restore. Forward the ingress port with `task forward ingress-nginx` and log into Odoo, then install the To-do app.
 
 Now let's restore the snapshot `9563a938`. Create a pvc for the restore:
 

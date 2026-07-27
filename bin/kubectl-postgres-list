@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -e
+
+script=$(basename "$0")
+version="1.1.0"
+
+help() {
+    echo
+    echo "$script v$version"
+    echo
+    echo 'Description: List PostgreSQL databases in Kubernetes cluster.'
+    echo "Syntax: $script <pod>"
+    echo "Example: $script postgres"
+    echo 'Options:'
+    echo "  help  Show $script manual."
+    echo
+}
+
+if [[ "$1" == 'help' ]]; then
+    help
+    exit 0
+fi
+
+pod="$1"
+
+[[ -z "$pod" ]] && { echo 'Error: Parameter pod is empty'; exit 1; }
+
+echo "Search for pod matching name '$pod'"
+matches=$(kubectl get pods --no-headers -o custom-columns=':metadata.name' | grep -F "$pod" || true)
+match_count=$(echo "$matches" | grep -c . || true)
+
+if [[ "$match_count" -eq 0 ]]; then
+    echo "Error: No pod found matching '$pod'"
+    exit 1
+elif [[ "$match_count" -gt 1 ]]; then
+    echo "Error: Multiple pods found matching '$pod':"
+    echo "$matches"
+    exit 1
+fi
+
+pod_id="$matches"
+
+echo "Found pod: $pod_id"
+kubectl_exec="kubectl exec $pod_id -- /bin/bash -c"
+
+$kubectl_exec "psql -h \"\$PGHOST\" -U \"\$PGUSER\" -d postgres -tAc \"SELECT datname FROM pg_database WHERE datistemplate = false AND datname NOT IN ('postgres', 'template0', 'template1');\""

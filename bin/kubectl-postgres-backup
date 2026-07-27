@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -e
+
+script=$(basename "$0")
+version="1.2.0"
+
+help() {
+    echo
+    echo "$script v$version"
+    echo
+    echo 'Description: Backup PostgreSQL database in Kubernetes cluster.'
+    echo "Syntax: $script <pod> <database>"
+    echo "Example: $script postgres mydb"
+    echo 'Options:'
+    echo "  help  Show $script manual."
+    echo
+}
+
+if [[ "$1" == 'help' ]]; then
+    help
+    exit 0
+fi
+
+pod="$1"
+database="$2"
+
+[[ -z "$pod" ]] && { echo 'Error: Parameter pod is empty'; exit 1; }
+[[ -z "$database" ]] && { echo 'Error: Parameter database is empty'; exit 1; }
+
+echo "Search for pod matching name '$pod'"
+matches=$(kubectl get pods --no-headers -o custom-columns=':metadata.name' | grep -F "$pod" || true)
+match_count=$(echo "$matches" | grep -c . || true)
+
+if [[ "$match_count" -eq 0 ]]; then
+    echo "Error: No pod found matching '$pod'"
+    exit 1
+elif [[ "$match_count" -gt 1 ]]; then
+    echo "Error: Multiple pods found matching '$pod':"
+    echo "$matches"
+    exit 1
+fi
+
+pod_id="$matches"
+
+echo "Found pod: $pod_id"
+kubectl_exec="kubectl exec $pod_id -- /bin/bash -c"
+
+backup_dir="/var/lib/postgresql/data/backup"
+
+echo "Create working directory $backup_dir"
+$kubectl_exec "mkdir -p '$backup_dir'"
+
+echo "Dump database $database to $backup_dir"
+$kubectl_exec "pg_dump '$database' > '$backup_dir/${database}.sql'"
+
+echo "The PostgreSQL database backup has finished: ${database}.sql"
+
+echo "Copy to local: kubectl cp $pod_id:$backup_dir/${database}.sql ./${database}.sql"
+echo "Remove backup file when done: kubectl exec $pod_id -- rm -rf '$backup_dir/${database}.sql'"

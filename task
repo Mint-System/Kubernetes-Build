@@ -726,17 +726,24 @@ show-secrets() {
         kubectl get secret postgres -o jsonpath="{.data.user}" | base64 --decode && echo
         echo 'postgres/password:'
         kubectl get secret postgres -o jsonpath="{.data.password}" | base64 --decode && echo
+    
     elif [[ "$1" = 'clusterIssuer' ]]; then
         echo 'cert-manager/infomaniak-api-credentials:'
         kubectl get secret -n cert-manager infomaniak-api-token -o jsonpath="{.data.access-token}" | base64 --decode && echo
+    
     elif [[ "$1" = 'forgejoRunner' ]]; then
         echo 'forgejo-runner/forgejoInstanceToken:'
         kubectl get secret forgejo-runner -o jsonpath="{.data.forgejoInstanceToken}" | base64 --decode && echo
+
     elif [[ "$1" = 'nextcloud' ]]; then
         echo 'nextcloud/creds:'
         kubectl get secret nextcloud-creds -o jsonpath="{.data.nextcloud-username}" | base64 --decode && echo
         echo 'nextcloud/password:'
         kubectl get secret nextcloud-creds -o jsonpath="{.data.nextcloud-password}" | base64 --decode && echo
+        echo 'nextcloud-postgresql-app:username:'
+        kubectl get secret nextcloud-postgresql-app -o jsonpath="{.data.username}" | base64 --decode && echo
+        echo 'nextcloud-postgresql-app:password:'
+        kubectl get secret nextcloud-postgresql-app -o jsonpath="{.data.password}" | base64 --decode && echo
     fi
 }
 
