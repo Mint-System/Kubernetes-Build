@@ -33,7 +33,15 @@ This project uses the <https://taskfile.build/> standard.
 
 The `./task` file is a bash script that provides all functions necessary to work with this project.
 
-**Execute**: Always try to run a command with the `./task` file script.
+Always try to run a command with the `./task` file script.
+
+### New Tools
+
+Do not automatically install new software packages. Always ask for permission.
+
+### Temporary files
+
+When creating temporary fiels and scripts, use the `./tmp` directory.
 
 ## Coding conventions
 

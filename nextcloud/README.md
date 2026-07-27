@@ -53,12 +53,14 @@ kubectl create secret generic s3-credentials \
 | `nextcloud.nextcloud.existingSecret.secretName`         | Name of the existing Kubernetes secret                              | `nextcloud-creds`          |
 | `nextcloud.nextcloud.mail.enabled`                      | Whether to enable/disable email settings                            | `true`                     |
 | `nextcloud.phpClientHttpsFix.enabled`                   | Fix HTTPS protocol detection behind reverse proxy                   | `true`                     |
+| `nextcloud.internalDatabase.enabled`                    | Enable or disable the internal SQLite database                      | `false`                    |
 | `nextcloud.externalDatabase.enabled`                    | Enable or disable external database usage                           | `true`                     |
 | `nextcloud.externalDatabase.type`                       | Type of external database (e.g., postgresql, mysql)                 | `postgresql`               |
 | `nextcloud.externalDatabase.host`                       | Hostname or service name of the external database                   | `nextcloud-postgresql-rw`  |
 | `nextcloud.externalDatabase.database`                   | Name of the database to use                                         | `nextcloud`                |
 | `nextcloud.externalDatabase.existingSecret.enabled`     | Enable or disable using an existing secret for database credentials | `true`                     |
-| `nextcloud.externalDatabase.existingSecret.name`        | Name of the existing Kubernetes secret                              | `nextcloud-postgresql-app` |
+| `nextcloud.externalDatabase.existingSecret.secretName`  | Name of the existing Kubernetes secret                              | `nextcloud-postgresql-app` |
+| `nextcloud.externalDatabase.existingSecret.usernameKey` | Key in the secret containing the database username                  | `username`                 |
 | `nextcloud.externalDatabase.existingSecret.passwordKey` | Key in the secret containing the database password                  | `password`                 |
 
 ### CloudNativePG parameters

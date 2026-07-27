@@ -31,6 +31,9 @@ nextcloud:
   phpClientHttpsFix:
     ## @param nextcloud.phpClientHttpsFix.enabled Fix HTTPS protocol detection behind reverse proxy
     enabled: true
+  internalDatabase:
+    ## @param nextcloud.internalDatabase.enabled Enable or disable the internal SQLite database
+    enabled: false
   externalDatabase:
     ## @param nextcloud.externalDatabase.enabled Enable or disable external database usage
     enabled: true
@@ -43,8 +46,10 @@ nextcloud:
     existingSecret:
       ## @param nextcloud.externalDatabase.existingSecret.enabled Enable or disable using an existing secret for database credentials
       enabled: true
-      ## @param nextcloud.externalDatabase.existingSecret.name Name of the existing Kubernetes secret
-      name: nextcloud-postgresql-app
+      ## @param nextcloud.externalDatabase.existingSecret.secretName Name of the existing Kubernetes secret
+      secretName: nextcloud-postgresql-app
+      ## @param nextcloud.externalDatabase.existingSecret.usernameKey Key in the secret containing the database username
+      usernameKey: username
       ## @param nextcloud.externalDatabase.existingSecret.passwordKey Key in the secret containing the database password
       passwordKey: password
 

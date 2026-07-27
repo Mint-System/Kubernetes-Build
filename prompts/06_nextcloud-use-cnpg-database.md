@@ -1,7 +1,7 @@
 ---
 title: "Nextcloud use CNPG database"
-state: draft
-model: 
+state: completed
+model: infomaniak/moonshotai/Kimi-K2.6
 input_tokens: 
 ---
 
@@ -35,6 +35,8 @@ nextcloud-postgresql-server        kubernetes.io/tls          2      3d2h
 Form the docs https://github.com/nextcloud/helm/blob/main/charts/nextcloud/README.md#database-configurations I found these values:
 
 ```
+internalDatabase.enabled 	Whether to use internal sqlite database 	true
+externalDatabase.enabled 	Whether to use external database 	false
 externalDatabase.type 	External database type: mysql, postgresql 	mysql
 externalDatabase.host 	Host of the external database in form of host:port. Example: "myhost:1234" 	""
 externalDatabase.database 	Name of the existing database 	nextcloud
@@ -60,6 +62,12 @@ Configure these defaults in `nextcloud/values.yaml`.
 
 ## Worklog
 
-@Clanker Add a summary here once the task has been completed.
+Updated `nextcloud/values.yaml` to configure the Nextcloud subchart to use the CNPG PostgreSQL database via existing secrets. Key changes:
+- Set `internalDatabase.enabled: false` to disable the default internal SQLite database.
+- Kept `externalDatabase.enabled: true`, `type: postgresql`, `database: nextcloud`, and `host: nextcloud-postgresql-rw` aligned with the deployed CNPG cluster.
+- Changed `externalDatabase.existingSecret.name` to `secretName` to match the upstream Nextcloud subchart API (v9.2.4).
+- Set `existingSecret.secretName` to `nextcloud-postgresql-app` to match the CNPG-generated app secret.
+- Added missing `usernameKey: username` alongside the existing `passwordKey: password`.
+- Ran `task lint` and `task docs` successfully; chart and `nextcloud/README.md` are updated.
 
 @Clanker Set frontmatter state to completed and update info about model and token usage.
