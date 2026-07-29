@@ -47,6 +47,7 @@ help-table() {
     rows+=("logs|[grep]|Select pods with grep and show logs.")
     rows+=("list||List Helm deployments.")
     rows+=("get-pods||List all pods.")
+    rows+=("get-namespace||Show active namespace.")
     rows+=("login-oc||Refresh the auth token for OpenShift.")
     rows+=("run-job|[name]|Make a copy of job.")
     rows+=("===HELM===| | ")
