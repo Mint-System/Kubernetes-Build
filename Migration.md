@@ -1,8 +1,8 @@
 # Migration
 
-##  From ingress-nginx to Traefik
+##  From Ingress NGINX to Traefik
 
-This guide will help you migrate your Kubernetes cluster from using ingress-nginx to Traefik as your ingress controller.
+This guide will help you migrate your Kubernetes cluster from using Ingress NGINX as the ingress controller to using Traefik.
 
 For a comprehensive, official guide with detailed instructions and troubleshooting, refer to the [Traefik documentation on migrating from ingress-nginx](https://doc.traefik.io/traefik/migrate/nginx-to-traefik/).
 
@@ -53,6 +53,8 @@ traefik_service_ip=$(kubectl get svc -n traefik traefik -o jsonpath='{.status.lo
 
 ## Update Ingress Resource
 
+You can chose to this before or after updating the DNS entries.
+
 Switch to namespace with ingress:
 
 ```bash
@@ -64,6 +66,10 @@ Patch the ingress resource:
 ```bash
 kubectl patch ingress $name -p '{"spec":{"ingressClassName":"traefik"}}'
 ```
+
+::: danger
+Services linked to this ingress resource won't be accessable until DNS propagates the new ip.
+:::
 
 Verify the patch:
 
@@ -77,8 +83,6 @@ Verify that your application is accessible through Traefik:
 curl -I -H "Host: app.example.com" http://$traefik_service_ip
 ```
 
-To route it externally we need to update the application's DNS entry.
-
 You can also update all ingress resources at once.
 
 ```bash
@@ -90,6 +94,8 @@ Patch all ingresses to use Traefik:
 ```bash
 kubectl get ingress --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.metadata.namespace}{"\n"}{end}' | while read name namespace; do kubectl patch ingress "$name" -n "$namespace" -p '{"spec":{"ingressClassName":"traefik"}}'; done
 ```
+
+To route it externally we need to update the application's DNS entry.
 
 ## Update DNS
 
