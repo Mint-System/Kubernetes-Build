@@ -23,17 +23,19 @@ Note: @Clanker refers to the "ai agent" (you) who is working on this task.
 
 For my `nextcloud` chart I want to support a Redis caching.
 
-Add `redis-ha` as dependency to the `nextcloud` chart. Here are some details: https://github.com/DandyDeveloper/charts/blob/master/charts/redis-ha/README.md#general-parameters
+Add a `nextcloud/deploy-redis.yml` that deploys a single instance of `https://hub.docker.com/_/redis/`.
 
-Make sure only a single master redis container is deployed.
+Setup a var `redis.image` and use the alpine image tag as default. 
 
 In `nextcloud/values.yaml` I want you to enable Redis for Nextcloud with `redis.enabled`.
 
 Nextcloud chart: https://github.com/nextcloud/helm/blob/main/charts/nextcloud/README.md#introduction
 
-Do not add passwort auth. For the redis connection to work I think only `externalRedis.host` must be set.
+For the redis connection to work I think only `externalRedis.host` must be set.
 
 Run `task template-manifest nextcloud values/nextcloud-uri-cloud.exo.mintcloud.ch.yaml > manifest.yml` to check the final manifest.
+
+Disable Redis authentication.
 
 ## Worklog
 

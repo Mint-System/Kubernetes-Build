@@ -428,7 +428,6 @@ list-external-charts() {
     echo 'haproxy-ingress'
     echo 'k8up'
     echo 'traefik'
-    echo 'redis-ha'
 }
 
 list-cluster() {
@@ -837,9 +836,6 @@ add-repos(){
 
     echo 'Add traefik.'
     helm repo add traefik https://helm.traefik.io/traefik
-
-    echo 'Add dandydev'
-    helm repo add dandydev https://dandydeveloper.github.io/charts
 }
 
 remove-repo(){
