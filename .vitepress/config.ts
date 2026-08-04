@@ -2,6 +2,7 @@ import { defineConfig } from "vitepress";
 import { vitepressMermaidPreview } from "vitepress-mermaid-preview";
 
 export default defineConfig({
+  srcExclude: ["prompts/**"],
   title: "Kubernetes Build",
   description: "The Mint System collection of Helm Charts.",
   head: [["link", { rel: "icon", type: "image/png", href: "/icon.png" }]],
