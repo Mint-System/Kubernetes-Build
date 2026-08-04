@@ -1,5 +1,6 @@
 ---
 title: task command to create deploymentUpdater kubeconfig
+state: completed
 ---
 
 # Run 01

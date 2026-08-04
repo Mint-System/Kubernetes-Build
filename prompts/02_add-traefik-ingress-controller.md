@@ -1,5 +1,6 @@
 ---
 title: Add Traefik ingress controller
+state: completed
 ---
 
 # Run 02
