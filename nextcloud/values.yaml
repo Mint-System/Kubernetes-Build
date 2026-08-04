@@ -37,6 +37,17 @@ nextcloud:
   internalDatabase:
     ## @param nextcloud.internalDatabase.enabled Enable or disable the internal SQLite database
     enabled: false
+  redis:
+    ## @param nextcloud.redis.enabled Enable or disable the bitnami Redis subchart
+    enabled: false
+    auth:
+      ## @param nextcloud.redis.auth.enabled Enable or disable Redis authentication
+      enabled: false
+  externalRedis:
+    ## @param nextcloud.externalRedis.enabled Enable or disable external Redis
+    enabled: true
+    ## @param nextcloud.externalRedis.host Hostname or service name of the external Redis
+    host: nextcloud-redis
   externalDatabase:
     ## @param nextcloud.externalDatabase.enabled Enable or disable external database usage
     enabled: true
@@ -55,6 +66,13 @@ nextcloud:
       usernameKey: username
       ## @param nextcloud.externalDatabase.existingSecret.passwordKey Key in the secret containing the database password
       passwordKey: password
+
+## @section Redis parameters
+redis:
+  ## @param redis.enabled Enable or disable Redis
+  enabled: true
+  ## @param redis.image The image for Redis
+  image: redis:alpine
 
 ## @section CloudNativePG parameters
 cnpg:

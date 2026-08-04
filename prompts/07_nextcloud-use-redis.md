@@ -1,8 +1,8 @@
 ---
 title: "Nextcloud use Redis"
-state: draft
-model: 
-input_tokens: 
+state: completed
+model: moonshotai/Kimi-K2.6
+input_tokens: 57.9K
 ---
 
 # Run 07
@@ -39,6 +39,10 @@ Disable Redis authentication.
 
 ## Worklog
 
-@Clanker Add a summary here once the task has been completed.
-
-@Clanker Set frontmatter state to completed and update info about model and token usage.
+- Created `nextcloud/templates/deploy-redis.yml` with a single-replica Redis Deployment and Service (`nextcloud-redis`), conditional on `.Values.redis.enabled`.
+- Added `redis.enabled: true` and `redis.image: redis:alpine` to `nextcloud/values.yaml`.
+- Configured the Nextcloud subchart to use the custom Redis by setting `nextcloud.externalRedis.enabled: true` and `nextcloud.externalRedis.host: nextcloud-redis` in `nextcloud/values.yaml`.
+- Disabled the bitnami Redis sub-subchart (`nextcloud.redis.enabled: false`) and set `nextcloud.redis.auth.enabled: false` to prevent `REDIS_URL` from referencing a non-existent password.
+- Fixed `values/nextcloud-uri-cloud.exo.mintcloud.ch.yaml` by moving `redis.enabled` and `externalRedis.host` from the incorrect `nextcloud.nextcloud` nesting to the correct `nextcloud` subchart level.
+- Verified the final manifest with `./task template-manifest` — the Nextcloud pod receives `REDIS_HOST=nextcloud-redis`, `REDIS_HOST_PORT=6379`, and `REDIS_URL=redis://$(REDIS_HOST):$(REDIS_HOST_PORT)` with no authentication.
+- Ran `./task lint` and `./task docs` successfully.

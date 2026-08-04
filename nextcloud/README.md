@@ -53,6 +53,10 @@ kubectl create secret generic s3-credentials \
 | `nextcloud.persistence.enabled`                         | Enable persistence using PVC                                        | `true`                     |
 | `nextcloud.phpClientHttpsFix.enabled`                   | Fix HTTPS protocol detection behind reverse proxy                   | `true`                     |
 | `nextcloud.internalDatabase.enabled`                    | Enable or disable the internal SQLite database                      | `false`                    |
+| `nextcloud.redis.enabled`                               | Enable or disable the bitnami Redis subchart                        | `false`                    |
+| `nextcloud.redis.auth.enabled`                          | Enable or disable Redis authentication                              | `false`                    |
+| `nextcloud.externalRedis.enabled`                       | Enable or disable external Redis                                    | `true`                     |
+| `nextcloud.externalRedis.host`                          | Hostname or service name of the external Redis                      | `nextcloud-redis`          |
 | `nextcloud.externalDatabase.enabled`                    | Enable or disable external database usage                           | `true`                     |
 | `nextcloud.externalDatabase.type`                       | Type of external database (e.g., postgresql, mysql)                 | `postgresql`               |
 | `nextcloud.externalDatabase.host`                       | Hostname or service name of the external database                   | `nextcloud-postgresql-rw`  |
@@ -61,6 +65,13 @@ kubectl create secret generic s3-credentials \
 | `nextcloud.externalDatabase.existingSecret.secretName`  | Name of the existing Kubernetes secret                              | `nextcloud-postgresql-app` |
 | `nextcloud.externalDatabase.existingSecret.usernameKey` | Key in the secret containing the database username                  | `username`                 |
 | `nextcloud.externalDatabase.existingSecret.passwordKey` | Key in the secret containing the database password                  | `password`                 |
+
+### Redis parameters
+
+| Name            | Description             | Value          |
+| --------------- | ----------------------- | -------------- |
+| `redis.enabled` | Enable or disable Redis | `true`         |
+| `redis.image`   | The image for Redis     | `redis:alpine` |
 
 ### CloudNativePG parameters
 
