@@ -14,17 +14,29 @@ task generate-kubconfig deploy
 
 Setup secret `KUBECONFIG_DEPLOY` with content of the created kubeconfig.
 
-Here is are examples of Forgejo action steps:
+Here is an example of a Forgejo action:
 
 ```yaml
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  deploy:
+    name: Deploy to Kubernetes
+    runs-on: ubuntu-latest
+    steps:
       - name: Install kubectl
         run: |
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
-
       - name: Create Kubeconfig for Deployment
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG_DEPLOY }}" > $HOME/.kube/config
+      - name: Verify kubectl version
+        run: ./kubectl version --client
+      - name: Deploy to Kubernetes
+        run: ./kubectl delete pods -l app=taskfile-build -n ansible-build
 ```
