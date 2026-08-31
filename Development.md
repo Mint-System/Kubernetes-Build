@@ -34,7 +34,7 @@ Setup secrets according to the Odoo chart readme.
 Install the Odoo chart:
 
 ```bash
-task install-chart odoo test_values/odoo.knd.local.yaml
+task install-chart odoo test_values/knd/odoo.yaml
 ```
 
 The Odoo database will be initialized automatically.
@@ -64,7 +64,7 @@ Setup secrets according to the Nextcloud chart readme.
 Install the Nextcloud chart:
 
 ```bash
-task install-chart nextcloud test_values/nextcloud.knd.local.yaml
+task install-chart nextcloud test_values/knd/nextcloud.yaml
 ```
 
 The Odoo database will be initialized automatically.

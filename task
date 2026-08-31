@@ -227,7 +227,7 @@ test-chart-odoo() {
         start-and-prepare
 
         update-dependencies odoo
-        install-chart odoo test_values/odoo.knd.local.yaml
+        install-chart odoo test_values/knd/odoo.yaml
         kubectl wait --for=condition=Available --timeout=300s deployments/odoo-odoo
     fi
 }
@@ -247,7 +247,7 @@ test-chart-nextcloud() {
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         kubectl create secret generic nextcloud-creds --from-literal=NEXTCLOUD_ADMIN_USER="test" --from-literal=NEXTCLOUD_ADMIN_PASSWORD="test"
-        install-chart nextcloud test_values/nextcloud.knd.local.yaml
+        install-chart nextcloud test_values/knd/nextcloud.yaml
     fi
 }
 
