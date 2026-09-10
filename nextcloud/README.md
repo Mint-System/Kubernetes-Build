@@ -65,6 +65,9 @@ kubectl create secret generic s3-credentials \
 | `nextcloud.externalDatabase.existingSecret.secretName`  | Name of the existing Kubernetes secret                              | `nextcloud-postgresql-app` |
 | `nextcloud.externalDatabase.existingSecret.usernameKey` | Key in the secret containing the database username                  | `username`                 |
 | `nextcloud.externalDatabase.existingSecret.passwordKey` | Key in the secret containing the database password                  | `password`                 |
+| `nextcloud.resources.requests.memory`                   | Memory request for the container                                    | `1Gi`                      |
+| `nextcloud.resources.requests.cpu`                      | CPU request for the container                                       | `250m`                     |
+| `nextcloud.resources.limits.memory`                     | Memory limit for the container                                      | `2Gi`                      |
 
 ### Redis parameters
 

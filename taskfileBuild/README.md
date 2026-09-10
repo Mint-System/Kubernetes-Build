@@ -25,3 +25,11 @@ This Helm chart deploys a taskfile.build container.
 | `caddyRoot`        | Static site path relative to repo root. | `""`                               |
 | `additionalEnvs`   | Additional environment variables to set | `{}`                               |
 | `storageClassName` | Set the storage class                   | `""`                               |
+
+### Resources requests and limits
+
+| Name                        | Description                      | Value   |
+| --------------------------- | -------------------------------- | ------- |
+| `resources.requests.memory` | Memory request for the container | `500Mi` |
+| `resources.requests.cpu`    | CPU request for the container    | `100m`  |
+| `resources.limits.memory`   | Memory limit for the container   | `1Gi`   |

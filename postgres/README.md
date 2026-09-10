@@ -17,3 +17,11 @@ This chart deploys a Postgres container and stores the credentials in a secret.
 | `secretRef`        | The secret reference for Postgres       | `postgres`           |
 | `userPasswordKey`  | The user password key for Postgres      | `password`           |
 | `storageClassName` | Set the storage class                   | `""`                 |
+
+### Resources requests and limits
+
+| Name                        | Description                      | Value   |
+| --------------------------- | -------------------------------- | ------- |
+| `resources.requests.memory` | Memory request for the container | `500Mi` |
+| `resources.requests.cpu`    | CPU request for the container    | `100m`  |
+| `resources.limits.memory`   | Memory limit for the container   | `1Gi`   |

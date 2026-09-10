@@ -33,10 +33,9 @@ kubectl create secret generic prometheus-remote-write-credentials \
 
 | Name                        | Description                      | Value   |
 | --------------------------- | -------------------------------- | ------- |
-| `resources.requests.memory` | Memory request for the container | `64Mi`  |
-| `resources.requests.cpu`    | CPU request for the container    | `250m`  |
-| `resources.limits.memory`   | Memory limit for the container   | `128Mi` |
-| `resources.limits.cpu`      | CPU limit for the container      | `500m`  |
+| `resources.requests.memory` | Memory request for the container | `500Mi` |
+| `resources.requests.cpu`    | CPU request for the container    | `100m`  |
+| `resources.limits.memory`   | Memory limit for the container   | `1Gi`   |
 
 ### Kube-state-metrics configuration
 

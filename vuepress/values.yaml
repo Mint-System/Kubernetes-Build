@@ -17,3 +17,13 @@ image: ""
 ## @param imagePullPolicy Pull policy for Vuepress image
 ##
 imagePullPolicy: Always
+## @section Resources requests and limits
+resources:
+  ## @param resources.requests.memory Memory request for the container
+  requests:
+    memory: "500Mi"
+    ## @param resources.requests.cpu CPU request for the container
+    cpu: "100m"
+  limits:
+    ## @param resources.limits.memory Memory limit for the container
+    memory: "1Gi"

@@ -81,3 +81,11 @@ Here is are examples of Forgejo action steps:
 | `forgejoInstanceUrl` | Forgejo instance url.                       | `https://codeberg.org`              |
 | `secretRef`          | The secret reference for the Forgejo Runner | `forgejo-runner`                    |
 | `storageClassName`   | Set the storage class                       | `""`                                |
+
+### Resources requests and limits
+
+| Name                        | Description                      | Value   |
+| --------------------------- | -------------------------------- | ------- |
+| `resources.requests.memory` | Memory request for the container | `500Mi` |
+| `resources.requests.cpu`    | CPU request for the container    | `100m`  |
+| `resources.limits.memory`   | Memory limit for the container   | `1Gi`   |

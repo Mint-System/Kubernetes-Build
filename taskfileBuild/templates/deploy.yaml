@@ -32,6 +32,8 @@ spec:
           {{- end }}
           ports:
             - containerPort: 80
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: app-data
               mountPath: /app

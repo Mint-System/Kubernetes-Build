@@ -94,14 +94,12 @@ scrapeConfigs: |
 resources:
   requests:
     ## @param resources.requests.memory Memory request for the container
-    memory: "64Mi"
+    memory: "500Mi"
     ## @param resources.requests.cpu CPU request for the container
-    cpu: "250m"
+    cpu: "100m"
   limits:
     ## @param resources.limits.memory Memory limit for the container
-    memory: "128Mi"
-    ## @param resources.limits.cpu CPU limit for the container
-    cpu: "500m"
+    memory: "1Gi"
 
 ## @section Kube-state-metrics configuration
 ## @param kube-state-metrics.enabled Enable kube-state-metrics as sub-chart

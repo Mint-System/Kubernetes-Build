@@ -91,6 +91,16 @@ workers: 5
 secretRef: odoo-creds
 ## @param storageClassName Set the storage class
 storageClassName: ""
+## @section Resources requests and limits
+resources:
+  ## @param resources.requests.memory Memory request for the container
+  requests:
+    memory: "1Gi"
+    ## @param resources.requests.cpu CPU request for the container
+    cpu: "250m"
+  limits:
+    ## @param resources.limits.memory Memory limit for the container
+    memory: "2Gi"
 
 ## @section K8up parameters
 k8up:

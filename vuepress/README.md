@@ -20,3 +20,11 @@ This Helm chart deploys a Vuepress site.
 | ----------------- | ------------------------------ | -------- |
 | `image`           | The image for Vuepress         | `""`     |
 | `imagePullPolicy` | Pull policy for Vuepress image | `Always` |
+
+### Resources requests and limits
+
+| Name                        | Description                      | Value   |
+| --------------------------- | -------------------------------- | ------- |
+| `resources.requests.memory` | Memory request for the container | `500Mi` |
+| `resources.requests.cpu`    | CPU request for the container    | `100m`  |
+| `resources.limits.memory`   | Memory limit for the container   | `1Gi`   |

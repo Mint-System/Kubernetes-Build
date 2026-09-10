@@ -47,12 +47,7 @@ spec:
         - name: runner-config
           mountPath: /config
         resources:
-          limits:
-            cpu: "1"
-            memory: "1024Mi"
-          requests:
-            cpu: "50m"
-            memory: "32Mi"
+          {{- toYaml .Values.resources | nindent 10 }}
       containers:
       - name: runner
         image: {{ .Values.image }}
@@ -77,12 +72,7 @@ spec:
         - name: runner-config
           mountPath: /config
         resources:
-          limits:
-            cpu: "1"
-            memory: "1024Mi"
-          requests:
-            cpu: "50m"
-            memory: "32Mi"
+          {{- toYaml .Values.resources | nindent 10 }}
       - name: daemon
         image: docker:27.5.1-dind
         env:
@@ -96,12 +86,7 @@ spec:
         - name: docker-data
           mountPath: /var/lib/docker
         resources:
-          limits:
-            cpu: "2"
-            memory: "4096Mi"
-          requests:
-            cpu: "50m"
-            memory: "32Mi"
+          {{- toYaml .Values.resources | nindent 10 }}
       volumes:
       - name: docker-certs
         emptyDir: {}

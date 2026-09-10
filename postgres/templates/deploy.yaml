@@ -36,6 +36,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secretRef }}
                   key: {{ .Values.userPasswordKey }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /var/lib/postgresql/data/
               name: postgres

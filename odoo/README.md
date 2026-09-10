@@ -95,6 +95,14 @@ kubectl create job --from=cronjob/<release>-staging-reset <release>-staging-rese
 | `secretRef`              | The secret reference for Odoo                 | `odoo-creds`                                                                                              |
 | `storageClassName`       | Set the storage class                         | `""`                                                                                                      |
 
+### Resources requests and limits
+
+| Name                        | Description                      | Value  |
+| --------------------------- | -------------------------------- | ------ |
+| `resources.requests.memory` | Memory request for the container | `1Gi`  |
+| `resources.requests.cpu`    | CPU request for the container    | `250m` |
+| `resources.limits.memory`   | Memory limit for the container   | `2Gi`  |
+
 ### K8up parameters
 
 | Name            | Description            | Value   |

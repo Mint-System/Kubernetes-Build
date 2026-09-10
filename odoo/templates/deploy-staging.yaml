@@ -102,6 +102,8 @@ spec:
           securityContext:
             runAsUser: 0
             runAsGroup: 0
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
       containers:
         - name: odoo
           image: {{ or .Values.staging.image .Values.image }}
@@ -184,6 +186,8 @@ spec:
               readOnly: true
               mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
             {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: odoo-staging
           persistentVolumeClaim:
