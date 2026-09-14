@@ -10,6 +10,8 @@ ingress:
   host: ""
   ## @param ingress.customDomain The custom domain for the ingress
   customDomain: ""
+  ## @param ingress.wwwRedirect Redirect the customDomain without www to the customDomain
+  wwwRedirect: false
 
 ## @section taskfile.build parameters
 ## @param image The image for taskfile.build

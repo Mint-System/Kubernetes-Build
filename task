@@ -240,8 +240,6 @@ test-chart-nextcloud() {
         start
         add-repos
         info
-        # install-chart haproxy-ingress
-        # kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
         install-chart traefik
         kubectl wait --namespace traefik --for=condition=Available --timeout=60s deployments/traefik
         install-chart cnpg
@@ -317,9 +315,6 @@ start-and-prepare() {
     add-repos
     info
 
-    # install-chart haproxy-ingress
-    # kubectl wait --namespace haproxy-ingress --for=condition=Available --timeout=60s deployments/haproxy-ingress
-    
     echo "Install traefik."
     install-chart traefik
     kubectl wait --namespace traefik --for=condition=Available --timeout=60s deployments/traefik
@@ -384,19 +379,19 @@ forward-nextcloud() {
     kubectl port-forward service/nextcloud $port:8080
 }
 
-forward-haproxy-ingress() {
-    local port=8080
-    kubectl get ingresses
-    echo "Open http://\$namespace.knd.local:$port url in your browser."
-    kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $port:80
-}
+# forward-haproxy-ingress() {
+#     local port=8080
+#     kubectl get ingresses
+#     echo "Open http://\$namespace.knd.local:$port url in your browser."
+#     kubectl port-forward -n haproxy-ingress svc/haproxy-ingress $port:80
+# }
 
-forward-ingress-nginx() {
-    local port=8080
-    kubectl get ingresses
-    echo "Open http://\$namespace.knd.local:$port url in your browser."
-    kubectl port-forward -n ingress-nginx svc/ingress-nginx $port:80
-}
+# forward-ingress-nginx() {
+#     local port=8080
+#     kubectl get ingresses
+#     echo "Open http://\$namespace.knd.local:$port url in your browser."
+#     kubectl port-forward -n ingress-nginx svc/ingress-nginx $port:80
+# }
 
 forward-prometheusagent() {
     local port=9090
@@ -425,7 +420,7 @@ list-charts() {
 list-external-charts() {
     echo 'cert-manager'
     echo 'cnpg'
-    echo 'haproxy-ingress'
+    # echo 'haproxy-ingress'
     echo 'k8up'
     echo 'traefik'
 }
@@ -633,17 +628,17 @@ install-clusterIssuer() {
         --values "$1"
 }
 
-install-haproxy-ingress() {
-    echo 'Install haproxy-ingress/haproxy-ingress.'
-    helm install haproxy-ingress haproxy-ingress/haproxy-ingress \
-        --create-namespace --namespace haproxy-ingress
-}
+# install-haproxy-ingress() {
+#     echo 'Install haproxy-ingress/haproxy-ingress.'
+#     helm install haproxy-ingress haproxy-ingress/haproxy-ingress \
+#         --create-namespace --namespace haproxy-ingress
+# }
 
-install-ingress-nginx() {
-    echo 'Install ingress-nginx/ingress-nginx.'
-    helm install ingress-nginx ingress-nginx/ingress-nginx \
-        --create-namespace --namespace ingress-nginx
-}
+# install-ingress-nginx() {
+#     echo 'Install ingress-nginx/ingress-nginx.'
+#     helm install ingress-nginx ingress-nginx/ingress-nginx \
+#         --create-namespace --namespace ingress-nginx
+# }
 
 install-traefik() {
     echo 'Install traefik/traefik.'
@@ -696,15 +691,25 @@ uninstall-release() {
         "ingress-nginx")
             uninstall-ingress-nginx
             ;;
+        "haproxy-ingress")
+            uninstall-haproxy-ingress
+            ;;
         *)
             helm uninstall "$release_name"
             ;;
     esac
 }
 
+uninstall-haproxy-ingress() {
+    echo 'Uninstall ingress-nginx release.'
+    helm uninstall haproxy-ingress/haproxy-ingress --namespace haproxy-ingress
+    kubectl delete namespace haproxy-ingress
+}
+
 uninstall-ingress-nginx() {
     echo 'Uninstall ingress-nginx release.'
     helm uninstall ingress-nginx --namespace ingress-nginx
+    kubectl delete namespace ingress-nginx
 }
 
 run-job() {
@@ -759,11 +764,6 @@ logs() {
 
 get-pods() {
     kubectl get pods
-}
-
-logs-haproxy-ingress() {
-    local pod_id=$(kubectl get pods -o=name -n haproxy-ingress | grep 'haproxy-ingress')
-    kubectl logs "$pod_id" -n haproxy-ingress
 }
 
 # Helm Commands
@@ -821,9 +821,6 @@ index-repo() {
 add-repos(){
     echo 'Add kubernetes-build.'
     helm repo add kubernetes-build https://kubernetes.build
-
-    echo 'Add haproxy-ingress.'
-    helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts
 
     echo 'Add jetstack.'
     helm repo add jetstack https://charts.jetstack.io

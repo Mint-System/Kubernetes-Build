@@ -45,3 +45,52 @@ spec:
               number: 80
   {{- end }}
 {{- end }}
+{{- if and .Values.ingress.enabled .Values.ingress.wwwRedirect .Values.ingress.customDomain }}
+{{- $customDomain := .Values.ingress.customDomain }}
+{{- $sourceDomain := $customDomain | trimPrefix "www." }}
+{{- if ne $sourceDomain $customDomain }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: taskfile-build-redirect-www
+spec:
+  redirectRegex:
+    regex: "^https?://[^/]+(.*)"
+    replacement: "https://{{ $customDomain }}$1"
+    permanent: true
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: taskfile-build-ingress-redirect
+  annotations:
+    {{- if .Values.ingress.clusterIssuerRef }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
+    {{- end }}
+    {{- if eq .Values.ingress.className "traefik" }}
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    {{- end }}
+    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-taskfile-build-redirect-www@kubernetescrd
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.ingress.clusterIssuerRef }}
+  tls:
+    - hosts:
+      - {{ $sourceDomain }}
+      secretName: taskfile-build-ingress-cert-redirect
+  {{- end }}
+  rules:
+  - host: {{ $sourceDomain }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: taskfile-build
+            port:
+              number: 80
+{{- end }}
+{{- end }}

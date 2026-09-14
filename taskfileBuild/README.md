@@ -6,13 +6,14 @@ This Helm chart deploys a taskfile.build container.
 
 ### taskfile.build parameters
 
-| Name                       | Description                                  | Value  |
-| -------------------------- | -------------------------------------------- | ------ |
-| `ingress.enabled`          | Enable or disable the ingress                | `true` |
-| `ingress.className`        | The class name for the ingress               | `""`   |
-| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `""`   |
-| `ingress.host`             | The host for the ingress                     | `""`   |
-| `ingress.customDomain`     | The custom domain for the ingress            | `""`   |
+| Name                       | Description                                               | Value   |
+| -------------------------- | --------------------------------------------------------- | ------- |
+| `ingress.enabled`          | Enable or disable the ingress                             | `true`  |
+| `ingress.className`        | The class name for the ingress                            | `""`    |
+| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress              | `""`    |
+| `ingress.host`             | The host for the ingress                                  | `""`    |
+| `ingress.customDomain`     | The custom domain for the ingress                         | `""`    |
+| `ingress.wwwRedirect`      | Redirect the customDomain without www to the customDomain | `false` |
 
 ### taskfile.build parameters
 
