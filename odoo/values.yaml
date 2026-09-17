@@ -119,3 +119,16 @@ staging:
   image: ""
   ## @param staging.name Name of the staging environment (used in staging ingress)
   name: staging
+
+## @section Upgrade parameters
+upgrade:
+  ## @param upgrade.enabled Enable or disable the upgrade job
+  enabled: false
+  ## @param upgrade.image The image for the Odoo upgrade job
+  image: mintsystem/odoo-upgrade:16
+  ## @param upgrade.database The target database for the upgrade
+  database: upgrade
+  ## @param upgrade.targetVersion The target Odoo version for the upgrade
+  targetVersion: ""
+  ## @param upgrade.mode The upgrade mode (test or production)
+  mode: test

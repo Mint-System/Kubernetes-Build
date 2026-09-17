@@ -1,8 +1,8 @@
 ---
 title: "Add cron job for odoo upgrade"
-state: draft
-date_completed: YYYY-MM-DD
-model: 
+state: completed
+date_completed: 2026-09-17
+model: Kimi-K2.6
 input_tokens: 
 ---
 
@@ -32,6 +32,4 @@ To configure the job define values in `upgrade` section.
 
 ## Worklog
 
-@Clanker Add a summary here once the task has been completed.
-
-@Clanker Set frontmatter state to completed and update date and model.
+Created `odoo/templates/upgrade-job.yaml` as a CronJob, modeled after `odoo/templates/staging-reset-job.yaml`. The job runs the `mintsystem/odoo-upgrade:16` image by default, targets the `upgrade` database, and reuses existing PostgreSQL credentials for `cnpg`, `postgres`, and `vshnPostgres` backends. Added the `upgrade` values section to `odoo/values.yaml` with defaults for `enabled`, `image`, `database`, `targetVersion`, and `mode`. Added `upgrade.mode` value (default `test`, set to `production` for production runs) and updated the template to use it for the upgrade command argument. Updated job args to use long-form flags (`--dbname`, `--target`, `--restore-name`) instead of shorthand flags. Ran `task lint` and `task docs` successfully to validate formatting and regenerate documentation.

@@ -1,0 +1,99 @@
+{{- if .Values.upgrade.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-upgrade
+  labels:
+    app: odoo-upgrade
+spec:
+  schedule: "0 0 31 2 *"
+  suspend: true
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          enableServiceLinks: false
+          containers:
+            - name: upgrade
+              image: {{ .Values.upgrade.image }}
+              imagePullPolicy: {{ .Values.imagePullPolicy }}
+              args:
+                - {{ .Values.upgrade.mode }}
+                - --dbname
+                - $(DATABASE)
+                - --target
+                - $(TARGET_VERSION)
+                - --restore-name
+                - $(TARGET_DATABASE)
+              env:
+                - name: DATABASE
+                  value: {{ .Values.database }}
+                - name: TARGET_DATABASE
+                  value: {{ .Values.upgrade.database }}
+                - name: TARGET_VERSION
+                  value: {{ .Values.upgrade.targetVersion }}
+                {{- if .Values.cnpg.enabled }}
+                - name: PGHOST
+                  value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Release.Name }}-postgresql-app
+                      key: username
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Release.Name }}-postgresql-app
+                      key: password
+                {{- end }}
+                {{- if .Values.postgres.enabled }}
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.postgres.secretRef }}
+                      key: {{ .Values.postgres.userPasswordKey }}
+                - name: PGHOST
+                  value: postgres.{{ .Release.Namespace }}.svc.cluster.local
+                - name: PGUSER
+                  value: {{ .Values.postgres.user }}
+                {{- end }}
+                {{- if .Values.vshnPostgres.enabled }}
+                - name: PGHOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.vshnPostgres.secretRef }}
+                      key: POSTGRESQL_HOST
+                - name: PGPORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.vshnPostgres.secretRef }}
+                      key: POSTGRESQL_PORT
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.vshnPostgres.secretRef }}
+                      key: POSTGRESQL_USER
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.vshnPostgres.secretRef }}
+                      key: POSTGRESQL_PASSWORD
+                - name: PGSSLMODE
+                  value: verify-ca
+                - name: PGSSLROOTCERT
+                  value: "/mnt/{{ .Values.vshnPostgres.secretRef }}/ca.crt"
+                {{- end }}
+              volumeMounts:
+                {{- if .Values.vshnPostgres.enabled }}
+                - name: {{ .Values.vshnPostgres.secretRef }}
+                  readOnly: true
+                  mountPath: "/mnt/{{ .Values.vshnPostgres.secretRef }}"
+                {{- end }}
+          volumes:
+            {{- if .Values.vshnPostgres.enabled }}
+            - name: {{ .Values.vshnPostgres.secretRef }}
+              secret:
+                secretName: {{ .Values.vshnPostgres.secretRef }}
+            {{- end }}
+{{- end }}
