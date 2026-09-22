@@ -19,7 +19,7 @@ The Mint System collection of Helm charts.
 
 - [yq](https://mikefarah.gitbook.io/yq/#install)
 - [helm](https://helm.sh/docs/intro/install/)
-  - [helm-secrets](https://github.com/jkroepke/helm-secrets)
+  - [helm-sops](https://github.com/camptocamp/helm-sops)
     - [sops](https://getsops.io/docs/installation/)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
   - [kubectx](https://kubectx.dev/)

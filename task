@@ -543,6 +543,7 @@ list-context() {
 
 switch-context() {
     if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+    mkdir -p "$HOME/.kube"
     local link_name="$HOME/.kube/config"
     local target="$PWD/values/.kube/config.$1"
 
