@@ -1,6 +1,6 @@
 apiVersion: v2
-name: vshnPostgres
-description: VSHN Postgres
+name: deployment-updater
+description: Mint System Deployment Updater
 home: https://kubernetes.build
 maintainers:
   - name: Mint System GmbH

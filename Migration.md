@@ -119,7 +119,7 @@ If you deployed a cluster issuer, update the release:
 
 ```bash
 kubectl-ns cert-manager
-task upgrade-release clusterIssuer $values
+task upgrade-release cluster-issuer $values
 ```
 
 ## Uninstall ingress-nginx

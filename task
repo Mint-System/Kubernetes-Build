@@ -11,7 +11,7 @@ help-table() {
     rows+=("info||Show info about env.")
     rows+=("template-dotenv||Generate .env from .env.template.")
     rows+=("export-kubeconfig|[user][path]|Export kubeconfig file for service account.")
-    rows+=("generate-kubconfig|[name]|Generate kubeconfig for deploymentUpdater.")
+    rows+=("generate-kubconfig|[name]|Generate kubeconfig for deployment-updater.")
     rows+=("load-kubeconfig-from-keepass|[ctx]|Load kubeconfig file from KeePass.")
     rows+=("save-kubeconfig-to-keepass|[ctx]|Save kubeconfig file in KeePass.")
     rows+=("===DOCS===| | ")
@@ -61,7 +61,7 @@ help-table() {
     rows+=("commit-with-llm||Commit with llm generated commit message.")
     rows+=("update-with-llm|[glob][prompt]|Feed files matching glob to LLM and apply changes.")
     rows+=("===TEST===| | ")
-    rows+=("test-chart-clusterIssuer||Test cluster issuer.")
+    rows+=("test-chart-cluster-issuer||Test cluster issuer.")
     rows+=("test-chart-odoo|[cleanup]|Setup Odoo chart and dependencies.")
     rows+=("test-chart-nextcloud|[cleanup]|Setup Nextcloud chart and dependencies.")
 
@@ -213,10 +213,7 @@ setup-hosts() {
     grep -qxF '127.0.0.1 nextcloud.knd.local' /etc/hosts || echo '127.0.0.1 nextcloud.knd.local' | sudo tee -a /etc/hosts > /dev/null
     # Collabora
     grep -qxF '127.0.0.1 doc.nextcloud.knd.local' /etc/hosts || echo '127.0.0.1 doc.nextcloud.knd.local' | sudo tee -a /etc/hosts > /dev/null
-    # Hugo
-    grep -qxF '127.0.0.1 hugo.knd.local' /etc/hosts || echo '127.0.0.1 hugo.knd.local' | sudo tee -a /etc/hosts > /dev/null
-    # Vuepress
-    grep -qxF '127.0.0.1 vuepress.knd.local' /etc/hosts || echo '127.0.0.1 vuepress.knd.local' | sudo tee -a /etc/hosts > /dev/null
+    # Removed hugo and vuepress hosts (replaced by taskfile-build)
 }
 
 test-chart-odoo() {
@@ -393,7 +390,7 @@ forward-nextcloud() {
 #     kubectl port-forward -n ingress-nginx svc/ingress-nginx $port:80
 # }
 
-forward-prometheusagent() {
+forward-prometheus-agent() {
     local port=9090
     echo "Connect to http://localhost:$port to access the Prometheus agent."
     kubectl port-forward -n prometheus deployment/prometheus-agent $port:9090
@@ -575,14 +572,27 @@ update-dependencies() {
 
 install-chart() {
     if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+    if test -z "$2"; then echo '\$2 is empty.'; exit; fi
+
+    local values_file="$2"
+    local expected_namespace=""
+    if [[ "$values_file" =~ ^values/[^/]+/[^/]+\.yaml$ ]]; then
+        expected_namespace="$(basename "$values_file" .yaml)"
+    elif [[ "$values_file" =~ ^values/[^/]+/[^/]+/.+\.yaml$ ]]; then
+        expected_namespace="$(echo "$values_file" | cut -d '/' -f3)"
+    fi
+    if [[ -n "$expected_namespace" && "$namespace" != "$expected_namespace" ]]; then
+        echo "Error: Active namespace '$namespace' does not match values file namespace '$expected_namespace'."
+        exit 1
+    fi
 
     if [[ "$(get-context)" = 'axo' ]]; then
         echo "Set oc project to $OC_PROJECT."
         oc project "$OC_PROJECT"
     fi
-    local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+    local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]' | tr -d '-')"
 
-    if [[ "$1" = 'clusterIssuer' ]]; then
+    if [[ "$1" = 'cluster-issuer' ]]; then
         "install-$1" "$2"
     elif list-charts | grep -q "$1"; then
         echo "Install chart $1 as release $release_name:"
@@ -622,9 +632,9 @@ install-cert-manager() {
     kubectl apply -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
 }
 
-install-clusterIssuer() {
+install-cluster-issuer() {
     echo 'Install clusterissuer.'
-    helm install clusterissuer clusterIssuer \
+    helm install clusterissuer cluster-issuer \
         --namespace cert-manager \
         --values "$1"
 }
@@ -649,7 +659,21 @@ install-traefik() {
 
 upgrade-release() {
     if test -z "$1"; then echo '\$1 is empty.'; exit; fi
-    local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+    if test -z "$2"; then echo '\$2 is empty.'; exit; fi
+
+    local values_file="$2"
+    local expected_namespace=""
+    if [[ "$values_file" =~ ^values/[^/]+/[^/]+\.yaml$ ]]; then
+        expected_namespace="$(basename "$values_file" .yaml)"
+    elif [[ "$values_file" =~ ^values/[^/]+/[^/]+/.+\.yaml$ ]]; then
+        expected_namespace="$(echo "$values_file" | cut -d '/' -f3)"
+    fi
+    if [[ -n "$expected_namespace" && "$namespace" != "$expected_namespace" ]]; then
+        echo "Error: Active namespace '$namespace' does not match values file namespace '$expected_namespace'."
+        exit 1
+    fi
+
+    local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]' | tr -d '-')"
 
     if list-charts | grep -q "$1"; then
         echo "Upgrade $1 chart for release $release_name:"
@@ -674,10 +698,10 @@ upgrade-cert-manager() {
     kubectl apply -f https://github.com/Infomaniak/cert-manager-webhook-infomaniak/releases/download/v0.3.1/rendered-manifest.yaml
 }
 
-upgrade-clusterIssuer() {
-    echo 'Upgrade clusterIssuer.'
+upgrade-cluster-issuer() {
+    echo 'Upgrade cluster-issuer.'
     helm upgrade \
-        clusterissuer clusterIssuer \
+        clusterissuer cluster-issuer \
         --namespace cert-manager \
         --values "$2"
 }
@@ -733,11 +757,11 @@ show-secrets() {
         echo 'postgres/password:'
         kubectl get secret postgres -o jsonpath="{.data.password}" | base64 --decode && echo
     
-    elif [[ "$1" = 'clusterIssuer' ]]; then
+    elif [[ "$1" = 'cluster-issuer' ]]; then
         echo 'cert-manager/infomaniak-api-credentials:'
         kubectl get secret -n cert-manager infomaniak-api-token -o jsonpath="{.data.access-token}" | base64 --decode && echo
-    
-    elif [[ "$1" = 'forgejoRunner' ]]; then
+
+    elif [[ "$1" = 'forgejo-runner' ]]; then
         echo 'forgejo-runner/forgejoInstanceToken:'
         kubectl get secret forgejo-runner -o jsonpath="{.data.forgejoInstanceToken}" | base64 --decode && echo
 
@@ -776,8 +800,8 @@ template-manifest() {
 
     # echo "Template chart $1 as release ${release_name}..."
 
-    if [[ "$1" = 'clusterIssuer' ]]; then
-        helm --debug template "$release_name" clusterIssuer \
+    if [[ "$1" = 'cluster-issuer' ]]; then
+        helm --debug template "$release_name" cluster-issuer \
             --namespace cert-manager \
             --values "$2" > manifest.yaml
     elif list-charts | grep -q "$1"; then
@@ -797,7 +821,7 @@ package-repo() {
     else
         echo 'Package all Helm charts.'
         update-dependencies odoo
-        update-dependencies prometheusAgent
+        update-dependencies prometheus-agent
         index-repo
         for chart in $(list-charts); do
              helm package "$chart"
@@ -844,7 +868,7 @@ remove-repo(){
 # Docs Commands
 
 docs() {
-    for repo in $(list-charts | grep -v '^deploymentUpdater$'); do
+    for repo in $(list-charts | grep -v '^deployment-updater$'); do
         pnpm run generate-readme --values "$repo/values.yaml" -r "$repo/README.md"
     done
 }

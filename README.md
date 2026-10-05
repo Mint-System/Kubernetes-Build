@@ -46,17 +46,15 @@ helm install "$NAME" "kubernetes-build/$NAME"
 
 List of charts:
 
-* [clusterIssuer](/clusterIssuer/README.md)
+* [cluster-issuer](/cluster-issuer/README.md)
 * [odoo](/odoo/README.md)
 * [nextcloud](/nextcloud/README.md)
 * [postgres](/postgres/README.md)
-* [prometheusAgent](/prometheusAgent/README.md)
-* [vshnPostgres](/vshnPostgres/README.md)
-* [hugo](/hugo/README.md)
-* [vuepress](/vuepress/README.md)
-* [deploymentUpdater](/deploymentUpdater/README.md)
-* [forgejoRunner](/forgejoRunner/README.md)
-* [taskfileBuild](/taskfileBuild/README.md)
+* [prometheus-agent](/prometheus-agent/README.md)
+* [vshn-postgres](/vshn-postgres/README.md)
+* [deployment-updater](/deployment-updater/README.md)
+* [forgejo-runner](/forgejo-runner/README.md)
+* [taskfile-build](/taskfile-build/README.md)
 
 ## Deploy
 

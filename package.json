@@ -10,6 +10,6 @@
     "vitepress-mermaid-preview": "^0.0.8"
   },
   "devDependencies": {
-    "vitepress": "2.0.0-alpha.13"
+    "vitepress": "^1.6.4"
   }
 }

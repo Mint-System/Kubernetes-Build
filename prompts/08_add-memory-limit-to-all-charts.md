@@ -48,16 +48,16 @@ resources:
 Set resource limits for all charts with deployments:
 
 - **odoo**, **nextcloud**: requests `memory: 1Gi`, `cpu: 250m`; limits `memory: 2Gi`
-- **hugo**, **vuepress**, **taskfileBuild**, **postgres**, **prometheusAgent**, **forgejoRunner**, **vshnPostgres**: requests `memory: 500Mi`, `cpu: 100m`; limits `memory: 1Gi`
+- **hugo**, **vuepress**, **taskfile-build**, **postgres**, **prometheus-agent**, **forgejo-runner**, **vshn-postgres**: requests `memory: 500Mi`, `cpu: 100m`; limits `memory: 1Gi`
 
 Changes made:
 1. Added `resources` block to `values.yaml` for all relevant charts.
 2. Updated deployment templates to reference `{{- toYaml .Values.resources | nindent 12 }}` (or appropriate indentation) where missing.
-3. Replaced hardcoded resource limits in **forgejoRunner** and **vshnPostgres** templates with values references.
+3. Replaced hardcoded resource limits in **forgejo-runner** and **vshn-postgres** templates with values references.
 4. For **nextcloud**, passed resources to the upstream `nextcloud` subchart via `nextcloud.resources`.
-5. Updated **prometheusAgent** values to the new default limits.
+5. Updated **prometheus-agent** values to the new default limits.
 6. Ran `./task lint` and `./task docs` successfully to validate formatting and regenerate READMEs.
 
-Skipped charts without container workloads: `clusterIssuer`, `deploymentUpdater`.
+Skipped charts without container workloads: `cluster-issuer`, `deployment-updater`.
 
 @Clanker Set frontmatter state to completed and update info about model and token usage.

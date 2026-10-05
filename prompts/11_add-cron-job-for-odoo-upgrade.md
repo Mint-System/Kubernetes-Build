@@ -26,10 +26,10 @@ I have a Docker image to run the "Odoo Enterprise Upgrade Skript" for a database
 
 Create a `odoo-upgrade-job` similar to `odoo/templates/staging-reset-job.yaml`. By default it runs the `mintsystem/odoo-upgrade:16` image. The default name of the target database is `upgrade`. Reuse the existing postgres credentials.
 
-Make sure to support the `vshnPostgres.enabled` env vars.
+Make sure to support the `vshn-postgres.enabled` env vars.
 
 To configure the job define values in `upgrade` section.
 
 ## Worklog
 
-Created `odoo/templates/upgrade-job.yaml` as a CronJob, modeled after `odoo/templates/staging-reset-job.yaml`. The job runs the `mintsystem/odoo-upgrade:16` image by default, targets the `upgrade` database, and reuses existing PostgreSQL credentials for `cnpg`, `postgres`, and `vshnPostgres` backends. Added the `upgrade` values section to `odoo/values.yaml` with defaults for `enabled`, `image`, `database`, `targetVersion`, and `mode`. Added `upgrade.mode` value (default `test`, set to `production` for production runs) and updated the template to use it for the upgrade command argument. Updated job args to use long-form flags (`--dbname`, `--target`, `--restore-name`) instead of shorthand flags. Ran `task lint` and `task docs` successfully to validate formatting and regenerate documentation.
+Created `odoo/templates/upgrade-job.yaml` as a CronJob, modeled after `odoo/templates/staging-reset-job.yaml`. The job runs the `mintsystem/odoo-upgrade:16` image by default, targets the `upgrade` database, and reuses existing PostgreSQL credentials for `cnpg`, `postgres`, and `vshn-postgres` backends. Added the `upgrade` values section to `odoo/values.yaml` with defaults for `enabled`, `image`, `database`, `targetVersion`, and `mode`. Added `upgrade.mode` value (default `test`, set to `production` for production runs) and updated the template to use it for the upgrade command argument. Updated job args to use long-form flags (`--dbname`, `--target`, `--restore-name`) instead of shorthand flags. Ran `task lint` and `task docs` successfully to validate formatting and regenerate documentation.

@@ -13,7 +13,7 @@ dependencies:
     version: 0.1.0
     repository: "file://../postgres"
     condition: postgres.enabled
-  - name: vshnPostgres
+  - name: vshn-postgres
     version: 0.1.0
-    repository: "file://../vshnPostgres"
+    repository: "file://../vshn-postgres"
     condition: vshnPostgres.enabled

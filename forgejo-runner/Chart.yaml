@@ -1,6 +1,6 @@
 apiVersion: v2
-name: deploymentUpdater
-description: Mint System Deployment Updater
+name: forgejo-runner
+description: Mint System Forgejo Runner
 home: https://kubernetes.build
 maintainers:
   - name: Mint System GmbH

@@ -1,4 +1,4 @@
-## @section prometheusAgent parameters
+## @section prometheus-agent parameters
 ## @param image The image for Prometheus
 image: prom/prometheus:v2.54.1
 ## @param imagePullPolicy Pull policy for  Prometheus image

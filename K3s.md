@@ -23,7 +23,7 @@ task install-chart cert-manager values/k3s.raspberrypi.build.yaml
 Install cluster issuer.
 
 ```bash
-task install-chart clusterIssuer values/k3s.raspberrypi.build.yaml
+task install-chart cluster-issuer values/k3s.raspberrypi.build.yaml
 ```
 
 ## Create Hugo release
@@ -38,5 +38,5 @@ kubectl-ns <namespace>
 Install the Hugo chart.
 
 ```bash
-task install-chart hugo
+task install-chart taskfile-build
 ```

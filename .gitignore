@@ -7,7 +7,7 @@ manifest.*
 .obsidian/graph.json
 .obsidian/workspace.json
 odoo/charts
-prometheusAgent/charts
+prometheus-agent/charts
 .env
 index.md
 values

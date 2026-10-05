@@ -1,5 +1,5 @@
 apiVersion: v2
-name:  prometheusAgent
+name: prometheus-agent
 description: Prometheus agent mode scraper for Kubernetes.
 home: https://kubernetes.build
 maintainers:

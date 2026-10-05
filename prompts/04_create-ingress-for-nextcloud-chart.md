@@ -54,7 +54,7 @@ spec:
 
 To enable https I would need to configure `ingress.tls`.
 
-But I think it easier if I configure the Ingress myself. Use this as template: `taskfileBuild/templates/ingress.yaml`
+But I think it easier if I configure the Ingress myself. Use this as template: `taskfile-build/templates/ingress.yaml`
 
 Ommit the `customDomain` feature. Update the `nextcloud/values.yaml`.
 
@@ -62,10 +62,10 @@ To update the roles docs use `task lint` and `task docs`.
 
 ## Worklog
 
-- Created `nextcloud/templates/ingress.yaml` based on the `taskfileBuild/templates/ingress.yaml` template, omitting the `customDomain` feature.
+- Created `nextcloud/templates/ingress.yaml` based on the `taskfile-build/templates/ingress.yaml` template, omitting the `customDomain` feature.
 - Set the Ingress backend to the `nextcloud` service on port `8080` (matching the official subchart's default).
 - Updated `nextcloud/values.yaml`:
-  - Added a root-level `ingress` section with `enabled`, `className`, `clusterIssuerRef`, and `host` parameters.
+  - Added a root-level `ingress` section with `enabled`, `className`, `cluster-issuerRef`, and `host` parameters.
   - Set `nextcloud.ingress.enabled: false` to prevent the official Nextcloud subchart from generating its own Ingress.
 - Ran `task lint` and `task docs` successfully. The Nextcloud `README.md` was regenerated to reflect the new parameters.
 

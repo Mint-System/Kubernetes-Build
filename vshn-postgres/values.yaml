@@ -1,13 +1,13 @@
-## @section vshnPostgres parameters
+## @section vshn-postgres parameters
 ##
-## @param enabled Enable or disable vshnPostgres
+## @param enabled Enable or disable vshn-postgres
 ##
 enabled: false
-## @param secretRef The secret reference for vshnPostgres
+## @param secretRef The secret reference for vshn-postgres
 ##
 secretRef: postgres-creds
 client:
-  ## @param client.enabled Enable or disable the vshnPostgres client
+  ## @param client.enabled Enable or disable the vshn-postgres client
   ##
   enabled: false
 ## @section Resources requests and limits

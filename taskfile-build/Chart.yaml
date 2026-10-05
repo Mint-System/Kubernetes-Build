@@ -1,5 +1,5 @@
 apiVersion: v2
-name: taskfileBuild
+name: taskfile-build
 description: Mint System Vueress
 home: https://kubernetes.build
 maintainers:

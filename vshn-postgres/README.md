@@ -4,13 +4,13 @@ This chart deploys a VSHN Postgres service.
 
 ## Parameters
 
-### vshnPostgres parameters
+### vshn-postgres parameters
 
-| Name             | Description                               | Value            |
-| ---------------- | ----------------------------------------- | ---------------- |
-| `enabled`        | Enable or disable vshnPostgres            | `false`          |
-| `secretRef`      | The secret reference for vshnPostgres     | `postgres-creds` |
-| `client.enabled` | Enable or disable the vshnPostgres client | `false`          |
+| Name             | Description                                | Value            |
+| ---------------- | ------------------------------------------ | ---------------- |
+| `enabled`        | Enable or disable vshn-postgres            | `false`          |
+| `secretRef`      | The secret reference for vshn-postgres     | `postgres-creds` |
+| `client.enabled` | Enable or disable the vshn-postgres client | `false`          |
 
 ### Resources requests and limits
 

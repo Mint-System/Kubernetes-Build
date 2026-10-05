@@ -15,7 +15,7 @@ kubectl create secret generic prometheus-remote-write-credentials \
 
 ## Parameters
 
-### prometheusAgent parameters
+### prometheus-agent parameters
 
 | Name              | Description                                            | Value                     |
 | ----------------- | ------------------------------------------------------ | ------------------------- |

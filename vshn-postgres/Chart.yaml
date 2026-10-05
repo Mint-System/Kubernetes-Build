@@ -1,6 +1,6 @@
 apiVersion: v2
-name: hugo
-description: Mint System Hugo
+name: vshn-postgres
+description: VSHN Postgres
 home: https://kubernetes.build
 maintainers:
   - name: Mint System GmbH

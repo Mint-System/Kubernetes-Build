@@ -54,12 +54,12 @@ task install-chart cert-manager values/chk.mintcloud.ch.yaml
 
 Create an Infomaniak API token with domain scope: <https://manager.infomaniak.com/v3/infomaniak-api>
 
-Setup the secret according to [clusterIssuer > Secrets](/clusterIssuer/README.md#Secrets).
+Setup the secret according to [cluster-issuer > Secrets](/cluster-issuer/README.md#Secrets).
 
 Install cluster issuer.
 
 ```bash
-task install-chart clusterIssuer values/chk.mintcloud.ch.yaml
+task install-chart cluster-issuer values/chk.mintcloud.ch.yaml
 ```
 
 ## Setup k8up

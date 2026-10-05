@@ -1,5 +1,5 @@
 ---
-title: "Fix taskfileBuild deployment"
+title: "Fix taskfile-build deployment"
 state: completed
 model: infomaniak/moonshotai/Kimi-K2.6
 input_tokens:
@@ -21,7 +21,7 @@ Note: @Clanker refers to the "ai agent" (you) who is working on this task.
 
 ## Task
 
-The user reports a container dying with OOMKilled errors when building the Odoo Wiki site via the taskfileBuild chart.
+The user reports a container dying with OOMKilled errors when building the Odoo Wiki site via the taskfile-build chart.
 
 The logs show VuePress (`build-vuepress`) crashing during the "Initializing and preparing data" phase.
 
@@ -35,7 +35,7 @@ Investigated the failing pod `taskfilebuild-taskfile-build-7fbd9fc957-j49gr` in 
 
 Fix applied (first attempt):
 1. Edited `values/exo/odoo-wiki.yaml` to increase memory limit from `2Gi` to `3Gi`.
-2. Upgraded the Helm release with `./task upgrade-release taskfileBuild values/exo/odoo-wiki.yaml`.
+2. Upgraded the Helm release with `./task upgrade-release taskfile-build values/exo/odoo-wiki.yaml`.
 3. Verified the new pod starts with the `3Gi` limit.
 4. Build still failed — the node `pool-78bf9-acmhi` (standard.medium, ~3.4Gi allocatable) ran out of memory entirely during the VuePress data preparation phase and went NotReady. Kubelet evicted the pod.
 
