@@ -2,11 +2,14 @@
 .obsidian
 node_modules
 .github
-.vitepress
+docs
+site
 public
 tmp
 .gitignore
-index.md
+README.md
+.venv
+zensical.toml
 kind-config.yaml
 *.tgz
 package.json

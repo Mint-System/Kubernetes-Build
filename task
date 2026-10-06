@@ -15,12 +15,13 @@ help-table() {
     rows+=("load-kubeconfig-from-keepass|[ctx]|Load kubeconfig file from KeePass.")
     rows+=("save-kubeconfig-to-keepass|[ctx]|Save kubeconfig file in KeePass.")
     rows+=("===DOCS===| | ")
-    rows+=("install-vitepress||Install Node dependencies.")
+    rows+=("init-zensical-docs||Initialize Zensical documentation build dependencies.")
     rows+=("docs||Generate Helm chart readmes.")
     rows+=("lint||Lint Helm charts.")
-    rows+=("dev-vitepress||Start VitePress dev server.")
-    rows+=("build-vitepress||Build site with VitePress.")
-    rows+=("serve-vitepress||Serve VitePress build.")
+    rows+=("dev-zensical-docs||Run Zensical development server.")
+    rows+=("build-zensical-docs||Build the Zensical documentation website.")
+    rows+=("sync-docs||Sync chart READMEs to docs folder.")
+    rows+=("serve-zensical-docs||Serve the Zensical documentation build folder.")
     rows+=("===HOST===| | ")
     rows+=("start||Start kind Kubernetes cluster.")
     rows+=("start-and-prepare||Start and prepare Kubernetes cluster.")
@@ -190,10 +191,6 @@ info() {
     echo "OpenShift-Project: $OC_PROJECT"
     echo "Context-Alias: $(get-context)"
     echo "Namespace: $namespace"
-}
-
-install-vitepress() {
-    pnpm install
 }
 
 setup-hosts() {
@@ -879,20 +876,13 @@ lint() {
     done
 }
 
-dev-vitepress() {
-    cp README.md index.md
-    pnpm run docs:dev
-}
-
-build-vitepress() {
-    cp README.md index.md
-    pnpm run docs:build
-    cp *.tgz .vitepress/dist
-    cp index.yaml .vitepress/dist
-}
-
-serve-vitepress() {
-    pnpm run docs:preview
+sync-docs() {
+    for chart in $(list-charts); do
+        mkdir -p "docs/$chart"
+        rm -f "docs/$chart/README.md"
+        cp "$chart/README.md" "docs/$chart/README.md"
+    done
+    echo 'Chart READMEs synced to docs/'
 }
 
 if [[ "$1" == *","* ]]; then

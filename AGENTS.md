@@ -21,9 +21,9 @@ This section outlines the universal rules and expectations for any LLM agent wor
 - `test_values`: Contains the `values.yaml` to setup the test enviroment.
 - `values`: In there are multiple `values.yaml` files of production deployments. There are two kinds `deployment` and `cluster`.
 - `*.tgz`: The packaged Helm chart for publishing.
-- `*.md`: Vuepress docs.
+- `*.md`: Zensical docs.
 - `development.md`: Here you find details on how to setup the development enviroment.
-- `.vitepress`: Vitepress config folder.
+- `docs/`: Zensical docs folder.
 
 ## Environment & tooling
 

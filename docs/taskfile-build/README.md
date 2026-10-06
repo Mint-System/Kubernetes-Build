@@ -1,0 +1,36 @@
+# Mint System Taskfile Build
+
+This Helm chart deploys a taskfile.build container.
+
+## Parameters
+
+### taskfile.build parameters
+
+| Name                       | Description                                               | Value   |
+| -------------------------- | --------------------------------------------------------- | ------- |
+| `ingress.enabled`          | Enable or disable the ingress                             | `true`  |
+| `ingress.className`        | The class name for the ingress                            | `""`    |
+| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress              | `""`    |
+| `ingress.host`             | The host for the ingress                                  | `""`    |
+| `ingress.customDomain`     | The custom domain for the ingress                         | `""`    |
+| `ingress.wwwRedirect`      | Redirect the customDomain without www to the customDomain | `false` |
+
+### taskfile.build parameters
+
+| Name               | Description                             | Value                              |
+| ------------------ | --------------------------------------- | ---------------------------------- |
+| `image`            | The image for taskfile.build            | `mintsystem/taskfile.build:latest` |
+| `imagePullPolicy`  | Pull policy for taskfile.build image    | `Always`                           |
+| `gitUrl`           | Repo url to pull.                       | `""`                               |
+| `taskCommands`     | Run this commands with the task file.   | `""`                               |
+| `caddyRoot`        | Static site path relative to repo root. | `""`                               |
+| `additionalEnvs`   | Additional environment variables to set | `{}`                               |
+| `storageClassName` | Set the storage class                   | `""`                               |
+
+### Resources requests and limits
+
+| Name                        | Description                      | Value   |
+| --------------------------- | -------------------------------- | ------- |
+| `resources.requests.memory` | Memory request for the container | `500Mi` |
+| `resources.requests.cpu`    | CPU request for the container    | `100m`  |
+| `resources.limits.memory`   | Memory limit for the container   | `1Gi`   |

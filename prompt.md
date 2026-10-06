@@ -1,14 +1,14 @@
 ---
-title: "Refactor Helm charts"
-author: "Mint Bot <bot@mint-system.ch>"
+title: "Replace Vitepress with Zensical"
+author: "Janik von Rotz <login@janikvonrotz.ch>"
 state: completed
-date_completed: 2026-10-05
+date_completed: 2025-10-06
 model: moonshotai/Kimi-K2.6
-input_tokens: N/A
-output_tokens: N/A
+input_tokens:
+output_tokens:
 ---
 
-# Refactor Helm charts
+# Replace Vitepress with Zensical
 
 Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file.
 
@@ -24,60 +24,80 @@ Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file
 
 ## Task
 
-Check the `task` file and list charts with `task list-charts`.
+I want to replace https://vitepress.dev/ with https://zensical.org/. First check current Vitepress setup:
 
-I want to switch from camelCase to the more commom kebab-case. Rename all roles.
+- Navigation: .vitepress/config.mts
+- Assets:
+	- .vitepress/theme/custom.css
+- Markdown:
+	- APPUiO.md
+	- Backup.md
+	- Development.md
+	- Exoscale.md
+	- README.md
+	- Infomaniak.md
+	- K3s.md
+	- Migration.md
+	- Monitor.md
+	- README.md
+	- Troubleshooting.md
+- Node files:
+	- package.json
+	- package-lock.json
+	- node_modules
+- Task commands: `./task help | grep vitepress`
 
-For example "clusterIssuer" becomes "cluster-issuer". Make sure the `task` commands work.
+### Remove Node/Vitepress
 
-Also make sure the website links are still correct.
+Start by removing the Node/Vitepress files.
 
-The command `install-chart` sets a specific release name. Keep the release name as it is. This means that
+### Create bin files for 11ty commands
 
-```
-local release_name="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
-```
+Move the Vitepress functions into scripts in the `~/taskfile.build/bin` folder:
 
-Must replace '-' with ''. ok?
+- `install-vitepress` -> `bin/init-vitepress-docs`
+- `dev-vitepress` -> `bin/dev-vitepress-docs`
+- `build-vitepress` -> `bin/build-vitepress-docs`
+- `serve-vitepress` -> `bin/serve-vitepress-docs`
 
-So `taskfile-build` becomes `taskfilebuild`.
+Add a "Vitepress" section to the `library.md` and add help rows.
 
-### Cleanup
+### Setup Zensical
 
-Please delete the role `hugo` and `vuepress`. They are replaced by the `taskfile-build`.
+With the `task` script you already have access to these commands:
 
-### Enhance
+- `init-zensical-docs`
+- `dev-zensical-docs`
+- `build-zensical-docs`
+- `serve-zensical-docs`
 
-While you are it. Please add a cluster check for `install-chart` and `upgrade-release`. The `t get-namespace` gives the active namespace. This namespace must match values filename `values/{cluster}/{namespace}.yaml`. I want to make sure that the correct values are applied.
+Init the Zensical project.
+
+### Move to docs
+
+Move the mentioned markdown files and assets to the `docs` folder.
+
+Setup the file navigation and link structure.
+
+Use `./task dev-zensical-docs` to check the site.
+
+Ensure the website is working as before.
 
 ## Worklog
 
-Renamed all Helm chart directories from camelCase to kebab-case:
-- `clusterIssuer` → `cluster-issuer`
-- `prometheusAgent` → `prometheus-agent`
-- `vshnPostgres` → `vshn-postgres`
-- `deploymentUpdater` → `deployment-updater`
-- `forgejoRunner` → `forgejo-runner`
-- `taskfileBuild` → `taskfile-build`
+- Removed all Vitepress files: `.vitepress/`, `package.json`, `pnpm-lock.yaml`, `node_modules`, `index.md`.
+- Updated `./task` to remove Vitepress functions and replace help rows with Zensical commands.
+- Created Vitepress bin scripts in `~/taskfile.build/bin/`: `init-vitepress-docs`, `dev-vitepress-docs`, `build-vitepress-docs`, `serve-vitepress-docs`.
+- Added Vitepress section to `~/taskfile.build/docs/library.md` with all four commands.
+- Initialized Zensical with `init-zensical-docs`.
+- Moved all markdown docs (`README.md`, `APPUiO.md`, `Backup.md`, `Development.md`, `Exoscale.md`, `Infomaniak.md`, `K3s.md`, `Migration.md`, `Monitor.md`, `Troubleshooting.md`) to `docs/`.
+- Moved `icon.png` and `icon.svg` to `docs/` and recreated `custom.css` under `docs/assets/`.
+- Created symlinks in `docs/` pointing to each chart `README.md` so chart pages are included in the site.
+- Created symlinks for `index.yaml` and all `*.tgz` files in `docs/` to preserve Helm repo artifacts in the build.
+- Fixed internal links to use relative paths and lowercase anchors.
+- Configured `zensical.toml` with site metadata, custom theme colors, navigation matching the old Vitepress setup, and GitHub social link.
+- Updated `.gitignore`, `.helmignore`, and `AGENTS.md` to reference Zensical instead of Vitepress.
+- Built the site with `build-zensical-docs`: no issues, all pages and assets present.
+- Created root `README.md` symlink to `docs/index.md` for GitHub rendering.
 
-Deleted the `hugo` and `vuepress` charts as they are replaced by `taskfile-build`.
-
-Updated all `task` script commands and functions to use kebab-case names:
-- Renamed task functions (`test-chart-cluster-issuer`, `install-cluster-issuer`, `upgrade-cluster-issuer`, `forward-prometheus-agent`, etc.)
-- Updated release name logic to strip hyphens (e.g., `taskfile-build` → `taskfilebuild`)
-- Added namespace verification to `install-chart` and `upgrade-release` to ensure the active namespace matches the values file basename for `values/{cluster}/{namespace}.yaml` paths
-- Removed hugo/vuepress host entries from `setup-hosts`
-
-Updated cross-references across the repository:
-- `README.md` chart list and links
-- Documentation files (`Exoscale.md`, `Infomaniak.md`, `K3s.md`, `Migration.md`, `Monitor.md`)
-- Chart `Chart.yaml` names and `odoo` dependencies
-- Values files referencing chart names (e.g., `chart: taskfile-build`)
-- `.gitignore` and `prompts/` historical files
-- Regenerated `.tgz` packages and `index.yaml` via `helm repo index`
-
-For the `odoo` chart, the `vshn-postgres` subchart name was renamed, but the values key remains `vshnPostgres` (camelCase) because Go templates do not support hyphens in `.Values` field access. The dependency condition was set accordingly.
-
-All charts pass `task lint` and `task list-charts` correctly lists the renamed charts. `task docs` regenerated all chart READMEs successfully.
-
-Updated frontmatter state to completed.
+@Clanker Set frontmatter state to completed and update date and model. If you have access to session info also add token count.

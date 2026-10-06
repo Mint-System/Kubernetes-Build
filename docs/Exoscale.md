@@ -51,7 +51,7 @@ task install-chart cert-manager values/exo.mintcloud.ch.yaml
 
 Create an Infomaniak API token with domain scope: <https://manager.infomaniak.com/v3/infomaniak-api>
 
-Setup the secret according to [cluster-issuer > Secrets](/cluster-issuer/README.md#Secrets).
+Setup the secret according to [cluster-issuer > Secrets](cluster-issuer/README.md#secrets).
 
 Install cluster issuer.
 

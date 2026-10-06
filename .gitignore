@@ -1,6 +1,5 @@
 node_modules
-.vitepress/dist
-.vitepress/cache
+site
 tmp
 manifest.*
 .obsidian/appearance.json
@@ -9,7 +8,6 @@ manifest.*
 odoo/charts
 prometheus-agent/charts
 .env
-index.md
 values
 *.kubeconfig
 pnpm-workspace.yaml

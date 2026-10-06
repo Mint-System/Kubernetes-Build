@@ -9,7 +9,7 @@ kubectl create namespace prometheus
 kubectl-ns prometheus
 ```
 
-Setup the credentials according to the prometheus-agent [README](/prometheus-agent/README.md).
+Setup the credentials according to the prometheus-agent [README](prometheus-agent/README.md).
 
 Update the values file with the `remoteWrite.url`.
 
