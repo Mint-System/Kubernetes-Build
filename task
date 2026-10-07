@@ -790,15 +790,16 @@ list() {
 package-repo() {
     if [[ -n "$1" ]]; then
         echo "Package $1 Helm chart."
-        helm package "$1"
+        helm package "$1" --destination docs/
     else
         echo 'Package all Helm charts.'
         update-dependencies odoo
         update-dependencies prometheus-agent
-        index-repo
+        rm -f docs/*.tgz
         for chart in $(list-charts); do
-             helm package "$chart"
+            helm package "$chart" --destination docs/
         done
+        index-repo
     fi
 }
 
@@ -806,14 +807,14 @@ commit() {
     git config user.name 'Mint Bot'
     git config user.email 'bot@mint-system.ch'
     git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/Mint-System/Kubernetes-Build"
-    git add *.tgz
+    git add docs/*.tgz docs/index.yaml
     git commit -m 'feat(helm): package revision update'
     git push || echo 'No changes to commit'
 }
 
 index-repo() {
-    echo 'Update index.yaml'
-    helm repo index .
+    echo 'Update docs/index.yaml'
+    helm repo index docs/
 }
 
 add-repos(){

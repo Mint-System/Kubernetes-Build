@@ -5,5 +5,5 @@ dependencies:
 - name: vshn-postgres
   repository: file://../vshn-postgres
   version: 0.1.0
-digest: sha256:f8f4f2eafdeb46a3cc015d0c22411307bd018f931364b2fda2b2afda4d67be31
-generated: "2026-10-05T16:49:49.265839071+02:00"
+digest: sha256:0c655b58ffc7945fee2c054e976446e278b72938731a9040a91e147c698a7ff2
+generated: "2026-10-07T12:00:47.867501819+02:00"
