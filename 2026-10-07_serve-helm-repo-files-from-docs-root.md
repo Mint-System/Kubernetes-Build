@@ -1,12 +1,12 @@
 ---
-commit_ref: 103b8380d4ae0dec5fd5c362de0739dddca10081
+commit_ref: b25fb0d2905656cef4fff38a335be6bd2c223aa0
 title: "Serve Helm repo files from docs root"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 state: completed
 date_completed: 2026-10-07
 model: moonshotai/Kimi-K2.6
-input_tokens: 214644
-output_tokens: 3070
+input_tokens: 664306
+output_tokens: 11591
 ---
 
 # Serve Helm repo files from docs root
