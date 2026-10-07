@@ -1,5 +1,5 @@
 ---
-commit_ref: b25fb0d2905656cef4fff38a335be6bd2c223aa0
+commit_ref: 132db75f0d66ad6c9e11e34a70f447712bd70ba3
 title: "Serve Helm repo files from docs root"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 state: completed
