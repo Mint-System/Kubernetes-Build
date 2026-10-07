@@ -539,6 +539,22 @@ switch-context() {
     ln -s "$target" "$link_name"
     chmod 0644 "$target"
 
+    local context_alias="${1%%-*}"
+    local cluster_file=""
+    for file in values/*.yaml; do
+        if [[ "$(yq eval '.kind' "$file" 2>/dev/null)" == "cluster" && "$(yq eval '.alias' "$file" 2>/dev/null)" == "$context_alias" ]]; then
+            cluster_file="$file"
+            break
+        fi
+    done
+
+    if [[ -n "$cluster_file" && "$(yq eval '.openshift' "$cluster_file" 2>/dev/null)" == "true" ]]; then
+        local server
+        server="$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')"
+        echo "Login to OpenShift cluster"
+        oc login --web --server="$server"
+    fi
+
     echo 'Select namespace'
     kubectl-ns
 }
