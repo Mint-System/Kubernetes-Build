@@ -125,6 +125,6 @@ kubectl create job --from=cronjob/<release>-staging-reset <release>-staging-rese
 | ----------------------- | --------------------------------------- | ---------------------------- |
 | `upgrade.enabled`       | Enable or disable the upgrade job       | `false`                      |
 | `upgrade.image`         | The image for the Odoo upgrade job      | `mintsystem/odoo-upgrade:16` |
-| `upgrade.database`      | The target database for the upgrade     | `upgrade`                    |
+| `upgrade.targetDatabase` | The target database for the upgrade    | `upgrade`                    |
 | `upgrade.targetVersion` | The target Odoo version for the upgrade | `""`                         |
 | `upgrade.mode`          | The upgrade mode (test or production)   | `test`                       |

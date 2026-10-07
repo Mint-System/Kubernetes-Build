@@ -1,14 +1,14 @@
 ---
-title: "Serve Helm repo files from docs root"
+title: "Odoo upgrade job rename target_database to targetDatabase"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 state: completed
 date_completed: 2026-10-07
 model: moonshotai/Kimi-K2.6
-input_tokens: 664306
-output_tokens: 11591
+input_tokens: 575873
+output_tokens: 5175
 ---
 
-# Serve Helm repo files from docs root
+# Odoo upgrade job rename target_database to targetDatabase
 
 Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file.
 
@@ -24,21 +24,16 @@ Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file
 
 ## Task
 
-The Zensical site server everything in the `docs` folder. This project also acts as Helm repo.
+Rename the var `target_database` to `targetDatabase`.
 
-The `*.tgz` and the `index.yaml` must also be served on the website root.
+Other updates: OpenShift runs the pod with an arbitrary UID, so HOME is /. The tool keeps its dumps, SSH key and state in HOME. Ensure workdir is /work.
 
-Create symlink in the docs folder and build the Zensical site. Check if localhost:8080/index.yaml is available.
+Ensure values like `TARGET_VERSION` are quoted. They are rendered as `value: 19.0`.
 
 ## Worklog
 
-Modified the `./task` script so `package-repo` outputs `.tgz` files directly into `docs/` and `index-repo` generates `docs/index.yaml`. This is cleaner than symlinks and ensures the Zensical site serves these files natively from the website root.
-
-- Updated `package-repo()` in `task` to use `helm package --destination docs/` and `rm -f docs/*.tgz` before packaging.
-- Updated `index-repo()` to run `helm repo index docs/`.
-- Updated `commit()` to stage `docs/*.tgz` and `docs/index.yaml`.
-- Removed the root-level `.tgz` and `index.yaml` files (superseded by the `docs/` versions).
-- Built the Zensical site with `./task build-zensical-docs`.
-- Verified `http://localhost:8080/index.yaml` and `.tgz` files all return HTTP 200.
-
-All requirements met.
+- Renamed `.Values.upgrade.database` to `.Values.upgrade.targetDatabase` in `odoo/templates/upgrade-job.yaml` and `odoo/values.yaml`
+- Added `workingDir: /work` to the upgrade container so the odoo-upgrade tool writes dumps, SSH keys, and state to a writable directory on OpenShift (where HOME is `/` and UID is arbitrary)
+- Quoted `{{ .Values.upgrade.targetVersion }}` in the `TARGET_VERSION` env var so Helm renders it as a YAML string (`value: "19.0"`) instead of a number (`value: 19.0`)
+- Updated `odoo/README.md` parameter table to reflect the rename
+- Ran `./task lint` successfully; `./task docs` requires external pnpm dependencies not present in this environment, so README was updated manually

@@ -18,6 +18,7 @@ spec:
             - name: upgrade
               image: {{ .Values.upgrade.image }}
               imagePullPolicy: {{ .Values.imagePullPolicy }}
+              workingDir: /work
               args:
                 - {{ .Values.upgrade.mode }}
                 - --dbname
@@ -30,9 +31,9 @@ spec:
                 - name: DATABASE
                   value: {{ .Values.database }}
                 - name: TARGET_DATABASE
-                  value: {{ .Values.upgrade.database }}
+                  value: {{ .Values.upgrade.targetDatabase }}
                 - name: TARGET_VERSION
-                  value: {{ .Values.upgrade.targetVersion }}
+                  value: "{{ .Values.upgrade.targetVersion }}"
                 {{- if .Values.cnpg.enabled }}
                 - name: PGHOST
                   value: {{ .Release.Name }}-postgresql-rw.{{ .Release.Namespace }}.svc.cluster.local
