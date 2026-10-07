@@ -1,5 +1,5 @@
 ---
-commit_ref: dfa6d264beab2620260f0477a0f3310fff7642c7
+commit_ref: 103b8380d4ae0dec5fd5c362de0739dddca10081
 title: "Switch context to openshift and login"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 state: completed
