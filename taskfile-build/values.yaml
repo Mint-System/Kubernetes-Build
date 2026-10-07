@@ -28,6 +28,8 @@ caddyRoot: ""
 additionalEnvs: {}
 ## @param storageClassName Set the storage class
 storageClassName: ""
+## @param storageSize Set the persistent volume claim size
+storageSize: "1Gi"
 ## @section Resources requests and limits
 resources:
   ## @param resources.requests.memory Memory request for the container

@@ -26,6 +26,7 @@ This Helm chart deploys a taskfile.build container.
 | `caddyRoot`        | Static site path relative to repo root. | `""`                               |
 | `additionalEnvs`   | Additional environment variables to set | `{}`                               |
 | `storageClassName` | Set the storage class                   | `""`                               |
+| `storageSize`      | Set the persistent volume claim size    | `1Gi`                                |
 
 ### Resources requests and limits
 
