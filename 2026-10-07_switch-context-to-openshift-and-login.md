@@ -1,12 +1,12 @@
 ---
-commit_ref:
+commit_ref: dfa6d264beab2620260f0477a0f3310fff7642c7
 title: "Switch context to openshift and login"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
-state: draft
-date_completed: YYYY-MM-DD
-model:
-input_tokens:
-output_tokens:
+state: completed
+date_completed: 2026-10-07
+model: moonshotai/Kimi-K2.6
+input_tokens: 518215
+output_tokens: 10903
 ---
 
 # Switch context to openshift and login
@@ -55,5 +55,8 @@ The command `switch-context` should run the login command when switching into th
 ## Worklog
 
 @Clanker Add a summary here once the task has been completed.
+
+- Added `openshift: true` indicator to `values/cloudscale-lpg-2.appuio.cloud.yaml` and `values/exoscale-ch-gva-2-0.appuio.cloud.yaml`.
+- Updated `switch-context` in `task` to detect OpenShift clusters by matching the context alias against cluster values files. When `openshift: true` is found, it extracts the server URL from the kubeconfig and runs `oc login --web --server=<url>` before `kubectl-ns`.
 
 @Clanker Set frontmatter state to completed and update date and model. If you have access to session info also add token count.
