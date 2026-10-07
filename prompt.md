@@ -1,14 +1,14 @@
 ---
-title: "Replace Vitepress with Zensical"
+title: "Steam backup data to localhost"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 state: completed
-date_completed: 2025-10-06
+date_completed: 2026-10-07
 model: moonshotai/Kimi-K2.6
-input_tokens:
-output_tokens:
+input_tokens: 20355
+output_tokens: 21169
 ---
 
-# Replace Vitepress with Zensical
+# Steam backup data to localhost
 
 Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file.
 
@@ -24,80 +24,53 @@ Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file
 
 ## Task
 
-I want to replace https://vitepress.dev/ with https://zensical.org/. First check current Vitepress setup:
+I want you to update `bin/kubectl-postgres-backup` and `bin/kubectl-odoo-backup`. Instead of storing the backup data in the container / volume I want to stream the dump and tar directly to the localhost.
 
-- Navigation: .vitepress/config.mts
-- Assets:
-	- .vitepress/theme/custom.css
-- Markdown:
-	- APPUiO.md
-	- Backup.md
-	- Development.md
-	- Exoscale.md
-	- README.md
-	- Infomaniak.md
-	- K3s.md
-	- Migration.md
-	- Monitor.md
-	- README.md
-	- Troubleshooting.md
-- Node files:
-	- package.json
-	- package-lock.json
-	- node_modules
-- Task commands: `./task help | grep vitepress`
-
-### Remove Node/Vitepress
-
-Start by removing the Node/Vitepress files.
-
-### Create bin files for 11ty commands
-
-Move the Vitepress functions into scripts in the `~/taskfile.build/bin` folder:
-
-- `install-vitepress` -> `bin/init-vitepress-docs`
-- `dev-vitepress` -> `bin/dev-vitepress-docs`
-- `build-vitepress` -> `bin/build-vitepress-docs`
-- `serve-vitepress` -> `bin/serve-vitepress-docs`
-
-Add a "Vitepress" section to the `library.md` and add help rows.
-
-### Setup Zensical
-
-With the `task` script you already have access to these commands:
-
-- `init-zensical-docs`
-- `dev-zensical-docs`
-- `build-zensical-docs`
-- `serve-zensical-docs`
-
-Init the Zensical project.
-
-### Move to docs
-
-Move the mentioned markdown files and assets to the `docs` folder.
-
-Setup the file navigation and link structure.
-
-Use `./task dev-zensical-docs` to check the site.
-
-Ensure the website is working as before.
+It should not be necessary to copy the data from the container. Add a new required option to set the path. 
 
 ## Worklog
 
-- Removed all Vitepress files: `.vitepress/`, `package.json`, `pnpm-lock.yaml`, `node_modules`, `index.md`.
-- Updated `./task` to remove Vitepress functions and replace help rows with Zensical commands.
-- Created Vitepress bin scripts in `~/taskfile.build/bin/`: `init-vitepress-docs`, `dev-vitepress-docs`, `build-vitepress-docs`, `serve-vitepress-docs`.
-- Added Vitepress section to `~/taskfile.build/docs/library.md` with all four commands.
-- Initialized Zensical with `init-zensical-docs`.
-- Moved all markdown docs (`README.md`, `APPUiO.md`, `Backup.md`, `Development.md`, `Exoscale.md`, `Infomaniak.md`, `K3s.md`, `Migration.md`, `Monitor.md`, `Troubleshooting.md`) to `docs/`.
-- Moved `icon.png` and `icon.svg` to `docs/` and recreated `custom.css` under `docs/assets/`.
-- Created symlinks in `docs/` pointing to each chart `README.md` so chart pages are included in the site.
-- Created symlinks for `index.yaml` and all `*.tgz` files in `docs/` to preserve Helm repo artifacts in the build.
-- Fixed internal links to use relative paths and lowercase anchors.
-- Configured `zensical.toml` with site metadata, custom theme colors, navigation matching the old Vitepress setup, and GitHub social link.
-- Updated `.gitignore`, `.helmignore`, and `AGENTS.md` to reference Zensical instead of Vitepress.
-- Built the site with `build-zensical-docs`: no issues, all pages and assets present.
-- Created root `README.md` symlink to `docs/index.md` for GitHub rendering.
+Updated `bin/kubectl-postgres-backup` and `bin/kubectl-odoo-backup` to stream backup data directly to localhost instead of writing to the container filesystem first.
 
-@Clanker Set frontmatter state to completed and update date and model. If you have access to session info also add token count.
+### Changes
+
+- **`bin/kubectl-postgres-backup` (v1.3.0)**
+  - Added required `<path>` parameter as the third positional argument.
+  - Replaced container-side backup directory and file copy with direct stdout streaming: `kubectl exec "$pod_id" -- pg_dump "$database" > "$path"`.
+  - Removed the intermediate container storage and manual `kubectl cp` step.
+
+- **`bin/kubectl-odoo-backup` (v1.1.0)**
+  - Added required `<path>` parameter as the third positional argument.
+  - Replaced container-side tar archive creation with a streaming approach: dump to a temporary `dump.sql` inside the container, tar it together with the filestore to stdout, and stream directly to localhost with `kubectl exec ... > "$path"`.
+  - Added an `EXIT` trap to ensure the temporary `dump.sql` is cleaned up inside the container even if the tar step fails.
+  - Removed the intermediate container storage and manual `kubectl cp` step.
+
+### Follow-up: Auto-append filename for directory paths
+
+After testing, both scripts were updated to support passing a directory as `<path>`. When the path is an existing directory, the filename is automatically appended using the database name:
+
+- **`bin/kubectl-postgres-backup`**
+  - If `<path>` is a directory, appends `${database}.sql`.
+  - Example: `./tmp/` → `./tmp/odoo.sql`
+
+- **`bin/kubectl-odoo-backup`**
+  - If `<path>` is a directory, appends `${database}.tar`.
+  - Example: `./tmp/` → `./tmp/odoo.tar`
+
+### Follow-up: Fix tar archive structure
+
+The initial tar command preserved the full `filestore/$database/` path inside the archive, resulting in an incorrect structure:
+
+- `filestore/odoo/Content`
+- `dump.sql`
+
+Odoo expects the filestore directly under `filestore/`, not nested by database name. The tar command was updated using `--transform` to strip the database directory segment:
+
+```bash
+tar -cf - --transform='s|^filestore/'"$database"'|filestore|' -C /var/lib/odoo dump.sql filestore/"$database"
+```
+
+This produces the correct archive structure:
+
+- `filestore/Content`
+- `dump.sql`

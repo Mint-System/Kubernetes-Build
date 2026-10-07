@@ -2,15 +2,16 @@
 set -e
 
 script=$(basename "$0")
-version="1.0.1"
+version="1.1.0"
 
 help() {
     echo
     echo "$script v$version"
     echo
     echo 'Description: Backup Odoo database in Kubernetes cluster.'
-    echo "Syntax: $script <label> <database>"
-    echo "Example: $script odoo odoo"
+    echo "Syntax: $script <label> <database> <path>"
+    echo "Example: $script odoo odoo ./tmp/odoo.tar"
+    echo "         $script odoo odoo ./tmp/"
     echo 'Options:'
     echo "  help  Show $script manual."
     echo
@@ -23,9 +24,15 @@ fi
 
 label="$1"
 database="$2"
+path="$3"
 
 [[ -z "$label" ]] && { echo 'Error: Parameter label is empty'; exit 1; }
 [[ -z "$database" ]] && { echo 'Error: Parameter database is empty'; exit 1; }
+[[ -z "$path" ]] && { echo 'Error: Parameter path is empty'; exit 1; }
+
+if [[ -d "$path" ]]; then
+    path="${path%/}/${database}.tar"
+fi
 
 echo "Search for pod with label 'app=$label'"
 pod_id=$(kubectl get pods -l app="$label" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
@@ -36,20 +43,20 @@ if [[ -z "$pod_id" ]]; then
 fi
 
 echo "Found pod: $pod_id"
-kubectl_exec="kubectl exec $pod_id -- /bin/bash -c"
 
-echo "Backup database $database to /var/lib/odoo/$database.tar..."
+output_dir=$(dirname "$path")
+if [[ ! -d "$output_dir" ]]; then
+    mkdir -p "$output_dir"
+fi
 
-echo 'Dump database.'
-$kubectl_exec "pg_dump '$database' > /var/lib/odoo/dump.sql"
-$kubectl_exec "ls -lsh /var/lib/odoo/dump.sql"
+echo "Stream database $database backup to $path"
 
-echo "Tar filestore and dump to /var/lib/odoo/$database.tar."
-$kubectl_exec "tar -cf /var/lib/odoo/$database.tar -C /var/lib/odoo dump.sql filestore/$database"
+kubectl exec "$pod_id" -- /bin/bash -c "
+    set -e
+    cleanup() { rm -f /var/lib/odoo/dump.sql; }
+    trap cleanup EXIT
+    pg_dump '$database' > /var/lib/odoo/dump.sql
+    tar -cf - --transform='s|^filestore/'"$database"'|filestore|' -C /var/lib/odoo dump.sql filestore/"$database"
+" > "$path"
 
-echo 'Remove dump.'
-$kubectl_exec "rm -rf /var/lib/odoo/dump.sql"
-
-echo "The Odoo backup has finished: /var/lib/odoo/$database.tar"
-
-echo "Copy to local: kubectl cp $pod_id:/var/lib/odoo/$database.tar ./tmp/$database.tar"
+echo "The Odoo backup has finished: $path"
