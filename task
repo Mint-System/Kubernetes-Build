@@ -20,7 +20,6 @@ help-table() {
     rows+=("lint||Lint Helm charts.")
     rows+=("dev-zensical-docs||Run Zensical development server.")
     rows+=("build-zensical-docs||Build the Zensical documentation website.")
-    rows+=("sync-docs||Sync chart READMEs to docs folder.")
     rows+=("serve-zensical-docs||Serve the Zensical documentation build folder.")
     rows+=("===HOST===| | ")
     rows+=("start||Start kind Kubernetes cluster.")
@@ -835,15 +834,6 @@ lint() {
     for chart in $(list-charts); do
         helm lint "$chart"
     done
-}
-
-sync-docs() {
-    for chart in $(list-charts); do
-        mkdir -p "docs/$chart"
-        rm -f "docs/$chart/README.md"
-        cp "$chart/README.md" "docs/$chart/README.md"
-    done
-    echo 'Chart READMEs synced to docs/'
 }
 
 if [[ "$1" == *","* ]]; then

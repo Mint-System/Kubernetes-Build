@@ -1,14 +1,14 @@
 ---
-title: "Steam backup data to localhost"
+title: "Symlink role READMEs from docs"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 state: completed
 date_completed: 2026-10-07
 model: moonshotai/Kimi-K2.6
-input_tokens: 20355
-output_tokens: 21169
+input_tokens: 634713
+output_tokens: 4135
 ---
 
-# Steam backup data to localhost
+# Symlink role READMEs from docs
 
 Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file.
 
@@ -24,53 +24,16 @@ Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file
 
 ## Task
 
-I want you to update `bin/kubectl-postgres-backup` and `bin/kubectl-odoo-backup`. Instead of storing the backup data in the container / volume I want to stream the dump and tar directly to the localhost.
+With `task sync-docs` the README files in `roles` are copied to to `docs/roles`.
 
-It should not be necessary to copy the data from the container. Add a new required option to set the path. 
+I want to get rid of this command and instead symlink the README.md files from `docs/roles` to `roles`.
+
+Check if this is possible and the Zensical site still builds.
 
 ## Worklog
 
-Updated `bin/kubectl-postgres-backup` and `bin/kubectl-odoo-backup` to stream backup data directly to localhost instead of writing to the container filesystem first.
+Converted all `docs/<chart>/README.md` files from copies into symlinks pointing to `../../<chart>/README.md`.
 
-### Changes
+Removed the `sync-docs` command from `task` since it is no longer needed.
 
-- **`bin/kubectl-postgres-backup` (v1.3.0)**
-  - Added required `<path>` parameter as the third positional argument.
-  - Replaced container-side backup directory and file copy with direct stdout streaming: `kubectl exec "$pod_id" -- pg_dump "$database" > "$path"`.
-  - Removed the intermediate container storage and manual `kubectl cp` step.
-
-- **`bin/kubectl-odoo-backup` (v1.1.0)**
-  - Added required `<path>` parameter as the third positional argument.
-  - Replaced container-side tar archive creation with a streaming approach: dump to a temporary `dump.sql` inside the container, tar it together with the filestore to stdout, and stream directly to localhost with `kubectl exec ... > "$path"`.
-  - Added an `EXIT` trap to ensure the temporary `dump.sql` is cleaned up inside the container even if the tar step fails.
-  - Removed the intermediate container storage and manual `kubectl cp` step.
-
-### Follow-up: Auto-append filename for directory paths
-
-After testing, both scripts were updated to support passing a directory as `<path>`. When the path is an existing directory, the filename is automatically appended using the database name:
-
-- **`bin/kubectl-postgres-backup`**
-  - If `<path>` is a directory, appends `${database}.sql`.
-  - Example: `./tmp/` → `./tmp/odoo.sql`
-
-- **`bin/kubectl-odoo-backup`**
-  - If `<path>` is a directory, appends `${database}.tar`.
-  - Example: `./tmp/` → `./tmp/odoo.tar`
-
-### Follow-up: Fix tar archive structure
-
-The initial tar command preserved the full `filestore/$database/` path inside the archive, resulting in an incorrect structure:
-
-- `filestore/odoo/Content`
-- `dump.sql`
-
-Odoo expects the filestore directly under `filestore/`, not nested by database name. The tar command was updated using `--transform` to strip the database directory segment:
-
-```bash
-tar -cf - --transform='s|^filestore/'"$database"'|filestore|' -C /var/lib/odoo dump.sql filestore/"$database"
-```
-
-This produces the correct archive structure:
-
-- `filestore/Content`
-- `dump.sql`
+Verified that Zensical builds the site successfully with symlinks (`zensical build` completed with no issues and generated correct HTML for all chart pages).
