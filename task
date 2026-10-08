@@ -187,9 +187,9 @@ version() {
 }
 
 info() {
-    echo "OpenShift-Project: $OC_PROJECT"
-    echo "Context-Alias: $(get-context)"
-    echo "Namespace: $namespace"
+    echo "Cluster: $(get-cluster)"
+    echo "Context: $(get-context)"
+    echo "Namespace: $(get-namespace)"
 }
 
 setup-hosts() {
