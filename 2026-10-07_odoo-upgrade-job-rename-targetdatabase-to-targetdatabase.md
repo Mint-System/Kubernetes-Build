@@ -1,5 +1,5 @@
 ---
-commit_ref: 520fe17e552f3910462b7299fed607364bbe8169
+commit_ref: 74dc78a24b6a4062b4f07c5559badbecd06d3287
 title: "Odoo upgrade job rename target_database to targetDatabase"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 state: completed
