@@ -30,7 +30,9 @@ Have a look at the Ansible role `~/Ansible-Build/roles/remark42`. I want you to 
 
 The name of the chart is `remark42` and the title `Mint System Remark42`.
 
-Use `taskfile-build` as a template.
+Use `taskfile-build` as a template for the Helm chart.
+
+Add `k8up` backup based on `odoo/templates/backup.yaml`.
 
 ### Create deployment
 
