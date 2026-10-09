@@ -3,9 +3,15 @@ entries:
   cluster-issuer:
   - apiVersion: v2
     appVersion: 1.0.0
+<<<<<<< Updated upstream
     created: "2026-10-09T15:56:33.094691084Z"
     description: Mint System Cluster Issuer
     digest: 92a48a87b891a8f86b5dbe8a65f523665e5655b5c458933888d639b4646c8441
+=======
+    created: "2026-10-09T17:58:03.411637882+02:00"
+    description: Mint System Cluster Issuer
+    digest: 948f4d65fb9dbbeb4c7ded59af9005103f1cedbea26c63277a8aa262107db770
+>>>>>>> Stashed changes
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -18,9 +24,15 @@ entries:
   deployment-updater:
   - apiVersion: v2
     appVersion: 1.0.0
+<<<<<<< Updated upstream
     created: "2026-10-09T15:56:33.094923018Z"
     description: Mint System Deployment Updater
     digest: ece71dd21ec93c7e759ad99c2ebd1f23049fbb56e67825d63d3882503027ed20
+=======
+    created: "2026-10-09T17:58:03.411762186+02:00"
+    description: Mint System Deployment Updater
+    digest: aa3abe3820d991058ccf0b878f3d74b52ce4ca1e4a9ba96abe9252a2d4b8395c
+>>>>>>> Stashed changes
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -33,9 +45,15 @@ entries:
   forgejo-runner:
   - apiVersion: v2
     appVersion: 1.0.0
+<<<<<<< Updated upstream
     created: "2026-10-09T15:56:33.09520139Z"
     description: Mint System Forgejo Runner
     digest: 28423049dcc705d52f182f047498fa67ac758306e2f03cbf39a40994e6d486c4
+=======
+    created: "2026-10-09T17:58:03.411939138+02:00"
+    description: Mint System Forgejo Runner
+    digest: 452c05a18f912844ec61246366606abfb5471557023841025911e5ec0d891876
+>>>>>>> Stashed changes
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -48,14 +66,22 @@ entries:
   nextcloud:
   - apiVersion: v2
     appVersion: 1.0.0
+<<<<<<< Updated upstream
     created: "2026-10-09T15:56:33.117071147Z"
+=======
+    created: "2026-10-09T17:58:03.426222283+02:00"
+>>>>>>> Stashed changes
     dependencies:
     - condition: nextcloud.enabled
       name: nextcloud
       repository: https://nextcloud.github.io/helm/
       version: 9.2.4
     description: Mint System Nextcloud
+<<<<<<< Updated upstream
     digest: 8ed73a599029972b2095695bf286176664372a95d08874016fc7e5064d31b20f
+=======
+    digest: ffe831231a216143cb6a5f4f991df0ab1037c5a3df8a03e42657e08c46c75431
+>>>>>>> Stashed changes
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -68,7 +94,11 @@ entries:
   odoo:
   - apiVersion: v2
     appVersion: 1.0.0
+<<<<<<< Updated upstream
     created: "2026-10-09T15:56:33.117935039Z"
+=======
+    created: "2026-10-09T17:58:03.426765744+02:00"
+>>>>>>> Stashed changes
     dependencies:
     - condition: postgres.enabled
       name: postgres
@@ -79,7 +109,11 @@ entries:
       repository: file://../vshn-postgres
       version: 0.1.0
     description: Mint System Odoo
+<<<<<<< Updated upstream
     digest: a231f75c8a32b08bea4c5c09e502c30d6debbd7e79341b59905e9f23c303c767
+=======
+    digest: 6757f5689474f9026036924658737b1814740787b5aa0430947dcbbe97683a9f
+>>>>>>> Stashed changes
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -92,9 +126,15 @@ entries:
   postgres:
   - apiVersion: v2
     appVersion: 1.0.0
+<<<<<<< Updated upstream
     created: "2026-10-09T15:56:33.118204709Z"
     description: Mint System Postgres
     digest: 7347fed1ac785f71512397d36bd0dce582f60c49f8ee581fb03f0877b6e48531
+=======
+    created: "2026-10-09T17:58:03.426892532+02:00"
+    description: Mint System Postgres
+    digest: 3ab8a1e8161fe02d3b737ce22a6cccdc62b6742173854299798bee567c37c3e8
+>>>>>>> Stashed changes
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -107,14 +147,22 @@ entries:
   prometheus-agent:
   - apiVersion: v2
     appVersion: 1.0.0
+<<<<<<< Updated upstream
     created: "2026-10-09T15:56:33.120003887Z"
+=======
+    created: "2026-10-09T17:58:03.427905936+02:00"
+>>>>>>> Stashed changes
     dependencies:
     - condition: kube-state-metrics.enabled
       name: kube-state-metrics
       repository: https://prometheus-community.github.io/helm-charts
       version: 5.x.x
     description: Prometheus agent mode scraper for Kubernetes.
+<<<<<<< Updated upstream
     digest: 6a8fd77f244193ae9a3513f503420647c3cc64c6bc2b1889a389dc5f9f969199
+=======
+    digest: e23f707c5734fd575fe0eca60651908b8b808c7f04fdd55bd83f506d83bf0f29
+>>>>>>> Stashed changes
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -127,9 +175,15 @@ entries:
   taskfile-build:
   - apiVersion: v2
     appVersion: 1.0.0
+<<<<<<< Updated upstream
     created: "2026-10-09T15:56:33.120311884Z"
     description: Mint System Vueress
     digest: 7d6e399805abd739cc8de6f5ccebea0e165e28b550dea98dde93d881fefbc78a
+=======
+    created: "2026-10-09T17:58:03.428133293+02:00"
+    description: Mint System Vueress
+    digest: 4a49fd1f2f85877cf83eb71be2b1954b0eacb4b5cad4569b67d23c43ee71498e
+>>>>>>> Stashed changes
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -142,9 +196,15 @@ entries:
   vshn-postgres:
   - apiVersion: v2
     appVersion: 1.0.0
+<<<<<<< Updated upstream
     created: "2026-10-09T15:56:33.120474615Z"
     description: VSHN Postgres
     digest: 17255b8a90e78365abf074360e48dc32932c712f64aa237e4eb9287e07aaa0a2
+=======
+    created: "2026-10-09T17:58:03.428545638+02:00"
+    description: VSHN Postgres
+    digest: 4ab5d4ee0881b72426a67372613c0bb0b92662b21190365b3fb44fe972330ff8
+>>>>>>> Stashed changes
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -154,4 +214,8 @@ entries:
     urls:
     - vshn-postgres-0.1.0.tgz
     version: 0.1.0
+<<<<<<< Updated upstream
 generated: "2026-10-09T15:56:33.094374344Z"
+=======
+generated: "2026-10-09T17:58:03.411460769+02:00"
+>>>>>>> Stashed changes
