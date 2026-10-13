@@ -69,12 +69,12 @@ nextcloud:
   resources:
     ## @param nextcloud.resources.requests.memory Memory request for the container
     requests:
-      memory: "256Mi"
+      memory: "1Gi"
       ## @param nextcloud.resources.requests.cpu CPU request for the container
       cpu: "250m"
     limits:
       ## @param nextcloud.resources.limits.memory Memory limit for the container
-      memory: "512Mi"
+      memory: "2Gi"
 
 ## @section Redis parameters
 redis:

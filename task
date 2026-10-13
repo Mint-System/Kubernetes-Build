@@ -801,7 +801,7 @@ watch-cluster-memory() {
         return 1
     fi
 
-    watch -n 2 'kubectl top pods --all-namespaces | { read -r header; echo "$header"; sort -k4 -n -r; }'
+    watch -n 2 'echo "=== Nodes ==="; kubectl top nodes; echo; echo "=== Pods ==="; kubectl top pods --all-namespaces | { read -r header; echo "$header"; sort -k4 -n -r; }'
 }
 
 # Helm Commands
