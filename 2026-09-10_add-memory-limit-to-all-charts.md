@@ -1,9 +1,10 @@
 ---
-commit_ref: b7ca1ac88631dd5e39f02028c7aaa68d8cf82fe7
+commit_ref: f7ce9afcc5778183f4e902d2d2f3d20e30bb3dc6
 title: "Add memory limit to all charts"
 state: completed
-model: infomaniak/moonshotai/Kimi-K2.6
-input_tokens: 
+model: moonshotai/Kimi-K2.6
+input_tokens: 10936
+output_tokens: 3969
 ---
 
 # Run 08
