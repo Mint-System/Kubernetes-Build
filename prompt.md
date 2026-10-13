@@ -1,15 +1,15 @@
 ---
-title: "Montior memory consumption"
+title: "Install metrics server"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
-state: completed
-date_completed: 2026-10-13
-harness: pi
-model: moonshotai/Kimi-K2.6
-input_tokens: 12760
-output_tokens: 1784
+state: draft
+date_completed: YYYY-MM-DD
+harness:
+model:
+input_tokens:
+output_tokens:
 ---
 
-# Montior memory consumption
+# Install metrics server
 
 Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file.
 
@@ -25,14 +25,12 @@ Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file
 
 ## Task
 
-Create a new task command to show memory consumption of pods in the active cluster.
+@Developer Provide instructions with clear objective here.
 
-Some like `task watch-cluster-memory` and then it starts a kubectl command that shows memory stats.
+@Clanker When task is completed set frontmatter state to review. Prompt the author to verify the results.
 
 ## Worklog
 
-Added the `watch-cluster-memory` command to the `./task` script. It runs an infinite loop that clears the screen and executes `kubectl top pods --all-namespaces` every 2 seconds, providing a live view of pod memory consumption across the active cluster. The command is documented in the help table under the `===KUBECTL===` section.
+@Clanker Add a summary here once the task has been completed.
 
-Also added an upfront check for the Metrics API (`metrics.k8s.io`). If the API is unavailable, the command exits with a clear error message and prints example commands to install `metrics-server` (including the `--kubelet-insecure-tls` patch needed for kind clusters).
-
-@Clanker Set frontmatter state to completed and update date, harness and model. If you have access to session info also add token count.
+@Clanker If author confirms results set frontmatter state to completed, otherwise to aborted. Update date, harness and model. If you have access to session info also add token count.
