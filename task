@@ -402,6 +402,7 @@ list-external-charts() {
     echo 'cnpg'
     # echo 'haproxy-ingress'
     echo 'k8up'
+    echo 'metrics-server'
     echo 'traefik'
 }
 
@@ -644,6 +645,18 @@ install-traefik() {
         --create-namespace --namespace traefik
 }
 
+install-metrics-server() {
+    echo 'Install metrics-server/metrics-server.'
+    local values_args=()
+    if [[ -n "$1" ]]; then
+        values_args+=(--values "$1")
+    fi
+    helm install metrics-server metrics-server/metrics-server \
+        --create-namespace --namespace metrics-server \
+        --set-json 'args=["--kubelet-insecure-tls"]' \
+        "${values_args[@]}"
+}
+
 upgrade-release() {
     if test -z "$1"; then echo '\$1 is empty.'; exit; fi
     if test -z "$2"; then echo '\$2 is empty.'; exit; fi
@@ -698,7 +711,21 @@ uninstall-release() {
     local release_name="$1"
 
     echo "Uninstall release $release_name:"
-    helm uninstall "$release_name"
+
+    local namespace=""
+    case "$release_name" in
+        cert-manager) namespace="cert-manager" ;;
+        cnpg) namespace="cnpg-system" ;;
+        k8up) namespace="k8up" ;;
+        metrics-server) namespace="metrics-server" ;;
+        traefik) namespace="traefik" ;;
+    esac
+
+    if [[ -n "$namespace" ]]; then
+        helm uninstall "$release_name" --namespace "$namespace"
+    else
+        helm uninstall "$release_name"
+    fi
 }
 
 uninstall-haproxy-ingress() {
@@ -840,6 +867,9 @@ add-repos(){
 
     echo 'Add k8up.'
     helm repo add k8up-io https://k8up-io.github.io/k8up
+
+    echo 'Add metrics-server.'
+    helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server
 
     echo 'Add traefik.'
     helm repo add traefik https://helm.traefik.io/traefik

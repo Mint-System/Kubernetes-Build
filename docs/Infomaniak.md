@@ -44,6 +44,14 @@ task add-repos
 task install-chart traefik values/chk.mintcloud.ch.yaml
 ```
 
+## Setup metrics server
+
+Install the metrics server.
+
+```bash
+task install-chart metrics-server values/chk.mintcloud.ch.yaml
+```
+
 ## Setup cert manager
 
 Install cert manager with Infomaniak webhook.
