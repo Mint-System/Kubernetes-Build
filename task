@@ -50,6 +50,7 @@ help-table() {
     rows+=("get-namespace||Show active namespace.")
     rows+=("login-oc||Refresh the auth token for OpenShift.")
     rows+=("run-job|[name]|Make a copy of job.")
+    rows+=("watch-cluster-memory||Watch memory consumption of pods.")
     rows+=("===HELM===| | ")
     rows+=("add-repos||Add the required Helm repos.")
     rows+=("template-manifest|[chart][values]|Template all charts with Helm.")
@@ -764,6 +765,19 @@ logs() {
 
 get-pods() {
     kubectl get pods
+}
+
+watch-cluster-memory() {
+    if ! kubectl get --raw /apis/metrics.k8s.io/ &> /dev/null; then
+        echo 'Error: Metrics API is not available.'
+        echo 'Install metrics-server to enable pod memory stats.'
+        echo 'Example for kind:'
+        echo '  kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml'
+        echo '  kubectl patch -n kube-system deployment metrics-server --type=json -p='\''[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'\'''
+        return 1
+    fi
+
+    watch -n 2 'kubectl top pods --all-namespaces'
 }
 
 # Helm Commands
