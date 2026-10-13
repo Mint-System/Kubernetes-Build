@@ -2,12 +2,12 @@
 commit_ref:
 title: "Montior memory consumption"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
-state: draft
-date_completed: YYYY-MM-DD
-harness:
-model:
-input_tokens:
-output_tokens:
+state: review
+date_completed: 2026-10-13
+harness: pi
+model: moonshotai/Kimi-K2.6
+input_tokens: 5027
+output_tokens: 2023
 ---
 
 # Montior memory consumption
@@ -32,6 +32,6 @@ I have the command `watch-cluster-memory`. But it should also show status of wor
 
 ## Worklog
 
-@Clanker Add a summary here once the task has been completed.
+Updated `watch-cluster-memory` in `task` to display node memory/CPU usage via `kubectl top nodes` above the existing pod memory table. This allows monitoring both worker node resource status and pod-level memory consumption in the same watch view.
 
 @Clanker If author confirms results set frontmatter state to completed, otherwise to aborted. Update date, harness and model. If you have access to session info also add token count.
