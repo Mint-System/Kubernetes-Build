@@ -1,5 +1,5 @@
 ---
-commit_ref: 2bb44578cba7dab48546c17caa9f2a3eb6a32494
+commit_ref: 192948620a9e0178aacc36f687ee26ffa1bb283b
 title: "Add redirect option to taskfile chart"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 state: completed
