@@ -2,7 +2,7 @@
 commit_ref:
 title: "Montior memory consumption"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
-state: review
+state: done
 date_completed: 2026-10-13
 harness: pi
 model: moonshotai/Kimi-K2.6
