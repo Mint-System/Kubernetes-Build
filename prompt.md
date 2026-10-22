@@ -1,15 +1,16 @@
 ---
-title: "Add sops backend for Helm secrets"
+commit_ref:
+title: "Montior memory consumption"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
-state: draft
-date_completed: YYYY-MM-DD
-harness:
-model:
-input_tokens:
-output_tokens:
+state: done
+date_completed: 2026-10-13
+harness: pi
+model: moonshotai/Kimi-K2.6
+input_tokens: 5027
+output_tokens: 2023
 ---
 
-# Add sops backend for Helm secrets
+# Montior memory consumption
 
 Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file.
 
@@ -25,66 +26,12 @@ Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file
 
 ## Task
 
-I want to support `helm-sops` / `sops` with `age` keys in this project. Here is an example:
-
-- `/home/janikvonrotz/odoo-for-vshn/.sops.yaml` This is a backend configuration for `.yaml` files.
-- `deployment/secrets/upgrade/odoo-creds.sops.yaml` This file is encrypted.
-
-### Taskfile commands
-
-Existing commands: `show-project-setup` / `list-agekeys` / `store-agekey-to-keypass` / `load-agekey-from-keepass`
-
-New commands:
-
-- `init-sops`: Creates the .sops.yaml. Probably done once.
-- `create-secret <path>`: Templaces a `.yaml` file with a Kubernetes secret and encrypts the data.
-- `edit-secret <path>`: Decrypts the target file with a secret and allows editing the values. Similar to `edit-dotenv`.
-
-Update these commands:
-
-- `install-chart <chart> <path>`: The path can point to a `.yaml` that has either Helm values or a Kubernetes secret resource with encrypted values.
-- `upgrade-release <chart> <path>`: Same as above.
-- `template-manifest <chart> <path>`: Shows the decrypted output.
-
-I am not entirely sure if <https://github.com/camptocamp/helm-sops> is required to make this happen.
-
-### Update Helm charts
-
-**taskfile-build**
-
-I need to support secrets for selected Helm charts. For example the taskfile-build `gitUrl`. I would like to be able to create a secret like `values/chk/odoo-smart-me-etl/secrets.yaml`:
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-    name: taskfile-build-values
-type: Opaque
-stringData:
-    gitUrl: ENC[AES256_GCM,data:o3fuHwnMXRw==,type:str] 
-```
-
-And then if I deploy the Chart with `task install-chart taskfile-build values/chk/odoo-smart-me-etl` the secret is decrypted and applied.
-
-Definiting `gitUrl` as secret should be optional. It still should be possible to define it in the `values.yaml` as cleartext.
-
-Let me know if this is possible. If this works I also want to update:
-
-- `odoo` / `init.password`
-- `nextcloud` / `nextcloud.nextcloud.password` 
-
-### Testing
-
-I have prepared the local cluster. You can deploy values from `test_values/`.
-
-### Documentation
-
-Create a document in `docs/` that describes how encrypted secrets can be created and edited.
+I have the command `watch-cluster-memory`. But it should also show status of worker node ok?
 
 @Clanker When task is completed set frontmatter state to review. Prompt the author to verify the results.
 
 ## Worklog
 
-@Clanker Add a summary here once the task has been completed.
+Updated `watch-cluster-memory` in `task` to display node memory/CPU usage via `kubectl top nodes` above the existing pod memory table. This allows monitoring both worker node resource status and pod-level memory consumption in the same watch view.
 
 @Clanker If author confirms results set frontmatter state to completed, otherwise to aborted. Update date, harness and model. If you have access to session info also add token count.
