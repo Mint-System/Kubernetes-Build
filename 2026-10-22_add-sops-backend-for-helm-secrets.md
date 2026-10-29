@@ -2,7 +2,7 @@
 commit_ref:
 title: "Add sops backend for Helm secrets"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
-state: draft
+state: cancelled
 date_completed: YYYY-MM-DD
 harness:
 model:
