@@ -10,14 +10,8 @@ help-table() {
     rows+=("version||Show version of required tools.")
     rows+=("info||Show info about env.")
     rows+=("template-dotenv||Generate .env from .env.template.")
-    rows+=("export-kubeconfig|[user][path]|Export kubeconfig file for service account.")
-    rows+=("generate-kubconfig|[name]|Generate kubeconfig for deployment-updater.")
-    rows+=("load-kubeconfig-from-keepass|[ctx]|Load kubeconfig file from KeePass.")
-    rows+=("save-kubeconfig-to-keepass|[ctx]|Save kubeconfig file in KeePass.")
     rows+=("===DOCS===| | ")
     rows+=("init-zensical-docs||Initialize Zensical documentation build dependencies.")
-    rows+=("docs||Generate Helm chart readmes.")
-    rows+=("lint||Lint Helm charts.")
     rows+=("dev-zensical-docs||Run Zensical development server.")
     rows+=("build-zensical-docs||Build the Zensical documentation website.")
     rows+=("serve-zensical-docs||Serve the Zensical documentation build folder.")
@@ -31,36 +25,36 @@ help-table() {
     rows+=("===CHART===| | ")
     rows+=("list-charts||List local Helm charts.")
     rows+=("list-external-charts||List external Helm charts.")
+    rows+=("update-dependencies|[chart]|Update dependencies for a chart.")
+    rows+=("install-chart|[chart][values]|Install Helm chart.")
+    rows+=("upgrade-release|[chart][values]|Upgrade Helm release.")
+    rows+=("uninstall-release|[release]|Uninstall Helm release.")
+    rows+=("===KUBECTL===| | ")
+    rows+=("generate-kubconfig|[name]|Generate kubeconfig for deployment-updater.")
     rows+=("list-cluster||List clusters.")
     rows+=("list-deployment||List deployments.")
     rows+=("list-context||List kubeconfig files.")
     rows+=("switch-context||Switch kubeconfig file.")
     rows+=("get-context||Show active kubeconfig.")
     rows+=("get-cluster||Show active cluster.")
-    rows+=("update-dependencies|[chart]|Update dependencies for a chart.")
-    rows+=("install-chart|[chart][values]|Install Helm chart.")
-    rows+=("upgrade-release|[chart][values]|Upgrade Helm release.")
-    rows+=("uninstall-release|[release]|Uninstall Helm release.")
-    rows+=("===KUBECTL===| | ")
     rows+=("show-secrets|[chart]|Show secrets for chart.")
     rows+=("exec-bash|[chart]|Open bash shell in container.")
     rows+=("logs|[grep]|Select pods with grep and show logs.")
-    rows+=("list||List Helm deployments.")
+    rows+=("list||List Helm releases.")
     rows+=("get-pods||List all pods.")
     rows+=("get-namespace||Show active namespace.")
     rows+=("login-oc||Refresh the auth token for OpenShift.")
     rows+=("run-job|[name]|Make a copy of job.")
     rows+=("watch-cluster-memory||Watch memory consumption of pods.")
     rows+=("===HELM===| | ")
+    rows+=("docs||Generate Helm chart readmes.")
+    rows+=("lint||Lint Helm charts.")
     rows+=("add-repos||Add the required Helm repos.")
     rows+=("template-manifest|[chart][values]|Template all charts with Helm.")
     rows+=("package-repo|[chart]|Package Helm charts.")
     rows+=("index-repo||Index Helm chart.")
     rows+=("remove-repo||Remove the kubernetes-build repo.")
     rows+=("commit||Commit .tgz files.")
-    rows+=("===LLM===| | ")
-    rows+=("commit-with-llm||Commit with llm generated commit message.")
-    rows+=("update-with-llm|[glob][prompt]|Feed files matching glob to LLM and apply changes.")
     rows+=("===TEST===| | ")
     rows+=("test-chart-cluster-issuer||Test cluster issuer.")
     rows+=("test-chart-odoo|[cleanup]|Setup Odoo chart and dependencies.")
@@ -241,20 +235,6 @@ test-chart-nextcloud() {
         kubectl create secret generic nextcloud-creds --from-literal=NEXTCLOUD_ADMIN_USER="test" --from-literal=NEXTCLOUD_ADMIN_PASSWORD="test"
         install-chart nextcloud test_values/knd/nextcloud.yaml
     fi
-}
-
-export-kubeconfig() {
-  if test -z "$1"; then echo '\$1 is empty.'; exit; fi
-  if test -z "$2"; then echo '\$2 is empty.'; exit; fi
-
-  local kube_user=$1
-  local kube_output_file=$2
-  kubectl config set-cluster default --server=https://k3s.raspberrypi.build --kubeconfig=$kube_output_file
-  kubectl config set-context default --cluster=default --user=$kube_user --kubeconfig=$kube_output_file
-  kubectl config set-credentials "$kube_user" --token=$(kubectl create token $kube_user --duration=87600h) --kubeconfig=$kube_output_file
-  kubectl config use-context default --kubeconfig=$kube_output_file
-
-  echo "Kubeconfig exported for user $kube_user to file $kube_output_file"
 }
 
 generate-kubconfig() {

@@ -1,16 +1,16 @@
 ---
-commit_ref:
-title: "Montior memory consumption"
+title: "separate generic install commands and cluster serice install commands"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
-state: done
-date_completed: 2026-10-13
-harness: pi
-model: moonshotai/Kimi-K2.6
-input_tokens: 5027
-output_tokens: 2023
+action: implement
+state: draft
+date_completed: YYYY-MM-DD
+harness:
+model:
+input_tokens:
+output_tokens:
 ---
 
-# Montior memory consumption
+# separate generic install commands and cluster serice install commands
 
 Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file.
 
@@ -26,12 +26,18 @@ Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file
 
 ## Task
 
-I have the command `watch-cluster-memory`. But it should also show status of worker node ok?
+Cluster services such as `cnpg` are installed with `install-chart cnpg` which then falls back to `install-cnpg`.
+
+I want `install-chart` to work for `list-charts` only. And the `list-external-charts` have to be installed with epxlicit command.
+
+Update the guides in `docs` to use the explicity command.
+
+Create a help entry for these commands in a new "Bootstrap" section.
 
 @Clanker When task is completed set frontmatter state to review. Prompt the author to verify the results.
 
 ## Worklog
 
-Updated `watch-cluster-memory` in `task` to display node memory/CPU usage via `kubectl top nodes` above the existing pod memory table. This allows monitoring both worker node resource status and pod-level memory consumption in the same watch view.
+@Clanker Add a summary here once the task has been completed.
 
 @Clanker If author confirms results set frontmatter state to completed, otherwise to aborted. Update date, harness and model. If you have access to session info also add token count.
