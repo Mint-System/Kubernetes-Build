@@ -1,14 +1,14 @@
 ---
-commit_ref:
+commit_ref: 660459e43dd8ad9bfd0d763052f74c822cd378b0
 title: "separate generic install commands and cluster serice install commands"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 action: implement
-state: draft
-date_completed: YYYY-MM-DD
-harness:
-model:
-input_tokens:
-output_tokens:
+state: completed
+date_completed: 2026-10-30
+harness: pi
+model: glm-5-2
+input_tokens: 20212
+output_tokens: 6122
 ---
 
 # separate generic install commands and cluster serice install commands
@@ -39,6 +39,11 @@ Create a help entry for these commands in a new "Bootstrap" section.
 
 ## Worklog
 
-@Clanker Add a summary here once the task has been completed.
+- Restricted `install-chart` in `task` to local charts only (`list-charts`) plus the `cluster-issuer` special case. External charts now error out with a hint to use the explicit bootstrap command.
+- Added a new `===BOOTSTRAP===` section to the `task` help-table listing the explicit install commands: `install-cert-manager`, `install-cluster-issuer`, `install-cnpg`, `install-k8up`, `install-metrics-server`, `install-traefik`. Updated the `install-chart` description to "Install local Helm chart."
+- Updated internal `test-chart-nextcloud` and `test-chart-remark42` functions to call the explicit `install-traefik`/`install-cnpg` commands instead of `install-chart`.
+- Updated docs `Exoscale.md`, `Infomaniak.md` and `K3s.md` to use the explicit bootstrap commands for external charts. Local charts (odoo, nextcloud, prometheus-agent, taskfile-build) keep using `install-chart`.
+- Validated with `task lint` (passes) and `task help` (Bootstrap section renders correctly). `task docs` could not run (pnpm not installed) but no chart READMEs were affected.
+- End-to-end verified by installing the odoo chart manually: `task start`, `task add-repos`, `task install-traefik`, `task install-cnpg`, `task update-dependencies odoo`, `task install-chart odoo test_gitops/knd/odoo.yaml` — all pods (2x odoo-odoo replicas, 1x staging, postgres) reached Running state.
 
 @Clanker If author confirms results set frontmatter state to completed, otherwise to aborted. Update date, harness and model. If you have access to session info also add token count.
