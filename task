@@ -26,9 +26,16 @@ help-table() {
     rows+=("list-charts||List local Helm charts.")
     rows+=("list-external-charts||List external Helm charts.")
     rows+=("update-dependencies|[chart]|Update dependencies for a chart.")
-    rows+=("install-chart|[chart][values]|Install Helm chart.")
+    rows+=("install-chart|[chart][values]|Install local Helm chart.")
     rows+=("upgrade-release|[chart][values]|Upgrade Helm release.")
     rows+=("uninstall-release|[release]|Uninstall Helm release.")
+    rows+=("===BOOTSTRAP===| | ")
+    rows+=("install-cert-manager||Install cert-manager with Infomaniak webhook.")
+    rows+=("install-cluster-issuer|[values]|Install cluster-issuer chart.")
+    rows+=("install-cnpg||Install CloudNativePG operator.")
+    rows+=("install-k8up||Install k8up backup operator.")
+    rows+=("install-metrics-server|[values]|Install metrics-server.")
+    rows+=("install-traefik||Install traefik ingress controller.")
     rows+=("===KUBECTL===| | ")
     rows+=("generate-kubconfig|[name]|Generate kubeconfig for deployment-updater.")
     rows+=("list-cluster||List clusters.")
@@ -231,9 +238,9 @@ test-chart-nextcloud() {
         start
         add-repos
         info
-        install-chart traefik
+        install-traefik
         kubectl wait --namespace traefik --for=condition=Available --timeout=60s deployments/traefik
-        install-chart cnpg
+        install-cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         kubectl create secret generic nextcloud-creds --from-literal=NEXTCLOUD_ADMIN_USER="test" --from-literal=NEXTCLOUD_ADMIN_PASSWORD="test"
         install-chart nextcloud test_gitops/knd/nextcloud.yaml
@@ -248,7 +255,7 @@ test-chart-remark42() {
         start
         add-repos
         info
-        install-chart traefik
+        install-traefik
         kubectl wait --namespace traefik --for=condition=Available --timeout=60s deployments/traefik
         kubectl create secret generic remark42-secrets --from-literal=SECRET="test-secret"
         install-chart remark42 test_gitops/knd/remark42.yaml
@@ -597,8 +604,14 @@ install-chart() {
         echo "Install chart $1 as release $release_name:"
         helm install "$release_name" "$1" \
             --values "$2"
+    elif list-external-charts | grep -q "$1"; then
+        echo "Error: '$1' is an external chart. Use the explicit command 'install-$1' instead."
+        echo "Run 'task help bootstrap' to list the bootstrap commands."
+        exit 1
     else
-        "install-$1" "$2"
+        echo "Error: Unknown chart '$1'."
+        echo "Run 'task list-charts' or 'task list-external-charts' to list available charts."
+        exit 1
     fi
 }
 

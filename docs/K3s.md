@@ -17,13 +17,13 @@ task switch-context rpi-admin
 Install cert manager.
 
 ```bash
-task install-chart cert-manager values/k3s.raspberrypi.build.yaml
+task install-cert-manager
 ```
 
 Install cluster issuer.
 
 ```bash
-task install-chart cluster-issuer values/k3s.raspberrypi.build.yaml
+task install-cluster-issuer values/k3s.raspberrypi.build.yaml
 ```
 
 ## Create Hugo release

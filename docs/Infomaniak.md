@@ -41,7 +41,7 @@ Add all repos and install the traefik ingress.
 
 ```bash
 task add-repos
-task install-chart traefik values/chk.mintcloud.ch.yaml
+task install-traefik
 ```
 
 ## Setup metrics server
@@ -49,7 +49,7 @@ task install-chart traefik values/chk.mintcloud.ch.yaml
 Install the metrics server.
 
 ```bash
-task install-chart metrics-server values/chk.mintcloud.ch.yaml
+task install-metrics-server values/chk.mintcloud.ch.yaml
 ```
 
 ## Setup cert manager
@@ -57,7 +57,7 @@ task install-chart metrics-server values/chk.mintcloud.ch.yaml
 Install cert manager with Infomaniak webhook.
 
 ```bash
-task install-chart cert-manager values/chk.mintcloud.ch.yaml
+task install-cert-manager
 ```
 
 Create an Infomaniak API token with domain scope: <https://manager.infomaniak.com/v3/infomaniak-api>
@@ -67,7 +67,7 @@ Setup the secret according to [cluster-issuer > Secrets](cluster-issuer/README.m
 Install cluster issuer.
 
 ```bash
-task install-chart cluster-issuer values/chk.mintcloud.ch.yaml
+task install-cluster-issuer values/chk.mintcloud.ch.yaml
 ```
 
 ## Setup k8up
@@ -75,7 +75,7 @@ task install-chart cluster-issuer values/chk.mintcloud.ch.yaml
 Install k8up in the current cluster.
 
 ```bash
-task install-chart k8up values/chk.mintcloud.ch.yaml
+task install-k8up
 ```
 
 ## Create Odoo release
@@ -83,7 +83,7 @@ task install-chart k8up values/chk.mintcloud.ch.yaml
 Install the CloudNativePG chart:
 
 ```bash
-task install-chart cnpg values/chk.mintcloud.ch.yaml
+task install-cnpg
 ```
 
 Create a namespace for the application.
