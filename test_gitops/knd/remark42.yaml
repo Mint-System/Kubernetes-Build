@@ -1,0 +1,22 @@
+kind: deployment
+chart: remark42
+ingress:
+  host: remark42.knd.local
+image: "umputun/remark42:v1.16.4"
+imagePullPolicy: IfNotPresent
+url: "http://remark42.knd.local"
+site: "test"
+secretName: remark42-secrets
+auth:
+  anonymous: "true"
+  emailEnabled: "false"
+  sameSite: none
+smtp:
+  tls: "false"
+admin:
+  sharedEmail: "admin@example.com"
+  sharedId: "anonymous"
+notify:
+  type: none
+  emailAdmin: "false"
+storageSize: "1Gi"

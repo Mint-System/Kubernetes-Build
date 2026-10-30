@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-remark42
+  labels:
+    app: remark42
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: remark42
+  template:
+    metadata:
+      labels:
+        app: remark42
+    spec:
+      containers:
+        - name: remark42
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+            {{- if .Values.secretName }}
+            - secretRef:
+                name: {{ .Values.secretName }}
+            {{- end }}
+          {{- if .Values.additionalEnvs }}
+          env:
+            {{- range .Values.additionalEnvs }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}
+          ports:
+            - containerPort: 8080
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: app-data
+              mountPath: /srv/var
+      volumes:
+        - name: app-data
+          persistentVolumeClaim:
+            claimName: data-remark42

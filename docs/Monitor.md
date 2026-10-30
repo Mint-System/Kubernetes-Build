@@ -16,5 +16,5 @@ Update the values file with the `remoteWrite.url`.
 Install the chart.
 
 ```bash
-task install-chart prometheus-agent test_values/knd.local.yaml
+task install-chart prometheus-agent test_gitops/knd.local.yaml
 ```

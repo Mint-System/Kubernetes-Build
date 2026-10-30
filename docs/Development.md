@@ -8,7 +8,6 @@ The development environment requires these tools:
 
 - [yq](https://mikefarah.gitbook.io/yq/#install)
 - [helm](https://helm.sh/docs/intro/install/)
-- [helm-sops](https://github.com/camptocamp/helm-sops)
 - [sops](https://getsops.io)
 - [age](https://age-encryption.org//)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
@@ -50,7 +49,7 @@ Setup secrets according to the Odoo chart readme.
 Install the Odoo chart:
 
 ```bash
-task install-chart odoo test_values/knd/odoo.yaml
+task install-chart odoo test_gitops/knd/odoo.yaml
 ```
 
 The Odoo database will be initialized automatically.
@@ -80,7 +79,7 @@ Setup secrets according to the Nextcloud chart readme.
 Install the Nextcloud chart:
 
 ```bash
-task install-chart nextcloud test_values/knd/nextcloud.yaml
+task install-chart nextcloud test_gitops/knd/nextcloud.yaml
 ```
 
 The Odoo database will be initialized automatically.

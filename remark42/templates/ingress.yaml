@@ -1,0 +1,141 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: remark42-ingress
+  annotations:
+    {{- if .Values.ingress.clusterIssuerRef }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
+    {{- end }}
+    {{- if eq .Values.ingress.className "nginx" }}
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    {{- end }}
+spec:
+  ingressClassName: {{.Values.ingress.className }}
+  {{- if .Values.ingress.clusterIssuerRef }}
+  tls:
+    - hosts:
+      - {{.Values.ingress.host }}
+      {{- if .Values.ingress.customDomain }}
+      - {{ .Values.ingress.customDomain }}
+      {{- end }}
+      secretName: remark42-ingress-cert
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: remark42
+            port:
+              number: 8080
+  {{- if .Values.ingress.customDomain }}
+  - host: {{.Values.ingress.customDomain }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: remark42
+            port:
+              number: 8080
+  {{- end }}
+{{- end }}
+{{- if and .Values.ingress.enabled .Values.ingress.redirectFrom .Values.ingress.customDomain }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: remark42-redirect
+spec:
+  redirectRegex:
+    regex: "^https?://[^/]+(.*)"
+    replacement: "https://{{ .Values.ingress.customDomain }}$1"
+    permanent: true
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: remark42-ingress-redirect-domain
+  annotations:
+    {{- if .Values.ingress.clusterIssuerRef }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
+    {{- end }}
+    {{- if eq .Values.ingress.className "traefik" }}
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    {{- end }}
+    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-remark42-redirect@kubernetescrd
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.ingress.clusterIssuerRef }}
+  tls:
+    - hosts:
+      - {{ .Values.ingress.redirectFrom }}
+      secretName: remark42-ingress-cert-redirect-domain
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingress.redirectFrom }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: remark42
+            port:
+              number: 8080
+{{- end }}
+{{- if and .Values.ingress.enabled .Values.ingress.wwwRedirect .Values.ingress.customDomain }}
+{{- $customDomain := .Values.ingress.customDomain }}
+{{- $sourceDomain := $customDomain | trimPrefix "www." }}
+{{- if ne $sourceDomain $customDomain }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: remark42-redirect-www
+spec:
+  redirectRegex:
+    regex: "^https?://[^/]+(.*)"
+    replacement: "https://{{ $customDomain }}$1"
+    permanent: true
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: remark42-ingress-redirect
+  annotations:
+    {{- if .Values.ingress.clusterIssuerRef }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuerRef }}
+    {{- end }}
+    {{- if eq .Values.ingress.className "traefik" }}
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    {{- end }}
+    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-remark42-redirect-www@kubernetescrd
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.ingress.clusterIssuerRef }}
+  tls:
+    - hosts:
+      - {{ $sourceDomain }}
+      secretName: remark42-ingress-cert-redirect
+  {{- end }}
+  rules:
+  - host: {{ $sourceDomain }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: remark42
+            port:
+              number: 8080
+{{- end }}
+{{- end }}

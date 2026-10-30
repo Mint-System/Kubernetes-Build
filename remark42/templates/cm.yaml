@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+  labels:
+    app: remark42
+data:
+  REMARK_URL: {{ .Values.url | quote }}
+  SITE: {{ printf "remark,%s" .Values.site | quote }}
+  AUTH_ANON: {{ .Values.auth.anonymous | quote }}
+  BACKUP_PATH: "/srv/var/backup"
+  AUTH_SAME_SITE: {{ .Values.auth.sameSite | quote }}
+  {{- if eq .Values.auth.emailEnabled "true" }}
+  AUTH_EMAIL_enable: {{ .Values.auth.emailEnabled | quote }}
+  AUTH_EMAIL_FROM: {{ .Values.auth.emailFrom | quote }}
+  {{- end }}
+  {{- if .Values.smtp.host }}
+  SMTP_HOST: {{ .Values.smtp.host | quote }}
+  SMTP_PORT: {{ .Values.smtp.port | quote }}
+  SMTP_USERNAME: {{ .Values.smtp.username | quote }}
+  SMTP_TLS: {{ .Values.smtp.tls | quote }}
+  {{- end }}
+  {{- if .Values.admin.sharedEmail }}
+  ADMIN_SHARED_EMAIL: {{ .Values.admin.sharedEmail | quote }}
+  ADMIN_SHARED_ID: {{ .Values.admin.sharedId | quote }}
+  {{- end }}
+  {{- if .Values.notify.type }}
+  NOTIFY_TYPE: {{ .Values.notify.type | quote }}
+  NOTIFY_EMAIL_FROM: {{ .Values.notify.emailFrom | quote }}
+  NOTIFY_EMAIL_ADMIN: {{ .Values.notify.emailAdmin | quote }}
+  {{- end }}
+  {{- if .Values.auth.custom.name }}
+  AUTH_CUSTOM_NAME: {{ .Values.auth.custom.name | quote }}
+  AUTH_CUSTOM_CID: {{ .Values.auth.custom.cid | quote }}
+  AUTH_CUSTOM_AUTH_URL: {{ .Values.auth.custom.authUrl | quote }}
+  AUTH_CUSTOM_TOKEN_URL: {{ .Values.auth.custom.tokenUrl | quote }}
+  AUTH_CUSTOM_INFO_URL: {{ .Values.auth.custom.infoUrl | quote }}
+  AUTH_CUSTOM_SCOPES: {{ .Values.auth.custom.scopes | quote }}
+  {{- end }}

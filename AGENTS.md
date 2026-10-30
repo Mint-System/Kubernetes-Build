@@ -15,10 +15,10 @@ This section outlines the universal rules and expectations for any LLM agent wor
 ## Project structure
 
 - `task`: The project is managed with this task script.
-- `<name>/`: Every folder except for `test_values` and `values` is a Helm chart.
+- `<name>/`: Every folder except for `test_gitops` and `values` is a Helm chart.
 - `odoo/`: Use this chart as template for other charts.
 - `<name>/README.md` These files are generated with `task docs`.
-- `test_values`: Contains the `values.yaml` to setup the test enviroment.
+- `test_gitops`: Contains the `values.yaml` to setup the test enviroment.
 - `values`: In there are multiple `values.yaml` files of production deployments. There are two kinds `deployment` and `cluster`.
 - `*.tgz`: The packaged Helm chart for publishing.
 - `*.md`: Zensical docs.

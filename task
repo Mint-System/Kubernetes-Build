@@ -59,6 +59,7 @@ help-table() {
     rows+=("test-chart-cluster-issuer||Test cluster issuer.")
     rows+=("test-chart-odoo|[cleanup]|Setup Odoo chart and dependencies.")
     rows+=("test-chart-nextcloud|[cleanup]|Setup Nextcloud chart and dependencies.")
+    rows+=("test-chart-remark42|[cleanup]|Setup Remark42 chart and dependencies.")
 
     for row in "${rows[@]}"; do
         IFS='|' read -r cmd opt desc <<< "$row"
@@ -202,6 +203,8 @@ setup-hosts() {
     # Nextcloud
     grep -qxF '127.0.0.1 nextcloud.local' /etc/hosts || echo '127.0.0.1 nextcloud.local' | sudo tee -a /etc/hosts > /dev/null
     grep -qxF '127.0.0.1 nextcloud.knd.local' /etc/hosts || echo '127.0.0.1 nextcloud.knd.local' | sudo tee -a /etc/hosts > /dev/null
+    # Remark42
+    grep -qxF '127.0.0.1 remark42.knd.local' /etc/hosts || echo '127.0.0.1 remark42.knd.local' | sudo tee -a /etc/hosts > /dev/null
     # Collabora
     grep -qxF '127.0.0.1 doc.nextcloud.knd.local' /etc/hosts || echo '127.0.0.1 doc.nextcloud.knd.local' | sudo tee -a /etc/hosts > /dev/null
     # Removed hugo and vuepress hosts (replaced by taskfile-build)
@@ -215,7 +218,7 @@ test-chart-odoo() {
         start-and-prepare
 
         update-dependencies odoo
-        install-chart odoo test_values/knd/odoo.yaml
+        install-chart odoo test_gitops/knd/odoo.yaml
         kubectl wait --for=condition=Available --timeout=300s deployments/odoo-odoo
     fi
 }
@@ -233,7 +236,23 @@ test-chart-nextcloud() {
         install-chart cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         kubectl create secret generic nextcloud-creds --from-literal=NEXTCLOUD_ADMIN_USER="test" --from-literal=NEXTCLOUD_ADMIN_PASSWORD="test"
-        install-chart nextcloud test_values/knd/nextcloud.yaml
+        install-chart nextcloud test_gitops/knd/nextcloud.yaml
+    fi
+}
+
+test-chart-remark42() {
+    if [[ "$1" = 'cleanup' ]]; then
+        echo 'Cleanup environment'
+        delete-kind
+    else
+        start
+        add-repos
+        info
+        install-chart traefik
+        kubectl wait --namespace traefik --for=condition=Available --timeout=60s deployments/traefik
+        kubectl create secret generic remark42-secrets --from-literal=SECRET="test-secret"
+        install-chart remark42 test_gitops/knd/remark42.yaml
+        kubectl wait --for=condition=Available --timeout=300s deployments/remark42-remark42
     fi
 }
 
@@ -290,15 +309,15 @@ start-and-prepare() {
     info
 
     echo "Install traefik."
-    install-chart traefik
+    install-traefik
     kubectl wait --namespace traefik --for=condition=Available --timeout=60s deployments/traefik
     
     echo "Install the CloudNativePG."
-    install-chart cnpg
+    install-cnpg
     kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
     
     echo "Install k8up."
-    install-chart k8up
+    install-k8up
 
     #FIXME: This does not work in GitHub runner env.
     echo "Load Odoo image."

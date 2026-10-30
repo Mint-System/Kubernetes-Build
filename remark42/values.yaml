@@ -1,0 +1,105 @@
+## @section Ingress parameters
+##
+ingress:
+  ## @param ingress.enabled Enable or disable the ingress
+  enabled: true
+  ## @param ingress.className The class name for the ingress
+  className: ""
+  ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
+  clusterIssuerRef:
+  ## @param ingress.host The host for the ingress
+  host: ""
+  ## @param ingress.customDomain The custom domain for the ingress
+  customDomain: ""
+  ## @param ingress.wwwRedirect Redirect the customDomain without www to the customDomain
+  wwwRedirect: false
+  ## @param ingress.redirectFrom Redirect this domain to the customDomain
+  redirectFrom: ""
+
+## @section Remark42 parameters
+## @param image The image for Remark42
+image: "umputun/remark42:latest"
+## @param imagePullPolicy Pull policy for Remark42 image
+imagePullPolicy: Always
+## @param url The Remark42 URL (REMARK_URL)
+url: ""
+## @param site The Remark42 site id (SITE)
+site: ""
+## @param secretName Name of the secret containing Remark42 secrets
+secretName: ""
+## @param additionalEnvs Additional environment variables to set
+additionalEnvs: {}
+## @param storageClassName Set the storage class
+storageClassName: ""
+## @param storageSize Set the persistent volume claim size
+storageSize: "1Gi"
+
+## @section Auth parameters
+auth:
+  ## @param auth.anonymous Enable anonymous auth (AUTH_ANON)
+  anonymous: "false"
+  ## @param auth.emailEnabled Enable email auth (AUTH_EMAIL_enable)
+  emailEnabled: "false"
+  ## @param auth.emailFrom Email auth from address (AUTH_EMAIL_FROM)
+  emailFrom: ""
+  ## @param auth.sameSite Same site auth (AUTH_SAME_SITE)
+  sameSite: none
+  custom:
+    ## @param auth.custom.name Custom auth name (AUTH_CUSTOM_NAME)
+    name: ""
+    ## @param auth.custom.cid Custom auth client id (AUTH_CUSTOM_CID)
+    cid: ""
+    ## @param auth.custom.authUrl Custom auth url (AUTH_CUSTOM_AUTH_URL)
+    authUrl: ""
+    ## @param auth.custom.tokenUrl Custom auth token url (AUTH_CUSTOM_TOKEN_URL)
+    tokenUrl: ""
+    ## @param auth.custom.infoUrl Custom auth info url (AUTH_CUSTOM_INFO_URL)
+    infoUrl: ""
+    ## @param auth.custom.scopes Custom auth scopes (AUTH_CUSTOM_SCOPES)
+    scopes: ""
+
+## @section SMTP parameters
+smtp:
+  ## @param smtp.host SMTP host (SMTP_HOST)
+  host: ""
+  ## @param smtp.port SMTP port (SMTP_PORT)
+  port: "587"
+  ## @param smtp.username SMTP username (SMTP_USERNAME)
+  username: ""
+  ## @param smtp.tls Enable SMTP TLS (SMTP_TLS)
+  tls: "true"
+
+## @section Admin parameters
+admin:
+  ## @param admin.sharedEmail Admin shared email (ADMIN_SHARED_EMAIL)
+  sharedEmail: ""
+  ## @param admin.sharedId Admin shared id (ADMIN_SHARED_ID)
+  sharedId: ""
+
+## @section Notify parameters
+notify:
+  ## @param notify.type Notify type (NOTIFY_TYPE)
+  type: email
+  ## @param notify.emailFrom Notify email from address (NOTIFY_EMAIL_FROM)
+  emailFrom: ""
+  ## @param notify.emailAdmin Notify email admin (NOTIFY_EMAIL_ADMIN)
+  emailAdmin: "true"
+## @section Resources requests and limits
+resources:
+  ## @param resources.requests.memory Memory request for the container
+  requests:
+    memory: "256Mi"
+    ## @param resources.requests.cpu CPU request for the container
+    cpu: "100m"
+  limits:
+    ## @param resources.limits.memory Memory limit for the container
+    memory: "512Mi"
+
+## @section K8up parameters
+k8up:
+  ## @param k8up.enabled Enable or disable K8up
+  enabled: false
+  ## @param k8up.endpoint S3 endpoint
+  endpoint: ""
+  ## @param k8up.bucket S3 bucket name
+  bucket: ""
