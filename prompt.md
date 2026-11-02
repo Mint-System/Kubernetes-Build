@@ -2,7 +2,7 @@
 title: "Fix ci job"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 action: implement
-state: review
+state: completed
 date_completed: 2026-11-02
 harness: pi
 model: moonshotai/Kimi-K2.6

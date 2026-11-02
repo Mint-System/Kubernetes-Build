@@ -536,7 +536,7 @@ list-kubeconfigs() {
 
         (( ${#name} > max_name )) && max_name=${#name}
         (( ${#file} > max_path )) && max_path=${#file}
-    done < <(grep -rl "^kind: Config$" "$path" 2>/dev/null)
+    done < <(grep -rl "^kind: Config$" --include="*.yaml" --include="*.yml" "$path" 2>/dev/null | grep -v "\.decrypted$")
 
     [[ ${#rows[@]} -eq 0 ]] && {
         echo "No kubeconfig files found."
