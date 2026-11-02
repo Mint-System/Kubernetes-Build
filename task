@@ -145,31 +145,6 @@ help() {
     echo
 }
 
-# Default vars
-
-OC_PROJECT=${OC_PROJECT:="odoo"}
-CONTAINER_REGISTRY=${CONTAINER_REGISTRY:="mintsystem/"}
-CONTAINER_CONFIG="$HOME/.docker/$CONTAINER_REGISTRY"
-
-# Dynamic vars
-
-pass_entry=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
-keepass_entry=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
-
-get-namespace() {
-    kubectl config view --minify -o jsonpath="{..namespace}" 2>/dev/null || echo
-}
-namespace="$(get-namespace)"
-
-get-context() {
-    kubectl config current-context 2>/dev/null
-}
-context_alias="$(get-context)"
-
-get-kubeconfig() {
-    readlink "$HOME/.kube/config" 2>/dev/null || echo 'none'
-}
-
 # Import commands
 
 clone-taskfile(){
@@ -195,6 +170,22 @@ fi
 version() {
     kind version
     helm version
+}
+
+get-namespace() {
+    kubectl config view --minify -o jsonpath="{..namespace}" 2>/dev/null || echo
+}
+
+get-context() {
+    kubectl config current-context 2>/dev/null
+}
+
+get-kubeconfig() {
+    readlink "$HOME/.kube/config" 2>/dev/null || echo 'none'
+}
+
+get-cluster() {
+    kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}' 2>/dev/null
 }
 
 info() {
@@ -592,8 +583,9 @@ switch-kubeconfig() {
     chmod 0644 "$target"
 
     local context_alias
-    context_alias=$(echo "$1" | sed -n 's|.*/\([^/]*\)/\.kube/.*|\1|p')
-    [[ -z "$context_alias" ]] && context_alias="loc"
+    local parent_dir
+    parent_dir=$(dirname "$1")
+    context_alias=$(basename "$(dirname "$parent_dir")")
 
     local cluster_dir
     cluster_dir=$(dirname "$1")
@@ -608,7 +600,7 @@ switch-kubeconfig() {
 
     if [[ -n "$cluster_file" && "$(yq eval '.openshift' "$cluster_file" 2>/dev/null)" == "true" ]]; then
         local server
-        server="$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')"
+        server="$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}')"
         echo "Login to OpenShift cluster"
         oc login --web --server="$server"
     fi
@@ -617,10 +609,6 @@ switch-kubeconfig() {
         echo 'Select namespace'
         select-kubectl-namespace
     fi
-}
-
-get-cluster() {
-    kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}' 2>/dev/null
 }
 
 update-dependencies() {
