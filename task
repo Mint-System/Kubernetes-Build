@@ -46,7 +46,6 @@ help-table() {
     rows+=("list-releases|<path>|List releases.")
     rows+=("get-cluster||Show active cluster.")
     rows+=("===KUBECONFIG===| | ")
-    rows+=("generate-kubconfig|<sa><path>|Generate kubeconfig for service account.")
     rows+=("list-kubeconfigs|<path>|List kubeconfig files.")
     rows+=("switch-kubeconfig|<path>|Switch kubeconfig file.")
     rows+=("get-kubeconfig||Show active kubeconfig.")
@@ -55,7 +54,6 @@ help-table() {
     rows+=("list||List Helm releases.")
     rows+=("get-pods||List all pods.")
     rows+=("get-namespace||Show active namespace.")
-    rows+=("login-oc||Refresh the auth token for OpenShift.")
     rows+=("run-job|[name]|Make a copy of job.")
     rows+=("watch-cluster-memory||Watch memory consumption of pods.")
     rows+=("===HELM===| | ")
@@ -260,43 +258,6 @@ test-chart-remark42() {
         install-chart remark42 test_gitops/knd/default/remark42/values.yaml
         kubectl wait --for=condition=Available --timeout=300s deployments/remark42-remark42
     fi
-}
-
-# Kubeconfig Commands
-
-generate-kubconfig() {
-  if test -z "$1"; then echo '$1 is empty.'; exit; fi
-  if test -z "$2"; then echo '$2 is empty.'; exit; fi
-
-  local name="$1"
-  local kubeconfig_file="$2"
-  local secret_name="${name}-sa-token"
-
-  local server=$(kubectl config view --minify --output 'jsonpath={.clusters[0].cluster.server}')
-  local ca=$(kubectl get secret/$secret_name -o jsonpath='{.data.ca\.crt}')
-  local token=$(kubectl get secret/$secret_name -o jsonpath='{.data.token}' | base64 --decode)
-  local namespace=$(kubectl get secret/$secret_name -o jsonpath='{.data.namespace}' | base64 --decode)
-
-  echo "apiVersion: v1
-kind: Config
-clusters:
-- name: default-cluster
-  cluster:
-    certificate-authority-data: ${ca}
-    server: ${server}
-contexts:
-- name: default-context
-  context:
-    cluster: default-cluster
-    namespace: ${namespace}
-    user: default-user
-current-context: default-context
-users:
-- name: default-user
-  user:
-    token: ${token}" > "$kubeconfig_file"
-
-  echo "Kubeconfig generated for $name at $kubeconfig_file"
 }
 
 # Host Commands
@@ -536,7 +497,7 @@ list-kubeconfigs() {
 
         (( ${#name} > max_name )) && max_name=${#name}
         (( ${#file} > max_path )) && max_path=${#file}
-    done < <(find "$path" -path "*/.kube/config*.yaml" -type f 2>/dev/null | grep -v "\.decrypted$")
+    done < <(find "$path" -path "*/kube/config*.yaml" -type f 2>/dev/null | grep -v "\.decrypted$")
 
     [[ ${#rows[@]} -eq 0 ]] && {
         echo "No kubeconfig files found."
@@ -551,7 +512,7 @@ list-kubeconfigs() {
         "$max_name" "$(printf '%*s' "$max_name" '' | tr ' ' '-')" \
         "$max_path" "$(printf '%*s' "$max_path" '' | tr ' ' '-')"
 
-    printf '%s\n' "${rows[@]}" | sort | while IFS='|' read -r name path; do
+    printf '%s\n' "${rows[@]}" | sort -t'|' -k2 | while IFS='|' read -r name path; do
         printf '| %-*s | %-*s |\n' \
             "$max_name" "$name" \
             "$max_path" "$path"
