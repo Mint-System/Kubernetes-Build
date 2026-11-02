@@ -1,107 +1,124 @@
 ---
-title: "Fix ci job"
+commit_ref:
+title: "Create Helm chart remark42 from Ansible role"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
-action: implement
-state: completed
-date_completed: 2026-11-02
-harness: pi
-model: moonshotai/Kimi-K2.6
-input_tokens: 19588
-output_tokens: 6343
+state: wip
+date_completed: 2026-10-30
+model: glm-5-2
+input_tokens: 1123142
+output_tokens: 11103
 ---
 
-# Fix ci job
+# Create Helm chart remark42 from Ansible role
 
 Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file.
 
 @Clanker when working on this prompt file, make sure to:
 
-- Read the `AGENTS.md` and `README.md` to get an understanding of the project
-- Read entire task section and prepare a list of todos
+- Read context and task section first
+- Prepare a list of todos
 - Update the todo list while working on task
+
+## Context
+
+@Clanker Read the `AGENTS.md` and `README.md` to get an understanding of the project.
 
 ## Task
 
-The current ci job fails:
+### New chart (done)
 
+Have a look at the Ansible role `~/Ansible-Build/roles/remark42`. I want you to create a Helm chart based on this role.
+
+The name of the chart is `remark42` and the title `Mint System Remark42`.
+
+Use `taskfile-build` as a template for the Helm chart.
+
+Add `k8up` backup based on `odoo/templates/backup.yaml`.
+
+### Create deployment (done)
+
+To test the role I want you to create a deployment `values/jvr/comment.janikv.cloud.yaml`.
+
+Prepare the same values as I have for the Ansible role. You find the values in `tmp/comment.janikvonrotz.ch.yaml`.
+
+Use `comment.janikvonrotz.ch` as custom domain.
+
+Do not install this chart. Use the `task generate-manifest` and pipe into `manifest.yaml`. I will then review the manifest.
+
+### Migration (done)
+
+I need to migrate the data from my Docker container (deployed with Ansible) to the new Helm chart deployment.
+
+Provide a guide on how to export/import the data from a remark42 container.
+
+### Testing (done)
+
+I will test the deployment and migration myself. Do not apply or deploy anything.
+
+### Secrets migration
+
+First I want you to add sops filter for `stringData`. Currently I cannot decrypt secrests
+
+```bash
+[main][~/Kubernetes-Build]$ cd gitops
+[main][~/Kubernetes-Build/gitops]$ task cat-with-sops chk/projects/{project}/taskfile-build/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+    name: taskfile-build-config
+type: Opaque
+stringData:
+    gitUrl: ENC[AES256_GCM,data:o3fuHwnMXRw==,type:str]
 ```
 
-Kind cluster is available. Checking for local Docker images...
-Loading local Odoo image into Kind cluster...
-Image: "mintsystem/odoo:19.0.20261015" with ID "sha256:8f7975d52a173316188b66e4a5f6a730ce5d156beda9240d60aea6d295d7b754" not yet present on node "kind-control-plane", loading...
-Hang tight while we grab the latest from your chart repositories...
-...Successfully got an update from the "k8up-io" chart repository
-...Successfully got an update from the "metrics-server" chart repository
-...Successfully got an update from the "cnpg" chart repository
-...Successfully got an update from the "jetstack" chart repository
-...Successfully got an update from the "traefik" chart repository
-...Successfully got an update from the "kubernetes-build" chart repository
-Update Complete. ⎈Happy Helming!⎈
-Saving 2 charts
-Deleting outdated charts
-Install chart odoo as release odoo:
-Error: INSTALLATION FAILED: open test_gitops/knd/odoo.yaml: no such file or directory
-Error: Process completed with exit code 1.
+Then I want you to prepare a `gitops/jvr/projects/janikvonrotz/taskfile-build/secrets.yaml`
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+    name: remark42-secrets
+type: Opaque
+stringData:
+	SECRET: 'your-secret'
+	SMTP_PASSWORD: 'your-smtp-password'
+	AUTH_CUSTOM_CSEC: 'your-custom-secret'
+---
+apiVersion: v1
+kind: Secret
+metadata:
+    name: s3-credentials
+type: Opaque
+stringData:
+	username: 'your-s3-access-key'
+	password: 'your-s3-secret-key'
 ```
 
-I did some renaming of files and structure.
+The remark42 secret values can be retrieved from `tmp/secrets`. The `s3-credentials` credentials are not ready yet.
 
-Instead of `values` the examples should use `gitops`:
+Then I want you to update the `task install-chart` command to check if a `secrets.yaml` in folder of the target `values.yaml` exists.
 
-```
-*[main][~/Kubernetes-Build]$ rg "install-chart"
-task
-34:    rows+=("install-chart|[chart][values]|Install local Helm chart.")
-237:        install-chart odoo test_gitops/knd/odoo.yaml
-255:        install-chart nextcloud test_gitops/knd/nextcloud.yaml
-270:        install-chart remark42 test_gitops/knd/remark42.yaml
-641:install-chart() {
+And if it does, it uses `cat-with-sops` to get the contents. The command then adds the secrets to the manifest that is being applied.
 
-docs/Infomaniak.md
-100:task install-chart odoo values/odoo.chk.mintcloud.ch
+Apply the same changes to `template-manifest`
 
-docs/APPUiO.md
-41:task install-chart odoo values/odoo.axo.mintcloud.ch.yaml
+The command `template-manifest` is missing in `gitops/task`. Copy to `gitops/task` and add to new section "HELM".
 
-docs/Exoscale.md
-89:task install-chart odoo values/odoo.chk.mintcloud.ch
+Ensure the commands are in sync.
 
-docs/Development.md
-52:task install-chart odoo test_gitops/knd/odoo.yaml
-82:task install-chart nextcloud test_gitops/knd/nextcloud.yaml
+### Testing secrets
 
-docs/K3s.md
-42:task install-chart taskfile-build
-
-docs/Monitor.md
-19:task install-chart prometheus-agent test_gitops/knd.local.yaml
-```
-
-Also the paths are different now:
-
-```
-*[main][~/Kubernetes-Build]$ tree test_gitops
-test_gitops
-└── knd
-    ├── default
-    │   ├── nextcloud
-    │   │   └── values.yaml
-    │   ├── odoo
-    │   │   └── values.yaml
-    │   ├── remark42
-    │   │   └── values.yaml
-    │   └── restic
-    │       └── values.yaml
-    └── knd.local.yaml
-```
-
-@Clanker When task is completed set frontmatter state to review. Prompt the author to verify the results.
+I will test the deployment and migration myself. Do not apply or deploy anything.
 
 ## Worklog
 
-- Updated `task` script: changed `test_gitops/knd/odoo.yaml`, `test_gitops/knd/nextcloud.yaml`, and `test_gitops/knd/remark42.yaml` references to new `test_gitops/knd/default/<chart>/values.yaml` paths.
-- Updated `docs/Development.md`, `docs/Monitor.md`, and `docs/Troubleshooting.md` to use the new `test_gitops` paths.
-- Updated `docs/Infomaniak.md`, `docs/APPUiO.md`, `docs/Exoscale.md`, and `docs/K3s.md` to replace `values/` prefix with `gitops/`.
-- Verified that all referenced files exist and `task lint` passes.
+Created the `remark42` Helm chart based on the `taskfile-build` template and the `~/Ansible-Build/roles/remark42` Ansible role.
 
-@Clanker If author confirms results set frontmatter state to completed, otherwise to aborted. Update date, harness and model. If you have access to session info also add token count.
+- `remark42/Chart.yaml`, `remark42/values.yaml` and `remark42/README.md` define the chart titled **Mint System Remark42**.
+- Templates: `deploy.yaml`, `svc.yaml` (port 8081), `pvc.yaml` (`data-remark42`), `cm.yaml` (non-secret env vars mirroring the Ansible role), `ingress.yaml` (port 8081, traefik/nginx support) and `backup.yaml` (K8up backup adapted from `odoo/templates/backup.yaml`).
+- Sensitive values (`SECRET`, `SMTP_PASSWORD`, `AUTH_GITHUB_*`, `AUTH_CUSTOM_CSEC`) are referenced from a manually created secret via `secretName`.
+- Created the deployment values `values/jvr/comment.janikv.cloud.yaml` using `comment.janikvonrotz.ch` as custom domain and `comment.janikv.cloud` as host, mirroring the Ansible role example values.
+- Generated `manifest.yaml` with `task template-manifest remark42 values/jvr/comment.janikv.cloud.yaml` for review. `task lint` passes.
+- Added the chart and a Remark42 migration guide to `zensical.toml` and created `docs/Migrate-Remark42-Docker-to-Kubernetes.md` covering the file-copy migration and the export/import API. The migration docs were split into multiple documents under a `Migration` section.
+
+Note: The referenced `tmp/comment.janikvonrotz.ch.yaml` was not present, so the deployment values were derived from the Ansible role README example. `task docs` could not run automatically (pnpm/zensical tooling not initialized in this environment), so the chart README was written manually following the established `taskfile-build` README format.

@@ -581,6 +581,14 @@ install-chart() {
     if test -z "$1"; then echo '$1 is empty.'; exit; fi
     if test -z "$2"; then echo '$2 is empty.'; exit; fi
     local release_name="$1"
+    local values="$2"
+    local secrets_file
+    secrets_file="$(dirname "$values")/secrets.yaml"
+
+    if [[ -f "$secrets_file" ]] && grep -q "^sops:" "$secrets_file" 2>/dev/null; then
+        echo "Apply secrets from $secrets_file:"
+        sops --decrypt "$secrets_file" | kubectl apply -f -
+    fi
 
     if [[ "$1" = 'cluster-issuer' ]]; then
         "install-$1" "$2"
@@ -762,14 +770,29 @@ template-manifest() {
     if test -z "$1"; then echo '$1 is empty.'; exit; fi
     if test -z "$2"; then echo '$2 is empty.'; exit; fi
     local release_name="$1"
+    local values="$2"
+    local secrets_file
+    secrets_file="$(dirname "$values")/secrets.yaml"
 
     if [[ "$1" = 'cluster-issuer' ]]; then
-        helm --debug template "$release_name" cluster-issuer \
-            --namespace cert-manager \
-            --values "$2" > manifest.yaml
+        if [[ -f "$secrets_file" ]] && grep -q "^sops:" "$secrets_file" 2>/dev/null; then
+            sops --decrypt "$secrets_file" > manifest.yaml
+            echo "---" >> manifest.yaml
+            helm --debug template "$release_name" cluster-issuer \
+                --namespace cert-manager \
+                --values "$values" >> manifest.yaml
+        else
+            helm --debug template "$release_name" cluster-issuer \
+                --namespace cert-manager \
+                --values "$values" > manifest.yaml
+        fi
     elif list-charts | grep -q "$1"; then
+        if [[ -f "$secrets_file" ]] && grep -q "^sops:" "$secrets_file" 2>/dev/null; then
+            sops --decrypt "$secrets_file"
+            echo "---"
+        fi
         helm --debug template "$release_name" "$1" \
-            --values "$2"
+            --values "$values"
     fi
 }
 
