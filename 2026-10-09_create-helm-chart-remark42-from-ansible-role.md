@@ -25,7 +25,7 @@ Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file
 
 ## Task
 
-### New chart
+### New chart (done)
 
 Have a look at the Ansible role `~/Ansible-Build/roles/remark42`. I want you to create a Helm chart based on this role.
 
@@ -35,7 +35,7 @@ Use `taskfile-build` as a template for the Helm chart.
 
 Add `k8up` backup based on `odoo/templates/backup.yaml`.
 
-### Create deployment
+### Create deployment (done)
 
 To test the role I want you to create a deployment `values/jvr/comment.janikv.cloud.yaml`.
 
@@ -45,13 +45,68 @@ Use `comment.janikvonrotz.ch` as custom domain.
 
 Do not install this chart. Use the `task generate-manifest` and pipe into `manifest.yaml`. I will then review the manifest.
 
-### Migration
+### Migration (done)
 
 I need to migrate the data from my Docker container (deployed with Ansible) to the new Helm chart deployment.
 
 Provide a guide on how to export/import the data from a remark42 container.
 
-### Testing
+### Testing (done)
+
+I will test the deployment and migration myself. Do not apply or deploy anything.
+
+### Secrets migration
+
+First I want you to add sops filter for `stringData`. Currently I cannot decrypt secrests
+
+```bash
+[main][~/Kubernetes-Build]$ cd gitops
+[main][~/Kubernetes-Build/gitops]$ task cat-with-sops chk/projects/{project}/taskfile-build/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+    name: taskfile-build-config
+type: Opaque
+stringData:
+    gitUrl: ENC[AES256_GCM,data:o3fuHwnMXRw==,type:str]
+```
+
+Then I want you to prepare a `gitops/jvr/projects/janikvonrotz/taskfile-build/secrets.yaml`
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+    name: remark42-secrets
+type: Opaque
+stringData:
+	SECRET: 'your-secret'
+	SMTP_PASSWORD: 'your-smtp-password'
+	AUTH_CUSTOM_CSEC: 'your-custom-secret'
+---
+apiVersion: v1
+kind: Secret
+metadata:
+    name: s3-credentials
+type: Opaque
+stringData:
+	username: 'your-s3-access-key'
+	password: 'your-s3-secret-key'
+```
+
+The remark42 secret values can be retrieved from `tmp/secrets`. The `s3-credentials` credentials are not ready yet.
+
+Then I want you to update the `task install-chart` command to check if a `secrets.yaml` in folder of the target `values.yaml` exists.
+
+And if it does, it uses `cat-with-sops` to get the contents. The command then adds the secrets to the manifest that is being applied.
+
+Apply the same changes to `template-manifest`
+
+The command `template-manifest` is missing in `gitops/task`. Copy to `gitops/task` and add to new section "HELM".
+
+Ensure the commands are in sync.
+
+### Testing secrets
 
 I will test the deployment and migration myself. Do not apply or deploy anything.
 
