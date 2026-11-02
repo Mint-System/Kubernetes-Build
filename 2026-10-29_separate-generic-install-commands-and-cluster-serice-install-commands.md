@@ -1,5 +1,5 @@
 ---
-commit_ref: 2525821c5431893fa2ba44964a263cfac0b80b7a
+commit_ref: 6099225f93f765743f624790374c3084217143a4
 title: "separate generic install commands and cluster serice install commands"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 action: implement
