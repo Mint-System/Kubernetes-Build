@@ -1,49 +1,107 @@
 ---
-commit_ref:
-title: "separate generic install commands and cluster serice install commands"
+title: "Fix ci job"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 action: implement
-state: completed
-date_completed: 2026-10-30
+state: review
+date_completed: 2026-11-02
 harness: pi
-model: glm-5-2
-input_tokens: 20212
-output_tokens: 6122
+model: moonshotai/Kimi-K2.6
+input_tokens: 19588
+output_tokens: 6343
 ---
 
-# separate generic install commands and cluster serice install commands
+# Fix ci job
 
 Note: @Clanker refers to the "ai agent" (you) who is working on this prompt file.
 
 @Clanker when working on this prompt file, make sure to:
 
-- Read context and task section first
-- Prepare a list of todos
+- Read the `AGENTS.md` and `README.md` to get an understanding of the project
+- Read entire task section and prepare a list of todos
 - Update the todo list while working on task
-
-## Context
-
-@Clanker Read the `AGENTS.md` and `README.md` to get an understanding of the project.
 
 ## Task
 
-Cluster services such as `cnpg` are installed with `install-chart cnpg` which then falls back to `install-cnpg`.
+The current ci job fails:
 
-I want `install-chart` to work for `list-charts` only. And the `list-external-charts` have to be installed with epxlicit command.
+```
 
-Update the guides in `docs` to use the explicity command.
+Kind cluster is available. Checking for local Docker images...
+Loading local Odoo image into Kind cluster...
+Image: "mintsystem/odoo:19.0.20261015" with ID "sha256:8f7975d52a173316188b66e4a5f6a730ce5d156beda9240d60aea6d295d7b754" not yet present on node "kind-control-plane", loading...
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "k8up-io" chart repository
+...Successfully got an update from the "metrics-server" chart repository
+...Successfully got an update from the "cnpg" chart repository
+...Successfully got an update from the "jetstack" chart repository
+...Successfully got an update from the "traefik" chart repository
+...Successfully got an update from the "kubernetes-build" chart repository
+Update Complete. ⎈Happy Helming!⎈
+Saving 2 charts
+Deleting outdated charts
+Install chart odoo as release odoo:
+Error: INSTALLATION FAILED: open test_gitops/knd/odoo.yaml: no such file or directory
+Error: Process completed with exit code 1.
+```
 
-Create a help entry for these commands in a new "Bootstrap" section.
+I did some renaming of files and structure.
+
+Instead of `values` the examples should use `gitops`:
+
+```
+*[main][~/Kubernetes-Build]$ rg "install-chart"
+task
+34:    rows+=("install-chart|[chart][values]|Install local Helm chart.")
+237:        install-chart odoo test_gitops/knd/odoo.yaml
+255:        install-chart nextcloud test_gitops/knd/nextcloud.yaml
+270:        install-chart remark42 test_gitops/knd/remark42.yaml
+641:install-chart() {
+
+docs/Infomaniak.md
+100:task install-chart odoo values/odoo.chk.mintcloud.ch
+
+docs/APPUiO.md
+41:task install-chart odoo values/odoo.axo.mintcloud.ch.yaml
+
+docs/Exoscale.md
+89:task install-chart odoo values/odoo.chk.mintcloud.ch
+
+docs/Development.md
+52:task install-chart odoo test_gitops/knd/odoo.yaml
+82:task install-chart nextcloud test_gitops/knd/nextcloud.yaml
+
+docs/K3s.md
+42:task install-chart taskfile-build
+
+docs/Monitor.md
+19:task install-chart prometheus-agent test_gitops/knd.local.yaml
+```
+
+Also the paths are different now:
+
+```
+*[main][~/Kubernetes-Build]$ tree test_gitops
+test_gitops
+└── knd
+    ├── default
+    │   ├── nextcloud
+    │   │   └── values.yaml
+    │   ├── odoo
+    │   │   └── values.yaml
+    │   ├── remark42
+    │   │   └── values.yaml
+    │   └── restic
+    │       └── values.yaml
+    └── knd.local.yaml
+```
 
 @Clanker When task is completed set frontmatter state to review. Prompt the author to verify the results.
 
 ## Worklog
 
-- Restricted `install-chart` in `task` to local charts only (`list-charts`) plus the `cluster-issuer` special case. External charts now error out with a hint to use the explicit bootstrap command.
-- Added a new `===BOOTSTRAP===` section to the `task` help-table listing the explicit install commands: `install-cert-manager`, `install-cluster-issuer`, `install-cnpg`, `install-k8up`, `install-metrics-server`, `install-traefik`. Updated the `install-chart` description to "Install local Helm chart."
-- Updated internal `test-chart-nextcloud` and `test-chart-remark42` functions to call the explicit `install-traefik`/`install-cnpg` commands instead of `install-chart`.
-- Updated docs `Exoscale.md`, `Infomaniak.md` and `K3s.md` to use the explicit bootstrap commands for external charts. Local charts (odoo, nextcloud, prometheus-agent, taskfile-build) keep using `install-chart`.
-- Validated with `task lint` (passes) and `task help` (Bootstrap section renders correctly). `task docs` could not run (pnpm not installed) but no chart READMEs were affected.
-- End-to-end verified by installing the odoo chart manually: `task start`, `task add-repos`, `task install-traefik`, `task install-cnpg`, `task update-dependencies odoo`, `task install-chart odoo test_gitops/knd/odoo.yaml` — all pods (2x odoo-odoo replicas, 1x staging, postgres) reached Running state.
+- Updated `task` script: changed `test_gitops/knd/odoo.yaml`, `test_gitops/knd/nextcloud.yaml`, and `test_gitops/knd/remark42.yaml` references to new `test_gitops/knd/default/<chart>/values.yaml` paths.
+- Updated `docs/Development.md`, `docs/Monitor.md`, and `docs/Troubleshooting.md` to use the new `test_gitops` paths.
+- Updated `docs/Infomaniak.md`, `docs/APPUiO.md`, `docs/Exoscale.md`, and `docs/K3s.md` to replace `values/` prefix with `gitops/`.
+- Verified that all referenced files exist and `task lint` passes.
 
 @Clanker If author confirms results set frontmatter state to completed, otherwise to aborted. Update date, harness and model. If you have access to session info also add token count.

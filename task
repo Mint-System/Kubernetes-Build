@@ -41,7 +41,6 @@ help-table() {
     rows+=("install-k8up||Install k8up backup operator.")
     rows+=("install-metrics-server|[values]|Install metrics-server.")
     rows+=("install-traefik||Install traefik ingress controller.")
-
     rows+=("===GITOPS===| | ")
     rows+=("list-clusters|<path>|List clusters.")
     rows+=("list-releases|<path>|List releases.")
@@ -53,8 +52,6 @@ help-table() {
     rows+=("get-kubeconfig||Show active kubeconfig.")
     rows+=("===KUBECTL===| | ")
     rows+=("reveal-secrets|<name>|Show base64 decoded secret content.")
-
-
     rows+=("list||List Helm releases.")
     rows+=("get-pods||List all pods.")
     rows+=("get-namespace||Show active namespace.")
@@ -165,8 +162,7 @@ get-namespace() {
 namespace="$(get-namespace)"
 
 get-context() {
-    local alias="$(basename "$(readlink "$HOME/.kube/config" 2>/dev/null)" 2>/dev/null | cut -d '.' -f 2)"
-    echo "${alias:-loc}"
+    kubectl config current-context 2>/dev/null
 }
 context_alias="$(get-context)"
 
@@ -237,7 +233,7 @@ test-chart-odoo() {
         start-and-prepare
 
         update-dependencies odoo
-        install-chart odoo test_gitops/knd/odoo.yaml
+        install-chart odoo test_gitops/knd/default/odoo/values.yaml
         kubectl wait --for=condition=Available --timeout=300s deployments/odoo-odoo
     fi
 }
@@ -255,7 +251,7 @@ test-chart-nextcloud() {
         install-cnpg
         kubectl wait --namespace cnpg-system --for=condition=Available --timeout=60s deployments/cnpg-cloudnative-pg
         kubectl create secret generic nextcloud-creds --from-literal=NEXTCLOUD_ADMIN_USER="test" --from-literal=NEXTCLOUD_ADMIN_PASSWORD="test"
-        install-chart nextcloud test_gitops/knd/nextcloud.yaml
+        install-chart nextcloud test_gitops/knd/default/nextcloud/values.yaml
     fi
 }
 
@@ -270,7 +266,7 @@ test-chart-remark42() {
         install-traefik
         kubectl wait --namespace traefik --for=condition=Available --timeout=60s deployments/traefik
         kubectl create secret generic remark42-secrets --from-literal=SECRET="test-secret"
-        install-chart remark42 test_gitops/knd/remark42.yaml
+        install-chart remark42 test_gitops/knd/default/remark42/values.yaml
         kubectl wait --for=condition=Available --timeout=300s deployments/remark42-remark42
     fi
 }
@@ -315,11 +311,6 @@ users:
 # Host Commands
 
 start() {
-    if [[ "$context_alias" != "loc" ]]; then
-        echo "Current context alias is '$context_alias' and not 'loc'."
-        exit 1
-    fi
-
     echo 'Start kind.'
     kind create cluster
 }
@@ -554,7 +545,7 @@ list-kubeconfigs() {
 
         (( ${#name} > max_name )) && max_name=${#name}
         (( ${#file} > max_path )) && max_path=${#file}
-    done < <(find "$path" -path "*/.kube/config*.yaml" -type f 2>/dev/null | sort)
+    done < <(grep -rl "^kind: Config$" "$path" 2>/dev/null)
 
     [[ ${#rows[@]} -eq 0 ]] && {
         echo "No kubeconfig files found."
@@ -622,18 +613,14 @@ switch-kubeconfig() {
         oc login --web --server="$server"
     fi
 
-    echo 'Select namespace'
-    select-kubectl-namespace
+    if kubectl config current-context >/dev/null 2>&1; then
+        echo 'Select namespace'
+        select-kubectl-namespace
+    fi
 }
 
 get-cluster() {
-    local target
-    target="$(readlink "$HOME/.kube/config" 2>/dev/null)"
-    if [[ -n "$target" ]]; then
-        basename "$(dirname "$(dirname "$target")")" 2>/dev/null
-    else
-        echo 'loc'
-    fi
+    kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}' 2>/dev/null
 }
 
 update-dependencies() {

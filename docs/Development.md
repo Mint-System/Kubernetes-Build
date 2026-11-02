@@ -32,6 +32,15 @@ Setup the local hostnames.
 task setup-hosts
 ```
 
+## Setup local kubeconfig
+
+For local development prepare a kubeconfig file and set the context.
+
+```bash
+touch tmp/kind.yaml
+task switch-kubeconfig tmp/kind.yaml
+```
+
 ## Start and prepare Kubernetes cluster
 
 The following command will start the kind cluster and install the base charts.
@@ -49,7 +58,7 @@ Setup secrets according to the Odoo chart readme.
 Install the Odoo chart:
 
 ```bash
-task install-chart odoo test_gitops/knd/odoo.yaml
+task install-chart odoo test_gitops/knd/default/odoo/values.yaml
 ```
 
 The Odoo database will be initialized automatically.
@@ -79,7 +88,7 @@ Setup secrets according to the Nextcloud chart readme.
 Install the Nextcloud chart:
 
 ```bash
-task install-chart nextcloud test_gitops/knd/nextcloud.yaml
+task install-chart nextcloud test_gitops/knd/default/nextcloud/values.yaml
 ```
 
 The Odoo database will be initialized automatically.

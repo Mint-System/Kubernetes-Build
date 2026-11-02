@@ -38,5 +38,5 @@ cd gitops
 Install the Helm release.
 
 ```bash
-task install-chart odoo values/odoo.axo.mintcloud.ch.yaml
+task install-chart odoo gitops/odoo.axo.mintcloud.ch.yaml
 ```

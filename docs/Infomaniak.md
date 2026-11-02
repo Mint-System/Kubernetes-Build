@@ -50,7 +50,7 @@ task install-traefik
 Install the metrics server.
 
 ```bash
-task install-metrics-server values/chk.mintcloud.ch.yaml
+task install-metrics-server gitops/chk.mintcloud.ch.yaml
 ```
 
 ## Setup cert manager
@@ -68,7 +68,7 @@ Setup the secret according to [cluster-issuer > Secrets](cluster-issuer/README.m
 Install cluster issuer.
 
 ```bash
-task install-cluster-issuer values/chk.mintcloud.ch.yaml
+task install-cluster-issuer gitops/chk.mintcloud.ch.yaml
 ```
 
 ## Setup k8up
@@ -97,7 +97,7 @@ select-kubectl-namespace
 Install the Odoo chart.
 
 ```bash
-task install-chart odoo values/odoo.chk.mintcloud.ch
+task install-chart odoo gitops/odoo.chk.mintcloud.ch
 ```
 
 ## Troubleshooting

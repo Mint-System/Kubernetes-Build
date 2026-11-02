@@ -57,7 +57,7 @@ Setup the secret according to [cluster-issuer > Secrets](cluster-issuer/README.m
 Install cluster issuer.
 
 ```bash
-task install-cluster-issuer values/exo.mintcloud.ch.yaml
+task install-cluster-issuer gitops/exo.mintcloud.ch.yaml
 ```
 
 ## Setup k8up
@@ -86,5 +86,5 @@ select-kubectl-namespace
 Install the Odoo chart.
 
 ```bash
-task install-chart odoo values/odoo.chk.mintcloud.ch
+task install-chart odoo gitops/odoo.chk.mintcloud.ch
 ```

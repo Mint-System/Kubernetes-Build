@@ -4,6 +4,7 @@ tmp
 # dotenv
 .env
 
+
 # Zensical
 .venv
 site
@@ -11,6 +12,10 @@ site
 # Python
 .venv
 __pycache__
+
+# pnpm
+node_modules
+pnpm-workspace.yaml
 
 # Obsidian
 .obsidian/workspace.json
