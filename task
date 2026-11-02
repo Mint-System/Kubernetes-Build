@@ -275,7 +275,7 @@ generate-kubconfig() {
 
   local name="$1"
   local cluster=$(get-cluster)
-  local kubeconfig_file="values/.kube/config.${cluster}-${name}"
+  local kubeconfig_file="gitops/.kube/config.${cluster}-${name}"
   local secret_name="${name}-sa-token"
 
   local server=$(kubectl config view --minify --output 'jsonpath={.clusters[0].cluster.server}')
@@ -423,7 +423,7 @@ list-cluster() {
     local -a rows
     local max_name=4 max_alias=5 max_base=4
 
-    for file in $(grep -l "^kind: cluster$" values/*.yaml 2>/dev/null); do
+    for file in $(grep -l "^kind: cluster$" gitops/*.yaml 2>/dev/null); do
         local name=$(yq eval '.name' "$file" 2>/dev/null)
         local alias=$(yq eval '.alias' "$file" 2>/dev/null)
         local base=$(basename "$file" .yaml)
@@ -464,7 +464,7 @@ list-deployment() {
     local -a rows
     local max_namespace=9 max_cluster=7 max_chart=5
 
-    for file in $(grep -l "^kind: deployment$" values/*.yaml 2>/dev/null); do
+    for file in $(grep -l "^kind: deployment$" gitops/*.yaml 2>/dev/null); do
         local base=$(basename "$file" .yaml)
         local namespace="${base%%.*}"
         local cluster="${base#*.}"
@@ -505,7 +505,7 @@ list-context() {
     local -a rows
     local max_name=4 max_path=4
 
-    for file in values/.kube/config.*; do
+    for file in gitops/.kube/config.*; do
         [[ ! -f "$file" ]] && continue
         local name=$(basename "$file" | sed 's/^config\.//')
         
@@ -516,7 +516,7 @@ list-context() {
     done
 
     [[ ${#rows[@]} -eq 0 ]] && {
-        echo "No context files found in values/.kube/config.*"
+        echo "No context files found in gitops/.kube/config.*"
         return
     }
 
@@ -539,7 +539,7 @@ switch-context() {
     if test -z "$1"; then echo '\$1 is empty.'; exit; fi
     mkdir -p "$HOME/.kube"
     local link_name="$HOME/.kube/config"
-    local target="$PWD/values/.kube/config.$1"
+    local target="$PWD/gitops/.kube/config.$1"
 
     if [[ ! -f "$target" ]]; then
         echo "Error: Target config file '$target' does not exist." >&2
@@ -556,7 +556,7 @@ switch-context() {
 
     local context_alias="${1%%-*}"
     local cluster_file=""
-    for file in values/*.yaml; do
+    for file in gitops/*.yaml; do
         if [[ "$(yq eval '.kind' "$file" 2>/dev/null)" == "cluster" && "$(yq eval '.alias' "$file" 2>/dev/null)" == "$context_alias" ]]; then
             cluster_file="$file"
             break
@@ -589,9 +589,9 @@ install-chart() {
 
     local values_file="$2"
     local expected_namespace=""
-    if [[ "$values_file" =~ ^values/[^/]+/[^/]+\.yaml$ ]]; then
+    if [[ "$values_file" =~ ^gitops/[^/]+/[^/]+\.yaml$ ]]; then
         expected_namespace="$(basename "$values_file" .yaml)"
-    elif [[ "$values_file" =~ ^values/[^/]+/[^/]+/.+\.yaml$ ]]; then
+    elif [[ "$values_file" =~ ^gitops/[^/]+/[^/]+/.+\.yaml$ ]]; then
         expected_namespace="$(echo "$values_file" | cut -d '/' -f3)"
     fi
     if [[ -n "$expected_namespace" && "$namespace" != "$expected_namespace" ]]; then
@@ -682,9 +682,9 @@ upgrade-release() {
 
     local values_file="$2"
     local expected_namespace=""
-    if [[ "$values_file" =~ ^values/[^/]+/[^/]+\.yaml$ ]]; then
+    if [[ "$values_file" =~ ^gitops/[^/]+/[^/]+\.yaml$ ]]; then
         expected_namespace="$(basename "$values_file" .yaml)"
-    elif [[ "$values_file" =~ ^values/[^/]+/[^/]+/.+\.yaml$ ]]; then
+    elif [[ "$values_file" =~ ^gitops/[^/]+/[^/]+/.+\.yaml$ ]]; then
         expected_namespace="$(echo "$values_file" | cut -d '/' -f3)"
     fi
     if [[ -n "$expected_namespace" && "$namespace" != "$expected_namespace" ]]; then
