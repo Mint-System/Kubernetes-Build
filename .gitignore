@@ -1,11 +1,22 @@
-node_modules
-site
+# Taskfile
 tmp
-manifest.*
+
+# dotenv
+.env
+
+# Zensical
+.venv
+site
+
+# Python
+.venv
+__pycache__
+
+# Obsidian
 .obsidian/workspace.json
+
+# Project
+manifest.*
 odoo/charts
 prometheus-agent/charts
-.env
-values
-*.kubeconfig
-pnpm-workspace.yaml
+gitops
