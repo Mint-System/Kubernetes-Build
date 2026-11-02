@@ -1,5 +1,3 @@
-kind: deployment
-chart: remark42
 ingress:
   host: remark42.knd.local
 image: "umputun/remark42:v1.16.4"

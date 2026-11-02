@@ -41,17 +41,20 @@ help-table() {
     rows+=("install-k8up||Install k8up backup operator.")
     rows+=("install-metrics-server|[values]|Install metrics-server.")
     rows+=("install-traefik||Install traefik ingress controller.")
-    rows+=("===KUBECTL===| | ")
-    rows+=("generate-kubconfig|[name]|Generate kubeconfig for deployment-updater.")
-    rows+=("list-cluster||List clusters.")
-    rows+=("list-deployment||List deployments.")
-    rows+=("list-context||List kubeconfig files.")
-    rows+=("switch-context||Switch kubeconfig file.")
-    rows+=("get-context||Show active kubeconfig.")
+
+    rows+=("===GITOPS===| | ")
+    rows+=("list-clusters|<path>|List clusters.")
+    rows+=("list-releases|<path>|List releases.")
     rows+=("get-cluster||Show active cluster.")
-    rows+=("show-secrets|[chart]|Show secrets for chart.")
-    rows+=("exec-bash|[chart]|Open bash shell in container.")
-    rows+=("logs|[grep]|Select pods with grep and show logs.")
+    rows+=("===KUBECONFIG===| | ")
+    rows+=("generate-kubconfig|<sa><path>|Generate kubeconfig for service account.")
+    rows+=("list-kubeconfigs|<path>|List kubeconfig files.")
+    rows+=("switch-kubeconfig|<path>|Switch kubeconfig file.")
+    rows+=("get-kubeconfig||Show active kubeconfig.")
+    rows+=("===KUBECTL===| | ")
+    rows+=("reveal-secrets|<name>|Show base64 decoded secret content.")
+
+
     rows+=("list||List Helm releases.")
     rows+=("get-pods||List all pods.")
     rows+=("get-namespace||Show active namespace.")
@@ -157,9 +160,7 @@ pass_entry=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
 keepass_entry=$(echo "env/${PWD##*/}" | tr '[:upper:]' '[:lower:]')
 
 get-namespace() {
-    if kubectl-ctx &> /dev/null; then
-        echo $(kubectl-ns -c 2> /dev/null)
-    fi
+    kubectl config view --minify -o jsonpath="{..namespace}" 2>/dev/null || echo
 }
 namespace="$(get-namespace)"
 
@@ -168,6 +169,10 @@ get-context() {
     echo "${alias:-loc}"
 }
 context_alias="$(get-context)"
+
+get-kubeconfig() {
+    readlink "$HOME/.kube/config" 2>/dev/null || echo 'none'
+}
 
 # Import commands
 
@@ -270,12 +275,14 @@ test-chart-remark42() {
     fi
 }
 
+# Kubeconfig Commands
+
 generate-kubconfig() {
-  if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+  if test -z "$1"; then echo '$1 is empty.'; exit; fi
+  if test -z "$2"; then echo '$2 is empty.'; exit; fi
 
   local name="$1"
-  local cluster=$(get-cluster)
-  local kubeconfig_file="gitops/.kube/config.${cluster}-${name}"
+  local kubeconfig_file="$2"
   local secret_name="${name}-sa-token"
 
   local server=$(kubectl config view --minify --output 'jsonpath={.clusters[0].cluster.server}')
@@ -340,7 +347,7 @@ start-and-prepare() {
 }
 
 load-image() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+    if test -z "$1"; then echo '$1 is empty.'; exit; fi
 
     if kind &> /dev/null && kind get clusters | grep -q 'kind'; then
         echo 'Kind cluster is available. Checking for local Docker images...'
@@ -358,7 +365,7 @@ delete-kind() {
 }
 
 forward() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+    if test -z "$1"; then echo '$1 is empty.'; exit; fi
     "forward-$1"
 }
 
@@ -419,13 +426,18 @@ list-external-charts() {
     echo 'traefik'
 }
 
-list-cluster() {
+# GitOps Commands
+
+list-clusters() {
+    if test -z "$1"; then echo '$1/path is empty.'; exit; fi
+    local path="$1"
     local -a rows
     local max_name=4 max_alias=5 max_base=4
 
-    for file in $(grep -l "^kind: cluster$" gitops/*.yaml 2>/dev/null); do
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
         local name=$(yq eval '.name' "$file" 2>/dev/null)
-        local alias=$(yq eval '.alias' "$file" 2>/dev/null)
+        local alias=$(basename "$(dirname "$file")")
         local base=$(basename "$file" .yaml)
         [[ -z "$name" ]] && name="(not set)"
         [[ -z "$alias" ]] && alias="(not set)"
@@ -435,7 +447,7 @@ list-cluster() {
         (( ${#name} > max_name )) && max_name=${#name}
         (( ${#alias} > max_alias )) && max_alias=${#alias}
         (( ${#base} > max_base )) && max_base=${#base}
-    done
+    done < <(grep -rl "^kind: Cluster$" "$path" 2>/dev/null)
 
     [[ ${#rows[@]} -eq 0 ]] && {
         echo "No cluster files found."
@@ -460,26 +472,52 @@ list-cluster() {
     done
 }
 
-list-deployment() {
+list-releases() {
+    if test -z "$1"; then echo '$1/path is empty.'; exit; fi
+    local path="$1"
     local -a rows
     local max_namespace=9 max_cluster=7 max_chart=5
 
-    for file in $(grep -l "^kind: deployment$" gitops/*.yaml 2>/dev/null); do
-        local base=$(basename "$file" .yaml)
-        local namespace="${base%%.*}"
-        local cluster="${base#*.}"
-        local chart=$(yq eval '.chart' "$file" 2>/dev/null)
-        [[ "${chart}" == "null" ]] && chart=""
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        local dir_path
+        dir_path=$(dirname "$file")
+        local parent
+        parent=$(basename "$(dirname "$dir_path")")
+        local cluster
+        local rel_path="${dir_path#./}"
+        rel_path="${rel_path%/}"
+        if [[ "$rel_path" == "$path/"* ]]; then
+            cluster=$(echo "${rel_path#$path/}" | cut -d'/' -f1)
+        else
+            cluster=$(echo "$rel_path" | cut -d'/' -f1)
+        fi
+        [[ -z "$cluster" ]] && cluster="(unknown)"
+
+        local namespace
+        local chart
+        if [[ "$parent" == "projects" ]]; then
+            namespace=$(basename "$dir_path")
+            chart=$(yq eval '.chart' "$file" 2>/dev/null)
+            [[ "${chart}" == "null" || -z "$chart" ]] && chart=$(basename "$dir_path")
+        elif [[ "$parent" == "base" ]]; then
+            namespace=$(basename "$dir_path")
+            chart=$(basename "$dir_path")
+        else
+            namespace=$(basename "$dir_path")
+            chart=$(yq eval '.chart' "$file" 2>/dev/null)
+            [[ "${chart}" == "null" || -z "$chart" ]] && chart=$(basename "$dir_path")
+        fi
 
         rows+=("$namespace|$cluster|$chart")
 
         (( ${#namespace} > max_namespace )) && max_namespace=${#namespace}
         (( ${#cluster} > max_cluster )) && max_cluster=${#cluster}
         (( ${#chart} > max_chart )) && max_chart=${#chart}
-    done
+    done < <(grep -rl "^kind: Release$" "$path" 2>/dev/null)
 
     [[ ${#rows[@]} -eq 0 ]] && {
-        echo "No deployment files found."
+        echo "No release files found."
         return
     }
 
@@ -501,22 +539,25 @@ list-deployment() {
     done
 }
 
-list-context() {
+list-kubeconfigs() {
+    if test -z "$1"; then echo '$1/path is empty.'; exit; fi
+    local path="$1"
     local -a rows
     local max_name=4 max_path=4
 
-    for file in gitops/.kube/config.*; do
-        [[ ! -f "$file" ]] && continue
-        local name=$(basename "$file" | sed 's/^config\.//')
+    while IFS= read -r file; do
+        [[ -z "$file" ]] && continue
+        local name
+        name=$(basename "$file")
         
         rows+=("$name|$file")
 
         (( ${#name} > max_name )) && max_name=${#name}
         (( ${#file} > max_path )) && max_path=${#file}
-    done
+    done < <(find "$path" -path "*/.kube/config*.yaml" -type f 2>/dev/null | sort)
 
     [[ ${#rows[@]} -eq 0 ]] && {
-        echo "No context files found in gitops/.kube/config.*"
+        echo "No kubeconfig files found."
         return
     }
 
@@ -535,29 +576,40 @@ list-context() {
     done
 }
 
-switch-context() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
-    mkdir -p "$HOME/.kube"
-    local link_name="$HOME/.kube/config"
-    local target="$PWD/gitops/.kube/config.$1"
+switch-kubeconfig() {
+    if test -z "$1"; then echo '$1/path is empty.'; exit; fi
+    local target="$1"
 
     if [[ ! -f "$target" ]]; then
         echo "Error: Target config file '$target' does not exist." >&2
         return 1
     fi
 
-    echo "Remove $link_name"
-    rm "$link_name" || true
+    if grep -q "^sops:" "$target" 2>/dev/null; then
+        decrypt-with-sops "$target" "decrypted"
+        target="${target}.decrypted"
+    fi
+
+    mkdir -p "$HOME/.kube"
+    echo "Remove $HOME/.kube/config"
+    rm -f "$HOME/.kube/config" || true
     
-    echo "Setup symlink from $link_name to $target"
+    echo "Setup symlink from $HOME/.kube/config to $target"
     touch "$target"
-    ln -s "$target" "$link_name"
+    target="$(realpath "$target")"
+    ln -s "$target" "$HOME/.kube/config"
     chmod 0644 "$target"
 
-    local context_alias="${1%%-*}"
+    local context_alias
+    context_alias=$(echo "$1" | sed -n 's|.*/\([^/]*\)/\.kube/.*|\1|p')
+    [[ -z "$context_alias" ]] && context_alias="loc"
+
+    local cluster_dir
+    cluster_dir=$(dirname "$1")
+    cluster_dir=$(dirname "$cluster_dir")
     local cluster_file=""
-    for file in gitops/*.yaml; do
-        if [[ "$(yq eval '.kind' "$file" 2>/dev/null)" == "cluster" && "$(yq eval '.alias' "$file" 2>/dev/null)" == "$context_alias" ]]; then
+    for file in "$cluster_dir"/*.yaml; do
+        if [[ "$(yq eval '.kind' "$file" 2>/dev/null)" == "Cluster" && "$(basename "$(dirname "$file")")" == "$context_alias" ]]; then
             cluster_file="$file"
             break
         fi
@@ -571,38 +623,27 @@ switch-context() {
     fi
 
     echo 'Select namespace'
-    kubectl-ns
+    select-kubectl-namespace
 }
 
 get-cluster() {
-    basename "$(readlink "$HOME/.kube/config")" | cut -d. -f2 | cut -d- -f1 
+    local target
+    target="$(readlink "$HOME/.kube/config" 2>/dev/null)"
+    if [[ -n "$target" ]]; then
+        basename "$(dirname "$(dirname "$target")")" 2>/dev/null
+    else
+        echo 'loc'
+    fi
 }
 
 update-dependencies() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+    if test -z "$1"; then echo '$1 is empty.'; exit; fi
     helm dependency update "$1"
 }
 
 install-chart() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
-    if test -z "$2"; then echo '\$2 is empty.'; exit; fi
-
-    local values_file="$2"
-    local expected_namespace=""
-    if [[ "$values_file" =~ ^gitops/[^/]+/[^/]+\.yaml$ ]]; then
-        expected_namespace="$(basename "$values_file" .yaml)"
-    elif [[ "$values_file" =~ ^gitops/[^/]+/[^/]+/.+\.yaml$ ]]; then
-        expected_namespace="$(echo "$values_file" | cut -d '/' -f3)"
-    fi
-    if [[ -n "$expected_namespace" && "$namespace" != "$expected_namespace" ]]; then
-        echo "Error: Active namespace '$namespace' does not match values file namespace '$expected_namespace'."
-        exit 1
-    fi
-
-    if [[ "$(get-context)" = 'axo' ]]; then
-        echo "Set oc project to $OC_PROJECT."
-        oc project "$OC_PROJECT"
-    fi
+    if test -z "$1"; then echo '$1 is empty.'; exit; fi
+    if test -z "$2"; then echo '$2 is empty.'; exit; fi
     local release_name="$1"
 
     if [[ "$1" = 'cluster-issuer' ]]; then
@@ -677,20 +718,8 @@ install-metrics-server() {
 }
 
 upgrade-release() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
-    if test -z "$2"; then echo '\$2 is empty.'; exit; fi
-
-    local values_file="$2"
-    local expected_namespace=""
-    if [[ "$values_file" =~ ^gitops/[^/]+/[^/]+\.yaml$ ]]; then
-        expected_namespace="$(basename "$values_file" .yaml)"
-    elif [[ "$values_file" =~ ^gitops/[^/]+/[^/]+/.+\.yaml$ ]]; then
-        expected_namespace="$(echo "$values_file" | cut -d '/' -f3)"
-    fi
-    if [[ -n "$expected_namespace" && "$namespace" != "$expected_namespace" ]]; then
-        echo "Error: Active namespace '$namespace' does not match values file namespace '$expected_namespace'."
-        exit 1
-    fi
+    if test -z "$1"; then echo '$1 is empty.'; exit; fi
+    if test -z "$2"; then echo '$2 is empty.'; exit; fi
 
     local release_name="$1"
 
@@ -726,7 +755,7 @@ upgrade-cluster-issuer() {
 }
 
 uninstall-release() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
+    if test -z "$1"; then echo '$1 is empty.'; exit; fi
     local release_name="$1"
 
     echo "Uninstall release $release_name:"
@@ -760,7 +789,7 @@ uninstall-ingress-nginx() {
 }
 
 run-job() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit 1; fi
+    if test -z "$1"; then echo '$1 is empty.'; exit 1; fi
     local job_name="$1"
 
     echo "Run job: $job_name"
@@ -770,44 +799,12 @@ run-job() {
 
 # kubectl Commands
 
-show-secrets() {
-    if test -z "$1"; then echo '\$1/chart is empty.'; exit; fi
+reveal-secrets() {
+    if test -z "$1"; then echo '$1/name is empty.'; exit; fi
 
-    if [[ "$1" = 'postgres' ]]; then
-        echo 'postgres/user:'
-        kubectl get secret postgres -o jsonpath="{.data.user}" | base64 --decode && echo
-        echo 'postgres/password:'
-        kubectl get secret postgres -o jsonpath="{.data.password}" | base64 --decode && echo
-    
-    elif [[ "$1" = 'cluster-issuer' ]]; then
-        echo 'cert-manager/infomaniak-api-credentials:'
-        kubectl get secret -n cert-manager infomaniak-api-credentials -o jsonpath="{.data.access-token}" | base64 --decode && echo
-
-    elif [[ "$1" = 'forgejo-runner' ]]; then
-        echo 'forgejo-runner/forgejoInstanceToken:'
-        kubectl get secret forgejo-runner -o jsonpath="{.data.forgejoInstanceToken}" | base64 --decode && echo
-
-    elif [[ "$1" = 'nextcloud' ]]; then
-        echo 'nextcloud/creds:'
-        kubectl get secret nextcloud-creds -o jsonpath="{.data.nextcloud-username}" | base64 --decode && echo
-        echo 'nextcloud/password:'
-        kubectl get secret nextcloud-creds -o jsonpath="{.data.nextcloud-password}" | base64 --decode && echo
-        echo 'nextcloud-postgresql-app:username:'
-        kubectl get secret nextcloud-postgresql-app -o jsonpath="{.data.username}" | base64 --decode && echo
-        echo 'nextcloud-postgresql-app:password:'
-        kubectl get secret nextcloud-postgresql-app -o jsonpath="{.data.password}" | base64 --decode && echo
-    fi
+    kubectl get secret "$1" -o json | jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'
 }
 
-exec-bash() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
-    kubectl exec -it "$1" -- bash
-}
-
-logs() {
-    local pod_id=$(kubectl get pods -o=name --all-namespaces | grep "$1")
-    kubectl logs "$pod_id"
-}
 
 get-pods() {
     kubectl get pods
@@ -826,8 +823,8 @@ watch-cluster-memory() {
 # Helm Commands
 
 template-manifest() {
-    if test -z "$1"; then echo '\$1 is empty.'; exit; fi
-    if test -z "$2"; then echo '\$2 is empty.'; exit; fi
+    if test -z "$1"; then echo '$1 is empty.'; exit; fi
+    if test -z "$2"; then echo '$2 is empty.'; exit; fi
     local release_name="$1"
 
     if [[ "$1" = 'cluster-issuer' ]]; then

@@ -11,7 +11,8 @@ Download the Kubeconfig file and move it.
 Switch to `exo` cluster.
 
 ```bash
-task switch-context exo-admin
+cd gitops
+./task switch-kubeconfig exo/.kube/config-admin.yaml
 ```
 
 ## Check default storage class name
@@ -79,7 +80,7 @@ Create a namespace for the application.
 
 ```bash
 kubectl create namespace <namespace>
-kubectl-ns <namespace>
+select-kubectl-namespace
 ```
 
 Install the Odoo chart.

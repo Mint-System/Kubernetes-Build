@@ -9,7 +9,8 @@ Setup Kubeconfig with alias `rpi`.
 Switch to `rpi` cluster.
 
 ```bash
-task switch-context rpi-admin
+cd gitops
+./task switch-kubeconfig rpi/.kube/config-admin.yaml
 ```
 
 ## Setup cert manager
@@ -32,7 +33,7 @@ Create a namespace for the application.
 
 ```bash
 kubectl create namespace <namespace>
-kubectl-ns <namespace>
+select-kubectl-namespace
 ```
 
 Install the Hugo chart.

@@ -31,7 +31,8 @@ task add-repos
 Switch to `axo` cluster.
 
 ```bash
-task switch-context axo-admin
+cd gitops
+./task switch-kubeconfig axo/.kube/config-deploy.yaml
 ```
 
 Install the Helm release.

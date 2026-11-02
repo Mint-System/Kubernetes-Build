@@ -18,7 +18,8 @@ kubectl get namespaces
 Switch to `chk` cluster.
 
 ```bash
-task switch-context chk-admin
+cd gitops
+./task switch-kubeconfig chk/.kube/config-admin.yaml
 ```
 
 ## Check default storage class name
@@ -90,7 +91,7 @@ Create a namespace for the application.
 
 ```bash
 kubectl create namespace <namespace>
-kubectl-ns <namespace>
+select-kubectl-namespace
 ```
 
 Install the Odoo chart.

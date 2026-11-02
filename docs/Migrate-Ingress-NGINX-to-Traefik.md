@@ -10,7 +10,7 @@ For a comprehensive, official guide with detailed instructions and troubleshooti
 
 - Kubernetes cluster with ingress-nginx installed
 - kubectl configured to access your cluster
-- kubectl-ns plugin installed
+- fzf installed for namespace selection
 - Access to DNS manager
 
 ## Install Traefik
@@ -58,7 +58,7 @@ You can chose to this before or after updating the DNS entries.
 Switch to namespace with ingress:
 
 ```bash
-kubectl-ns
+select-kubectl-namespace
 ```
 
 Patch the ingress resource:
@@ -118,7 +118,7 @@ curl -I https://app.example.com
 If you deployed a cluster issuer, update the release:
 
 ```bash
-kubectl-ns cert-manager
+kubectl config set-context --current --namespace=cert-manager
 task upgrade-release cluster-issuer $values
 ```
 
@@ -127,6 +127,6 @@ task upgrade-release cluster-issuer $values
 Once you've verified that Traefik is working correctly, you can uninstall ingress-nginx:
 
 ```bash
-kubectl-ns ingress-nginx
+kubectl config set-context --current --namespace=ingress-nginx
 task uninstall-release ingress-nginx
 ```

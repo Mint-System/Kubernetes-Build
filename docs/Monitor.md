@@ -6,7 +6,7 @@ Create a namespace for the application.
 
 ```bash
 kubectl create namespace prometheus
-kubectl-ns prometheus
+select-kubectl-namespace
 ```
 
 Setup the credentials according to the prometheus-agent [README](prometheus-agent/README.md).

@@ -1,5 +1,4 @@
-kind: cluster
+kind: Cluster
 name: Kind
-alias: loc
 remoteWrite:
   url: https://prometheus.mint-system.ch/api/v1/write

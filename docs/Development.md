@@ -57,7 +57,7 @@ The Odoo database will be initialized automatically.
 Select the default namespace.
 
 ```bash
-kubectl-ns default
+select-kubectl-namespace
 ```
 
 Forward the traefik port.
