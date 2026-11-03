@@ -4,37 +4,21 @@ This Helm chart deploys a Remark42 container.
 
 ## Secrets
 
-The chart does not create secrets automatically. Create the following secrets manually before deploying.
-
-### Remark42 secrets
-
-The secret referenced by `secretName` must contain the sensitive environment variables:
-
-| Key                  | Description                                   |
-| -------------------- | --------------------------------------------- |
-| `SECRET`             | Remark42 secret and admin password            |
-| `SMTP_PASSWORD`      | SMTP password                                 |
-| `AUTH_GITHUB_CID`    | GitHub auth client id                         |
-| `AUTH_GITHUB_CSEC`   | GitHub auth client secret                     |
-| `AUTH_CUSTOM_CSEC`   | Custom auth client secret                     |
-
-Create the secret:
+Selected Remark42 features require a `remark42-secrets` secret:
 
 ```bash
 kubectl create secret generic remark42-secrets \
-  --from-literal=SECRET='your-secret' \
-  --from-literal=SMTP_PASSWORD='your-smtp-password' \
-  --from-literal=AUTH_CUSTOM_CSEC='your-custom-secret'
+  --from-literal=SECRET="$secret" \
+  --from-literal=SMTP_PASSWORD="$smtp_password" \
+  --from-literal=AUTH_CUSTOM_CSEC="$auth_custom_csec"
 ```
-
-### Backup secrets
 
 When `k8up.enabled` is `true`, create the `s3-credentials` secret with S3 access keys:
 
 ```bash
 kubectl create secret generic s3-credentials \
-  --from-literal=username='your-s3-access-key' \
-  --from-literal=password='your-s3-secret-key'
+  --from-literal=username="$username" \
+  --from-literal=password="$password"
 ```
 
 ## Parameters

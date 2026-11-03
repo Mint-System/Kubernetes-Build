@@ -4,10 +4,9 @@ This Helm chart deploys Nextcloud with PostgreSQL.
 
 This chart is a wrapper for the official Nextcloud chart: https://github.com/nextcloud/helm/blob/main/charts/nextcloud/README.md#configuration
 
-
 ## Secrets
 
-Setup a `nextcloud-creds` secret with any additional environment variables you want to pass to Nextcloud.
+Setup a `nextcloud-creds` secret with any additional environment variables you want to pass to Nextcloud:
 
 ```bash
 kubectl create secret generic nextcloud-creds \

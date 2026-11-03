@@ -7,9 +7,8 @@ Setup a Forgejo runner to run actions.
 To register the runner set up a `forgejo-runner` secret with the token.
 
 ```bash
-FORGEJO_INSTANCE_TOKEN="*******"
 kubectl create secret generic forgejo-runner \
-    --from-literal=forgejoInstanceToken="$FORGEJO_INSTANCE_TOKEN" \
+    --from-literal=forgejoInstanceToken="$forgejo_instance_token" \
     -n <namespace>
 ```
 

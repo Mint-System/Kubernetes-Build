@@ -4,7 +4,7 @@ This Helm chart deploys Odoo with PostgreSQL.
 
 ## Secrets
 
-Setup a `odoo-creds` secret with GitHub credentials to download private repos.
+Setup a `odoo-creds` secret with GitHub credentials to download private repos:
 
 ```bash
 kubectl create secret generic odoo-creds \

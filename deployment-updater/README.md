@@ -9,40 +9,45 @@ Cluster-wide service account that can update deployments.
 Use this service account to make deployments to Kubernetes. The deployment action requires a kubeconfig. Export the kubeconfig with this command:
 
 ```bash
-task generate-kubconfig deploy
+task generate-kubconfig deploy .github/secrets/kubeconfig.yml
 ```
 
-Setup secret `KUBECONFIG_DEPLOY` with content of the created kubeconfig.
+Encrypt the kubeconfig with sops/age:
 
-Here is an example of a GitHub/Forgejo action:
+```bash
+task encrypt-with-sops .github/secrets/kubeconfig.yml
+```
+
+Setup `SOPS_AGE_KEY` secret in the ci settings and add this GitHub/Forgejo action:
 
 ```yaml
+name: Deploy Docs
 on:
-  push:
-    branches:
-      - "main"
+    push:
+        branches:
+            - 'main'
+        paths:
+            - '*.md'
+            - '.github/workflows/**'
+            - '.github/secrets/**'
 
 jobs:
-  deploy:
-    name: Deploy to Kubernetes
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-
-      - name: Create Kubeconfig for Deployment
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG_DEPLOY }}" > $HOME/.kube/config
-
-      - name: Verify kubectl version
-        run: ./kubectl version --client
-
-      - name: Delete existing pods
-        run: ./kubectl delete pods -l app=taskfile-build -n ansible-build
-
-      - name: Wait for pod to be running
-        run: ./kubectl wait --for=condition=Ready pod -l app=taskfile-build -n ansible-build --timeout=60s
+    deploy-docs:
+        name: Deploy Docs
+        runs-on: ubuntu-latest
+        container: mintsystem/taskfile.build:latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Decrypt kubeconfig
+              env:
+                  SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+              run: |
+                  mkdir -p $HOME/.kube
+                  sops --decrypt .github/secrets/kubeconfig.yml > $HOME/.kube/config
+                  chmod 600 $HOME/.kube/config
+            - name: Verify kubectl version
+              run: kubectl version --client
+            - name: Deploy to Kubernetes
+              run: kubectl delete pods -l app=taskfile-build -n kubernetes-build
 ```
