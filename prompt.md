@@ -2,11 +2,11 @@
 commit_ref:
 title: "Create Helm chart remark42 from Ansible role"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
-state: review
-date_completed:
+state: completed
+date_completed: 2026-11-03
 model: deepseek-v4-flash-0731
-input_tokens: 375011
-output_tokens: 17333
+input_tokens: 623208
+output_tokens: 23475
 ---
 
 # Create Helm chart remark42 from Ansible role
@@ -106,7 +106,7 @@ The command `template-manifest` is missing in `gitops/task`. Copy to `gitops/tas
 
 Ensure the commands are in sync.
 
-### Testing secrets
+### Testing secrets (done)
 
 I will test the deployment and migration myself. Do not apply or deploy anything.
 
@@ -141,3 +141,5 @@ Committed in the `gitops` repo:
 - `2a2c6d0 fix(.prompt): use cat-with-sops helper in install-chart and template-manifest`
 
 State set to review. The secrets deployment and data migration remain to be tested by the author.
+
+The author confirmed the results after testing the secrets deployment and data migration. State set to completed.
