@@ -1,134 +1,134 @@
 ## @section Ingress parameters
 ##
 ingress:
-  ## @param ingress.enabled Enable or disable the ingress
+  # -- Enable or disable the ingress
   enabled: true
-  ## @param ingress.className The class name for the ingress
+  # -- The class name for the ingress
   className: ""
-  ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
+  # -- The cluster issuer reference for the ingress
   clusterIssuerRef:
-  ## @param ingress.host The host for the ingress
+  # -- The host for the ingress
   host: ""
-  ## @param ingress.customDomain The custom domain for the ingress
+  # -- The custom domain for the ingress
   customDomain: ""
   staging:
-    ## @param ingress.staging.customDomain The custom domain for the staging ingress
+    # -- The custom domain for the staging ingress
       customDomain: ""
 
 ## @section vshnPostgres parameters
 vshnPostgres:
-  ## @param vshnPostgres.enabled Enable or disable vshnPostgres
+  # -- Enable or disable vshnPostgres
   enabled: false
-  ## @param vshnPostgres.secretRef The secret reference for vshnPostgres
+  # -- The secret reference for vshnPostgres
   secretRef: odoo-postgresql
   client:
-    ## @param vshnPostgres.client.enabled Enable or disable the vshnPostgres client
+    # -- Enable or disable the vshnPostgres client
     enabled: false
 
 ## @section Postgres parameters
 postgres:
-  ## @param postgres.enabled Enable or disable Postgres
+  # -- Enable or disable Postgres
   enabled: false
-  ## @param postgres.db The database name for Postgres
+  # -- The database name for Postgres
   db: odoo
-  ## @param postgres.user The username for Postgres
+  # -- The username for Postgres
   user: odoo
-  ## @param postgres.secretRef The secret reference for Postgres
+  # -- The secret reference for Postgres
   secretRef: odoo-postgres
-  ## @param postgres.storageClassName Set the storage class
+  # -- Set the storage class
   storageClassName: standard
 
 ## @section CloudNativePG parameters
 cnpg:
-  ## @param cnpg.enabled Enable or disable CloudNativePG
+  # -- Enable or disable CloudNativePG
   enabled: true
-  ## @param cnpg.nameOverride Override the name of the CloudNativePG cluster
+  # -- Override the name of the CloudNativePG cluster
   ## Default: "{release-name}-postgresql"
   nameOverride: ""
-  ## @param cnpg.instances Number of instances (1 for single, 2+ for high availability)
+  # -- Number of instances (1 for single, 2+ for high availability)
   instances: 1
   storage:
-    ## @param cnpg.storage.size Persistent volume size for each instance
+    # -- Persistent volume size for each instance
     size: 8Gi
-  ## @param cnpg.database Name of the CloudNativePG database to create
+  # -- Name of the CloudNativePG database to create
   database: odoo
-  ## @param cnpg.owner Name of the database user
+  # -- Name of the database user
   owner: app
 
 ## @section Odoo parameters
-## @param enabled Enable or disable Odoo
+# -- Enable or disable Odoo
 enabled: true
-## @param image The image for Odoo
+# -- The image for Odoo
 image: ""
-## @param replicas Number of Odoo replicas
+# -- Number of Odoo replicas
 replicas: 1
-## @param imagePullPolicy Pull policy for Odoo image
+# -- Pull policy for Odoo image
 imagePullPolicy: Always
-## @param proxyMode Enable or disable proxy mode for Odoo
+# -- Enable or disable proxy mode for Odoo
 proxyMode: true
-## @param downloadOdooEnterprise Enable or disable downloading Odoo Enterprise
+# -- Enable or disable downloading Odoo Enterprise
 downloadOdooEnterprise: false
-## @param addonsGitRepos List of addon Git repositories for Odoo
+# -- List of addon Git repositories for Odoo
 addonsGitRepos:
   - https://github.com/Mint-System/Odoo-Apps-Server-Tools.git
   - https://github.com/OCA/Server-Tools.git
-## @param pythonInstall List of python packages to insall
+# -- List of python packages to insall
 pythonInstall: []
-## @param database The database for odoo
+# -- The database for odoo
 database: odoo
 init:
-  ## @param init.lang The initial language for Odoo
+  # -- The initial language for Odoo
   lang: de_CH
-  ## @param init.login The initial username for Odoo admin account
+  # -- The initial username for Odoo admin account
   login: ""
-  ## @param init.password The initial passwod for Odoo admin account
+  # -- The initial passwod for Odoo admin account
   password: ""
-## @param listDB Enable or disable listing databases for Odoo
+# -- Enable or disable listing databases for Odoo
 listDB: false
-## @param workers Define the amount of Odoo workers to spawn
+# -- Define the amount of Odoo workers to spawn
 workers: 5
-## @param secretRef The secret reference for Odoo
+# -- The secret reference for Odoo
 secretRef: odoo-creds
-## @param storageClassName Set the storage class
+# -- Set the storage class
 storageClassName: ""
 ## @section Resources requests and limits
 resources:
-  ## @param resources.requests.memory Memory request for the container
   requests:
+    # -- Memory request for the container
     memory: "1Gi"
-    ## @param resources.requests.cpu CPU request for the container
+    # -- CPU request for the container
     cpu: "250m"
   limits:
-    ## @param resources.limits.memory Memory limit for the container
+    # -- Memory limit for the container
     memory: "2Gi"
 
 ## @section K8up parameters
 k8up:
-  ## @param k8up.enabled Enable or disable K8up
+  # -- Enable or disable K8up
   enabled: false
-  ## @param k8up.endpoint S3 endpoint
+  # -- S3 endpoint
   endpoint: ""
-  ## @param k8up.bucket S3 bucket name
+  # -- S3 bucket name
   bucket: ""
 
 ## @section Staging parameters
 staging:
-  ## @param staging.enabled Enable or disable staging deployment
+  # -- Enable or disable staging deployment
   enabled: false
-  ## @param staging.image The image for Odoo staging
+  # -- The image for Odoo staging
   image: ""
-  ## @param staging.name Name of the staging environment (used in staging ingress)
+  # -- Name of the staging environment (used in staging ingress)
   name: staging
 
 ## @section Upgrade parameters
 upgrade:
-  ## @param upgrade.enabled Enable or disable the upgrade job
+  # -- Enable or disable the upgrade job
   enabled: false
-  ## @param upgrade.image The image for the Odoo upgrade job
+  # -- The image for the Odoo upgrade job
   image: mintsystem/odoo-upgrade:16
-  ## @param upgrade.targetDatabase The target database for the upgrade
+  # -- The target database for the upgrade
   targetDatabase: upgrade
-  ## @param upgrade.targetVersion The target Odoo version for the upgrade
+  # -- The target Odoo version for the upgrade
   targetVersion: ""
-  ## @param upgrade.mode The upgrade mode (test or production)
+  # -- The upgrade mode (test or production)
   mode: test

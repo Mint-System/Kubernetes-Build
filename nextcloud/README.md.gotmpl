@@ -1,0 +1,47 @@
+# Mint System Nextcloud
+
+This Helm chart deploys Nextcloud with PostgreSQL.
+
+This chart is a wrapper for the official Nextcloud chart: https://github.com/nextcloud/helm/blob/main/charts/nextcloud/README.md#configuration
+
+## Secrets
+
+Setup a `nextcloud-creds` secret with any additional environment variables you want to pass to Nextcloud:
+
+```bash
+kubectl create secret generic nextcloud-creds \
+    --from-literal=nextcloud-username="$nextcloud_admin_user" \
+    --from-literal=nextcloud-password="$nextcloud_admin_password" \
+    --from-literal=smtp-host="$smtp_host" \
+    --from-literal=smtp-username="$smtp_username" \
+    --from-literal=smtp-password="$smtp_password" \
+    -n $namespace
+```
+
+The K8up backup requires a `s3-credentials` and a `backup-repo` secret. Here is an example for Exoscale SOS:
+
+```bash
+kubectl create secret generic s3-credentials \
+    --from-literal=username="$exoscale_iam_key" \
+    --from-literal=password="$exoscale_iam_secret" \
+    -n $namespace
+```
+
+{{ template "chart.valuesSection" . }}
+
+## Troubleshooting
+
+### The config.php is not updated
+
+**Problem**
+
+The `config.php` of Nextcloud is not updated with new env values.
+
+**Solution**
+
+Delete the `config.php` file and the pods.
+
+```bash
+kubectl exec <pod> -- rm /var/www/html/config/config.php
+kubectl delete pod <pod>
+```

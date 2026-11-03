@@ -1,29 +1,29 @@
 ## @section Postgres parameters
-## @param enabled Enable or disable Postgres
+# -- Enable or disable Postgres
 enabled: true
-## @param image The Docker image for Postgres
+# -- The Docker image for Postgres
 image: postgres:16-alpine
-## @param port The port for Postgres
+# -- The port for Postgres
 port: 5432
-## @param db The database name for Postgres
+# -- The database name for Postgres
 db: postgres
-## @param user The username for Postgres
+# -- The username for Postgres
 user: postgres
-## @param password If not set a password will be generated
+# -- If not set a password will be generated
 password:
-## @param secretRef The secret reference for Postgres
+# -- The secret reference for Postgres
 secretRef: postgres
-## @param userPasswordKey The user password key for Postgres
+# -- The user password key for Postgres
 userPasswordKey: "password"
-## @param storageClassName Set the storage class
+# -- Set the storage class
 storageClassName: ""
 ## @section Resources requests and limits
 resources:
-  ## @param resources.requests.memory Memory request for the container
   requests:
+    # -- Memory request for the container
     memory: "500Mi"
-    ## @param resources.requests.cpu CPU request for the container
+    # -- CPU request for the container
     cpu: "100m"
   limits:
-    ## @param resources.limits.memory Memory limit for the container
+    # -- Memory limit for the container
     memory: "1Gi"

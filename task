@@ -858,9 +858,7 @@ remove-repo(){
 # Docs Commands
 
 docs() {
-    for repo in $(list-charts | grep -v '^deployment-updater$'); do
-        pnpm run generate-readme --values "$repo/values.yaml" -r "$repo/README.md"
-    done
+    helm-docs --chart-search-root .
 }
 
 lint() {

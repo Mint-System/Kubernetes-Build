@@ -36,17 +36,10 @@ spec:
 EOF
 ```
 
-## Parameters
+## Values
 
-### Ingress parameters
-
-| Name                | Description                    | Value |
-| ------------------- | ------------------------------ | ----- |
-| `ingress.className` | The class name for the ingress | `""`  |
-
-### Cluster Issuer parameters
-
-| Name          | Description                | Value |
-| ------------- | -------------------------- | ----- |
-| `acme.email`  | The email address for ACME | `""`  |
-| `acme.solver` | The solver for ACME        | `""`  |
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| acme.email | string | `""` | The email address for ACME |
+| acme.solver | string | `""` | The solver for ACME |
+| ingress.className | string | `""` | The class name for the ingress |

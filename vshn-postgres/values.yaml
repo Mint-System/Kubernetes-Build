@@ -1,22 +1,22 @@
 ## @section vshn-postgres parameters
 ##
-## @param enabled Enable or disable vshn-postgres
+# -- Enable or disable vshn-postgres
 ##
 enabled: false
-## @param secretRef The secret reference for vshn-postgres
+# -- The secret reference for vshn-postgres
 ##
 secretRef: postgres-creds
 client:
-  ## @param client.enabled Enable or disable the vshn-postgres client
+  # -- Enable or disable the vshn-postgres client
   ##
   enabled: false
 ## @section Resources requests and limits
 resources:
-  ## @param resources.requests.memory Memory request for the container
   requests:
+    # -- Memory request for the container
     memory: "500Mi"
-    ## @param resources.requests.cpu CPU request for the container
+    # -- CPU request for the container
     cpu: "100m"
   limits:
-    ## @param resources.limits.memory Memory limit for the container
+    # -- Memory limit for the container
     memory: "1Gi"

@@ -38,6 +38,7 @@ List of charts:
 - [odoo](odoo/README.md)
 - [postgres](postgres/README.md)
 - [prometheus-agent](prometheus-agent/README.md)
+- [remark42](remark42/README.md)
 - [taskfile-build](taskfile-build/README.md)
 - [vshn-postgres](vshn-postgres/README.md)
 

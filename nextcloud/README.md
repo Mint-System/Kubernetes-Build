@@ -27,72 +27,50 @@ kubectl create secret generic s3-credentials \
     -n $namespace
 ```
 
-## Parameters
+## Values
 
-### Ingress parameters
-
-| Name                       | Description                                  | Value  |
-| -------------------------- | -------------------------------------------- | ------ |
-| `ingress.enabled`          | Enable or disable the ingress                | `true` |
-| `ingress.className`        | The class name for the ingress               | `""`   |
-| `ingress.clusterIssuerRef` | The cluster issuer reference for the ingress | `nil`  |
-| `ingress.host`             | The host for the ingress                     | `""`   |
-
-### Nextcloud parameters
-
-| Name                                                    | Description                                                         | Value                      |
-| ------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------- |
-| `nextcloud.enabled`                                     | Enable or disable Nextcloud                                         | `true`                     |
-| `nextcloud.ingress.enabled`                             | Enable or disable the Nextcloud subchart ingress                    | `false`                    |
-| `nextcloud.nextcloud.host`                              | The host for Nextcloud and Ingress                                  | `""`                       |
-| `nextcloud.nextcloud.existingSecret.enabled`            | Use an existing secret for credentials                              | `true`                     |
-| `nextcloud.nextcloud.existingSecret.enabled`            | Enable or disable using an existing secret                          | `true`                     |
-| `nextcloud.nextcloud.existingSecret.secretName`         | Name of the existing Kubernetes secret                              | `nextcloud-creds`          |
-| `nextcloud.nextcloud.mail.enabled`                      | Whether to enable/disable email settings                            | `true`                     |
-| `nextcloud.persistence.enabled`                         | Enable persistence using PVC                                        | `true`                     |
-| `nextcloud.phpClientHttpsFix.enabled`                   | Fix HTTPS protocol detection behind reverse proxy                   | `true`                     |
-| `nextcloud.internalDatabase.enabled`                    | Enable or disable the internal SQLite database                      | `false`                    |
-| `nextcloud.redis.enabled`                               | Enable or disable the bitnami Redis subchart                        | `false`                    |
-| `nextcloud.redis.auth.enabled`                          | Enable or disable Redis authentication                              | `false`                    |
-| `nextcloud.externalRedis.enabled`                       | Enable or disable external Redis                                    | `true`                     |
-| `nextcloud.externalRedis.host`                          | Hostname or service name of the external Redis                      | `nextcloud-redis`          |
-| `nextcloud.externalDatabase.enabled`                    | Enable or disable external database usage                           | `true`                     |
-| `nextcloud.externalDatabase.type`                       | Type of external database (e.g., postgresql, mysql)                 | `postgresql`               |
-| `nextcloud.externalDatabase.host`                       | Hostname or service name of the external database                   | `nextcloud-postgresql-rw`  |
-| `nextcloud.externalDatabase.database`                   | Name of the database to use                                         | `nextcloud`                |
-| `nextcloud.externalDatabase.existingSecret.enabled`     | Enable or disable using an existing secret for database credentials | `true`                     |
-| `nextcloud.externalDatabase.existingSecret.secretName`  | Name of the existing Kubernetes secret                              | `nextcloud-postgresql-app` |
-| `nextcloud.externalDatabase.existingSecret.usernameKey` | Key in the secret containing the database username                  | `username`                 |
-| `nextcloud.externalDatabase.existingSecret.passwordKey` | Key in the secret containing the database password                  | `password`                 |
-| `nextcloud.resources.requests.memory`                   | Memory request for the container                                    | `256Mi`                    |
-| `nextcloud.resources.requests.cpu`                      | CPU request for the container                                       | `250m`                     |
-| `nextcloud.resources.limits.memory`                     | Memory limit for the container                                      | `512Mi`                    |
-
-### Redis parameters
-
-| Name            | Description             | Value          |
-| --------------- | ----------------------- | -------------- |
-| `redis.enabled` | Enable or disable Redis | `true`         |
-| `redis.image`   | The image for Redis     | `redis:alpine` |
-
-### CloudNativePG parameters
-
-| Name                | Description                                                  | Value                                    |
-| ------------------- | ------------------------------------------------------------ | ---------------------------------------- |
-| `cnpg.enabled`      | Enable or disable CloudNativePG                              | `true`                                   |
-| `cnpg.instances`    | Number of instances (1 for single, 2+ for high availability) | `1`                                      |
-| `cnpg.imageName`    | PostgreSQL image to use                                      | `ghcr.io/cloudnative-pg/postgresql:16.0` |
-| `cnpg.storage.size` | Persistent volume size for each instance                     | `8Gi`                                    |
-| `cnpg.database`     | Name of the CloudNativePG database to create                 | `nextcloud`                              |
-| `cnpg.owner`        | Name of the database user                                    | `app`                                    |
-
-### K8up parameters
-
-| Name            | Description            | Value   |
-| --------------- | ---------------------- | ------- |
-| `k8up.enabled`  | Enable or disable K8up | `false` |
-| `k8up.endpoint` | S3 endpoint            | `""`    |
-| `k8up.bucket`   | S3 bucket name         | `""`    |
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| cnpg.database | string | `"nextcloud"` | Name of the CloudNativePG database to create |
+| cnpg.enabled | bool | `true` | Enable or disable CloudNativePG |
+| cnpg.imageName | string | `"ghcr.io/cloudnative-pg/postgresql:16.0"` | PostgreSQL image to use |
+| cnpg.instances | int | `1` | Number of instances (1 for single, 2+ for high availability) |
+| cnpg.owner | string | `"app"` | Name of the database user |
+| cnpg.storage.size | string | `"8Gi"` | Persistent volume size for each instance |
+| ingress.className | string | `""` | The class name for the ingress |
+| ingress.clusterIssuerRef | string | `nil` | The cluster issuer reference for the ingress |
+| ingress.enabled | bool | `true` | Enable or disable the ingress |
+| ingress.host | string | `""` | The host for the ingress |
+| k8up.bucket | string | `""` | S3 bucket name |
+| k8up.enabled | bool | `false` | Enable or disable K8up |
+| k8up.endpoint | string | `""` | S3 endpoint |
+| nextcloud.enabled | bool | `true` | Enable or disable Nextcloud |
+| nextcloud.externalDatabase.database | string | `"nextcloud"` | Name of the database to use |
+| nextcloud.externalDatabase.enabled | bool | `true` | Enable or disable external database usage |
+| nextcloud.externalDatabase.existingSecret.enabled | bool | `true` | Enable or disable using an existing secret for database credentials |
+| nextcloud.externalDatabase.existingSecret.passwordKey | string | `"password"` | Key in the secret containing the database password |
+| nextcloud.externalDatabase.existingSecret.secretName | string | `"nextcloud-postgresql-app"` | Name of the existing Kubernetes secret |
+| nextcloud.externalDatabase.existingSecret.usernameKey | string | `"username"` | Key in the secret containing the database username |
+| nextcloud.externalDatabase.host | string | `"nextcloud-postgresql-rw"` | Hostname or service name of the external database |
+| nextcloud.externalDatabase.type | string | `"postgresql"` | Type of external database (e.g., postgresql, mysql) |
+| nextcloud.externalRedis.enabled | bool | `true` | Enable or disable external Redis |
+| nextcloud.externalRedis.host | string | `"nextcloud-redis"` | Hostname or service name of the external Redis |
+| nextcloud.ingress.enabled | bool | `false` | Enable or disable the Nextcloud subchart ingress |
+| nextcloud.internalDatabase.enabled | bool | `false` | Enable or disable the internal SQLite database |
+| nextcloud.nextcloud.existingSecret | object | `{"enabled":true,"secretName":"nextcloud-creds"}` | Use an existing secret for credentials |
+| nextcloud.nextcloud.existingSecret.enabled | bool | `true` | Enable or disable using an existing secret |
+| nextcloud.nextcloud.existingSecret.secretName | string | `"nextcloud-creds"` | Name of the existing Kubernetes secret |
+| nextcloud.nextcloud.host | string | `""` | The host for Nextcloud and Ingress |
+| nextcloud.nextcloud.mail.enabled | bool | `true` | Whether to enable/disable email settings |
+| nextcloud.persistence | object | `{"enabled":true}` | Enable persistence using PVC |
+| nextcloud.phpClientHttpsFix.enabled | bool | `true` | Fix HTTPS protocol detection behind reverse proxy |
+| nextcloud.redis.auth.enabled | bool | `false` | Enable or disable Redis authentication |
+| nextcloud.redis.enabled | bool | `false` | Enable or disable the bitnami Redis subchart |
+| nextcloud.resources.limits.memory | string | `"2Gi"` | Memory limit for the container |
+| nextcloud.resources.requests.cpu | string | `"250m"` | CPU request for the container |
+| nextcloud.resources.requests.memory | string | `"1Gi"` | Memory request for the container |
+| redis.enabled | bool | `true` | Enable or disable Redis |
+| redis.image | string | `"redis:alpine"` | The image for Redis |
 
 ## Troubleshooting
 

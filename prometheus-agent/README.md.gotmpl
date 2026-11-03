@@ -1,0 +1,16 @@
+# Prometheus Agent
+
+This chart deploys Prometheus in **agent mode** to scrape Kubernetes metrics and write them to a central Prometheus endpoint.
+
+## Secrets
+
+To securely provide the remote write credentials, create a Kubernetes Secret named `prometheus-remote-write-credentials` in the target namespace:
+
+```bash
+kubectl create secret generic prometheus-remote-write-credentials \
+    --from-literal=username="$remote_write_username" \
+    --from-literal=password="$remote_write_password" \
+    -n $namespace
+```
+
+{{ template "chart.valuesSection" . }}

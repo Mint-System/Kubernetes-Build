@@ -1,0 +1,55 @@
+# Mint System Deployment Updater
+
+Cluster-wide service account that can update deployments.
+
+## Integration
+
+### Forgejo Deployment action
+
+Use this service account to make deployments to Kubernetes. The deployment action requires a kubeconfig. Export the kubeconfig with this command:
+
+```bash
+task generate-kubconfig deploy .github/secrets/kubeconfig.yml
+```
+
+Encrypt the kubeconfig with sops/age:
+
+```bash
+task encrypt-with-sops .github/secrets/kubeconfig.yml
+```
+
+Setup `SOPS_AGE_KEY` secret in the ci settings and add this GitHub/Forgejo action:
+
+```yaml
+name: Deploy Docs
+on:
+    push:
+        branches:
+            - 'main'
+        paths:
+            - '*.md'
+            - '.github/workflows/**'
+            - '.github/secrets/**'
+
+jobs:
+    deploy-docs:
+        name: Deploy Docs
+        runs-on: ubuntu-latest
+        container: mintsystem/taskfile.build:latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Decrypt kubeconfig
+              env:
+                  SOPS_AGE_KEY: ${{ "{{" }} secrets.SOPS_AGE_KEY {{ "}}" }}
+              run: |
+                  mkdir -p $HOME/.kube
+                  sops --decrypt .github/secrets/kubeconfig.yml > $HOME/.kube/config
+                  chmod 600 $HOME/.kube/config
+            - name: Verify kubectl version
+              run: kubectl version --client
+            - name: Deploy to Kubernetes
+              run: kubectl delete pods -l app=taskfile-build -n kubernetes-build
+```
+
+{{ template "chart.valuesSection" . }}

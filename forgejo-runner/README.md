@@ -69,22 +69,15 @@ Here is are examples of Forgejo action steps:
             namespace=codeberg
 ```
 
-## Parameters
+## Values
 
-### Forgejo Runner parameters
-
-| Name                 | Description                                 | Value                               |
-| -------------------- | ------------------------------------------- | ----------------------------------- |
-| `image`              | The image for  Forgejo Runner               | `code.forgejo.org/forgejo/runner:9` |
-| `imagePullPolicy`    | Pull policy for  Forgejo Runner image       | `Always`                            |
-| `forgejoInstanceUrl` | Forgejo instance url.                       | `https://codeberg.org`              |
-| `secretRef`          | The secret reference for the Forgejo Runner | `forgejo-runner`                    |
-| `storageClassName`   | Set the storage class                       | `""`                                |
-
-### Resources requests and limits
-
-| Name                        | Description                      | Value   |
-| --------------------------- | -------------------------------- | ------- |
-| `resources.requests.memory` | Memory request for the container | `500Mi` |
-| `resources.requests.cpu`    | CPU request for the container    | `100m`  |
-| `resources.limits.memory`   | Memory limit for the container   | `1Gi`   |
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| forgejoInstanceUrl | string | `"https://codeberg.org"` | Forgejo instance url. |
+| image | string | `"code.forgejo.org/forgejo/runner:9"` | The image for  Forgejo Runner |
+| imagePullPolicy | string | `"Always"` | Pull policy for  Forgejo Runner image |
+| resources.limits.memory | string | `"1Gi"` | Memory limit for the container |
+| resources.requests.cpu | string | `"100m"` | CPU request for the container |
+| resources.requests.memory | string | `"500Mi"` | Memory request for the container |
+| secretRef | string | `"forgejo-runner"` | The secret reference for the Forgejo Runner |
+| storageClassName | string | `""` | Set the storage class |

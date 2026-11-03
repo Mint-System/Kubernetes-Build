@@ -32,99 +32,57 @@ There is suspended `<release>-staging-reset` job that copies the main database a
 kubectl create job --from=cronjob/<release>-staging-reset <release>-staging-reset-run
 ```
 
-## Parameters
+## Values
 
-### Ingress parameters
-
-| Name                           | Description                                  | Value  |
-| ------------------------------ | -------------------------------------------- | ------ |
-| `ingress.enabled`              | Enable or disable the ingress                | `true` |
-| `ingress.className`            | The class name for the ingress               | `""`   |
-| `ingress.clusterIssuerRef`     | The cluster issuer reference for the ingress | `nil`  |
-| `ingress.host`                 | The host for the ingress                     | `""`   |
-| `ingress.customDomain`         | The custom domain for the ingress            | `""`   |
-| `ingress.staging.customDomain` | The custom domain for the staging ingress    | `""`   |
-
-### vshnPostgres parameters
-
-| Name                          | Description                               | Value             |
-| ----------------------------- | ----------------------------------------- | ----------------- |
-| `vshnPostgres.enabled`        | Enable or disable vshnPostgres            | `false`           |
-| `vshnPostgres.secretRef`      | The secret reference for vshnPostgres     | `odoo-postgresql` |
-| `vshnPostgres.client.enabled` | Enable or disable the vshnPostgres client | `false`           |
-
-### Postgres parameters
-
-| Name                        | Description                       | Value           |
-| --------------------------- | --------------------------------- | --------------- |
-| `postgres.enabled`          | Enable or disable Postgres        | `false`         |
-| `postgres.db`               | The database name for Postgres    | `odoo`          |
-| `postgres.user`             | The username for Postgres         | `odoo`          |
-| `postgres.secretRef`        | The secret reference for Postgres | `odoo-postgres` |
-| `postgres.storageClassName` | Set the storage class             | `standard`      |
-
-### CloudNativePG parameters
-
-| Name                | Description                                                  | Value  |
-| ------------------- | ------------------------------------------------------------ | ------ |
-| `cnpg.enabled`      | Enable or disable CloudNativePG                              | `true` |
-| `cnpg.nameOverride` | Override the name of the CloudNativePG cluster               | `""`   |
-| `cnpg.instances`    | Number of instances (1 for single, 2+ for high availability) | `1`    |
-| `cnpg.storage.size` | Persistent volume size for each instance                     | `8Gi`  |
-| `cnpg.database`     | Name of the CloudNativePG database to create                 | `odoo` |
-| `cnpg.owner`        | Name of the database user                                    | `app`  |
-
-### Odoo parameters
-
-| Name                     | Description                                   | Value                                                                                                     |
-| ------------------------ | --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `enabled`                | Enable or disable Odoo                        | `true`                                                                                                    |
-| `image`                  | The image for Odoo                            | `""`                                                                                                      |
-| `replicas`               | Number of Odoo replicas                       | `1`                                                                                                       |
-| `imagePullPolicy`        | Pull policy for Odoo image                    | `Always`                                                                                                  |
-| `proxyMode`              | Enable or disable proxy mode for Odoo         | `true`                                                                                                    |
-| `downloadOdooEnterprise` | Enable or disable downloading Odoo Enterprise | `false`                                                                                                   |
-| `addonsGitRepos`         | List of addon Git repositories for Odoo       | `["https://github.com/Mint-System/Odoo-Apps-Server-Tools.git","https://github.com/OCA/Server-Tools.git"]` |
-| `pythonInstall`          | List of python packages to insall             | `[]`                                                                                                      |
-| `database`               | The database for odoo                         | `odoo`                                                                                                    |
-| `init.lang`              | The initial language for Odoo                 | `de_CH`                                                                                                   |
-| `init.login`             | The initial username for Odoo admin account   | `""`                                                                                                      |
-| `init.password`          | The initial passwod for Odoo admin account    | `""`                                                                                                      |
-| `listDB`                 | Enable or disable listing databases for Odoo  | `false`                                                                                                   |
-| `workers`                | Define the amount of Odoo workers to spawn    | `5`                                                                                                       |
-| `secretRef`              | The secret reference for Odoo                 | `odoo-creds`                                                                                              |
-| `storageClassName`       | Set the storage class                         | `""`                                                                                                      |
-
-### Resources requests and limits
-
-| Name                        | Description                      | Value  |
-| --------------------------- | -------------------------------- | ------ |
-| `resources.requests.memory` | Memory request for the container | `1Gi`  |
-| `resources.requests.cpu`    | CPU request for the container    | `250m` |
-| `resources.limits.memory`   | Memory limit for the container   | `2Gi`  |
-
-### K8up parameters
-
-| Name            | Description            | Value   |
-| --------------- | ---------------------- | ------- |
-| `k8up.enabled`  | Enable or disable K8up | `false` |
-| `k8up.endpoint` | S3 endpoint            | `""`    |
-| `k8up.bucket`   | S3 bucket name         | `""`    |
-
-### Staging parameters
-
-| Name              | Description                                               | Value     |
-| ----------------- | --------------------------------------------------------- | --------- |
-| `staging.enabled` | Enable or disable staging deployment                      | `false`   |
-| `staging.image`   | The image for Odoo staging                                | `""`      |
-| `staging.name`    | Name of the staging environment (used in staging ingress) | `staging` |
-
-### Upgrade parameters
-
-| Name                    | Description                             | Value                        |
-| ----------------------- | --------------------------------------- | ---------------------------- |
-| `upgrade.enabled`       | Enable or disable the upgrade job       | `false`                      |
-| `upgrade.image`         | The image for the Odoo upgrade job      | `mintsystem/odoo-upgrade:16` |
-| `upgrade.targetDatabase` | The target database for the upgrade    | `upgrade`                    |
-| `upgrade.targetVersion` | The target Odoo version for the upgrade | `""`                         |
-| `upgrade.mode`          | The upgrade mode (test or production)   | `test`                       |
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| addonsGitRepos | list | `["https://github.com/Mint-System/Odoo-Apps-Server-Tools.git","https://github.com/OCA/Server-Tools.git"]` | List of addon Git repositories for Odoo |
+| cnpg.database | string | `"odoo"` | Name of the CloudNativePG database to create |
+| cnpg.enabled | bool | `true` | Enable or disable CloudNativePG |
+| cnpg.instances | int | `1` | Number of instances (1 for single, 2+ for high availability) |
+| cnpg.nameOverride | string | `""` | Override the name of the CloudNativePG cluster # Default: "{release-name}-postgresql" |
+| cnpg.owner | string | `"app"` | Name of the database user |
+| cnpg.storage.size | string | `"8Gi"` | Persistent volume size for each instance |
+| database | string | `"odoo"` | The database for odoo |
+| downloadOdooEnterprise | bool | `false` | Enable or disable downloading Odoo Enterprise |
+| enabled | bool | `true` | Enable or disable Odoo |
+| image | string | `""` | The image for Odoo |
+| imagePullPolicy | string | `"Always"` | Pull policy for Odoo image |
+| ingress.className | string | `""` | The class name for the ingress |
+| ingress.clusterIssuerRef | string | `nil` | The cluster issuer reference for the ingress |
+| ingress.customDomain | string | `""` | The custom domain for the ingress |
+| ingress.enabled | bool | `true` | Enable or disable the ingress |
+| ingress.host | string | `""` | The host for the ingress |
+| ingress.staging.customDomain | string | `""` | The custom domain for the staging ingress |
+| init.lang | string | `"de_CH"` | The initial language for Odoo |
+| init.login | string | `""` | The initial username for Odoo admin account |
+| init.password | string | `""` | The initial passwod for Odoo admin account |
+| k8up.bucket | string | `""` | S3 bucket name |
+| k8up.enabled | bool | `false` | Enable or disable K8up |
+| k8up.endpoint | string | `""` | S3 endpoint |
+| listDB | bool | `false` | Enable or disable listing databases for Odoo |
+| postgres.db | string | `"odoo"` | The database name for Postgres |
+| postgres.enabled | bool | `false` | Enable or disable Postgres |
+| postgres.secretRef | string | `"odoo-postgres"` | The secret reference for Postgres |
+| postgres.storageClassName | string | `"standard"` | Set the storage class |
+| postgres.user | string | `"odoo"` | The username for Postgres |
+| proxyMode | bool | `true` | Enable or disable proxy mode for Odoo |
+| pythonInstall | list | `[]` | List of python packages to insall |
+| replicas | int | `1` | Number of Odoo replicas |
+| resources.limits.memory | string | `"2Gi"` | Memory limit for the container |
+| resources.requests.cpu | string | `"250m"` | CPU request for the container |
+| resources.requests.memory | string | `"1Gi"` | Memory request for the container |
+| secretRef | string | `"odoo-creds"` | The secret reference for Odoo |
+| staging.enabled | bool | `false` | Enable or disable staging deployment |
+| staging.image | string | `""` | The image for Odoo staging |
+| staging.name | string | `"staging"` | Name of the staging environment (used in staging ingress) |
+| storageClassName | string | `""` | Set the storage class |
+| upgrade.enabled | bool | `false` | Enable or disable the upgrade job |
+| upgrade.image | string | `"mintsystem/odoo-upgrade:16"` | The image for the Odoo upgrade job |
+| upgrade.mode | string | `"test"` | The upgrade mode (test or production) |
+| upgrade.targetDatabase | string | `"upgrade"` | The target database for the upgrade |
+| upgrade.targetVersion | string | `""` | The target Odoo version for the upgrade |
+| vshnPostgres.client.enabled | bool | `false` | Enable or disable the vshnPostgres client |
+| vshnPostgres.enabled | bool | `false` | Enable or disable vshnPostgres |
+| vshnPostgres.secretRef | string | `"odoo-postgresql"` | The secret reference for vshnPostgres |
+| workers | int | `5` | Define the amount of Odoo workers to spawn |

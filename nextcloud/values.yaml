@@ -1,109 +1,109 @@
 ## @section Ingress parameters
 ingress:
-  ## @param ingress.enabled Enable or disable the ingress
+  # -- Enable or disable the ingress
   enabled: true
-  ## @param ingress.className The class name for the ingress
+  # -- The class name for the ingress
   className: ""
-  ## @param ingress.clusterIssuerRef The cluster issuer reference for the ingress
+  # -- The cluster issuer reference for the ingress
   clusterIssuerRef:
-  ## @param ingress.host The host for the ingress
+  # -- The host for the ingress
   host: ""
 
 ## @section Nextcloud parameters
 nextcloud:
-  ## @param nextcloud.enabled Enable or disable Nextcloud
+  # -- Enable or disable Nextcloud
   enabled: true
   ingress:
-    ## @param nextcloud.ingress.enabled Enable or disable the Nextcloud subchart ingress
+    # -- Enable or disable the Nextcloud subchart ingress
     enabled: false
   nextcloud:
-    ## @param nextcloud.nextcloud.host The host for Nextcloud and Ingress
+    # -- The host for Nextcloud and Ingress
     host: ""
-    ## @param nextcloud.nextcloud.existingSecret.enabled Use an existing secret for credentials
+    # -- Use an existing secret for credentials
     existingSecret:
-      ## @param nextcloud.nextcloud.existingSecret.enabled Enable or disable using an existing secret
+      # -- Enable or disable using an existing secret
       enabled: true
-      ## @param nextcloud.nextcloud.existingSecret.secretName Name of the existing Kubernetes secret
+      # -- Name of the existing Kubernetes secret
       secretName: nextcloud-creds
     mail:
-      ## @param nextcloud.nextcloud.mail.enabled Whether to enable/disable email settings
+      # -- Whether to enable/disable email settings
       enabled: true
-  ## @param nextcloud.persistence.enabled Enable persistence using PVC
+  # -- Enable persistence using PVC
   persistence: 
     enabled: true
   phpClientHttpsFix:
-    ## @param nextcloud.phpClientHttpsFix.enabled Fix HTTPS protocol detection behind reverse proxy
+    # -- Fix HTTPS protocol detection behind reverse proxy
     enabled: true
   internalDatabase:
-    ## @param nextcloud.internalDatabase.enabled Enable or disable the internal SQLite database
+    # -- Enable or disable the internal SQLite database
     enabled: false
   redis:
-    ## @param nextcloud.redis.enabled Enable or disable the bitnami Redis subchart
+    # -- Enable or disable the bitnami Redis subchart
     enabled: false
     auth:
-      ## @param nextcloud.redis.auth.enabled Enable or disable Redis authentication
+      # -- Enable or disable Redis authentication
       enabled: false
   externalRedis:
-    ## @param nextcloud.externalRedis.enabled Enable or disable external Redis
+    # -- Enable or disable external Redis
     enabled: true
-    ## @param nextcloud.externalRedis.host Hostname or service name of the external Redis
+    # -- Hostname or service name of the external Redis
     host: nextcloud-redis
   externalDatabase:
-    ## @param nextcloud.externalDatabase.enabled Enable or disable external database usage
+    # -- Enable or disable external database usage
     enabled: true
-    ## @param nextcloud.externalDatabase.type Type of external database (e.g., postgresql, mysql)
+    # -- Type of external database (e.g., postgresql, mysql)
     type: postgresql
-    ## @param nextcloud.externalDatabase.host Hostname or service name of the external database
+    # -- Hostname or service name of the external database
     host: nextcloud-postgresql-rw
-    ## @param nextcloud.externalDatabase.database Name of the database to use
+    # -- Name of the database to use
     database: nextcloud
     existingSecret:
-      ## @param nextcloud.externalDatabase.existingSecret.enabled Enable or disable using an existing secret for database credentials
+      # -- Enable or disable using an existing secret for database credentials
       enabled: true
-      ## @param nextcloud.externalDatabase.existingSecret.secretName Name of the existing Kubernetes secret
+      # -- Name of the existing Kubernetes secret
       secretName: nextcloud-postgresql-app
-      ## @param nextcloud.externalDatabase.existingSecret.usernameKey Key in the secret containing the database username
+      # -- Key in the secret containing the database username
       usernameKey: username
-      ## @param nextcloud.externalDatabase.existingSecret.passwordKey Key in the secret containing the database password
+      # -- Key in the secret containing the database password
       passwordKey: password
   resources:
-    ## @param nextcloud.resources.requests.memory Memory request for the container
     requests:
+      # -- Memory request for the container
       memory: "1Gi"
-      ## @param nextcloud.resources.requests.cpu CPU request for the container
+      # -- CPU request for the container
       cpu: "250m"
     limits:
-      ## @param nextcloud.resources.limits.memory Memory limit for the container
+      # -- Memory limit for the container
       memory: "2Gi"
 
 ## @section Redis parameters
 redis:
-  ## @param redis.enabled Enable or disable Redis
+  # -- Enable or disable Redis
   enabled: true
-  ## @param redis.image The image for Redis
+  # -- The image for Redis
   image: redis:alpine
 
 ## @section CloudNativePG parameters
 cnpg:
-  ## @param cnpg.enabled Enable or disable CloudNativePG
+  # -- Enable or disable CloudNativePG
   enabled: true
-  ## @param cnpg.instances Number of instances (1 for single, 2+ for high availability)
+  # -- Number of instances (1 for single, 2+ for high availability)
   instances: 1
-  ## @param cnpg.imageName PostgreSQL image to use
+  # -- PostgreSQL image to use
   imageName: ghcr.io/cloudnative-pg/postgresql:16.0
   storage:
-    ## @param cnpg.storage.size Persistent volume size for each instance
+    # -- Persistent volume size for each instance
     size: 8Gi
-  ## @param cnpg.database Name of the CloudNativePG database to create
+  # -- Name of the CloudNativePG database to create
   database: nextcloud
-  ## @param cnpg.owner Name of the database user
+  # -- Name of the database user
   owner: app
 
 ## @section K8up parameters
 k8up:
-  ## @param k8up.enabled Enable or disable K8up
+  # -- Enable or disable K8up
   enabled: false
-  ## @param k8up.endpoint S3 endpoint
+  # -- S3 endpoint
   endpoint: ""
-  ## @param k8up.bucket S3 bucket name
+  # -- S3 bucket name
   bucket: ""

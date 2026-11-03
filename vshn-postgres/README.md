@@ -2,20 +2,13 @@
 
 This chart deploys a VSHN Postgres service.
 
-## Parameters
+## Values
 
-### vshn-postgres parameters
-
-| Name             | Description                                | Value            |
-| ---------------- | ------------------------------------------ | ---------------- |
-| `enabled`        | Enable or disable vshn-postgres            | `false`          |
-| `secretRef`      | The secret reference for vshn-postgres     | `postgres-creds` |
-| `client.enabled` | Enable or disable the vshn-postgres client | `false`          |
-
-### Resources requests and limits
-
-| Name                        | Description                      | Value   |
-| --------------------------- | -------------------------------- | ------- |
-| `resources.requests.memory` | Memory request for the container | `500Mi` |
-| `resources.requests.cpu`    | CPU request for the container    | `100m`  |
-| `resources.limits.memory`   | Memory limit for the container   | `1Gi`   |
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| client.enabled | bool | `false` | Enable or disable the vshn-postgres client # |
+| enabled | bool | `false` | Enable or disable vshn-postgres # |
+| resources.limits.memory | string | `"1Gi"` | Memory limit for the container |
+| resources.requests.cpu | string | `"100m"` | CPU request for the container |
+| resources.requests.memory | string | `"500Mi"` | Memory request for the container |
+| secretRef | string | `"postgres-creds"` | The secret reference for vshn-postgres # |

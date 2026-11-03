@@ -1,0 +1,25 @@
+# Mint System Remark42
+
+This Helm chart deploys a Remark42 container.
+
+## Secrets
+
+Selected Remark42 features require a `remark42-secrets` secret:
+
+```bash
+kubectl create secret generic remark42-secrets \
+  --from-literal=SECRET="$secret" \
+  --from-literal=SMTP_PASSWORD="$smtp_password" \
+  --from-literal=AUTH_GITHUB_CSEC="$auth_github_csec" \
+  --from-literal=AUTH_CUSTOM_CSEC="$auth_custom_csec"
+```
+
+When `k8up.enabled` is `true`, create the `s3-credentials` secret with S3 access keys:
+
+```bash
+kubectl create secret generic s3-credentials \
+  --from-literal=username="$username" \
+  --from-literal=password="$password"
+```
+
+{{ template "chart.valuesSection" . }}

@@ -1,21 +1,21 @@
 ## @section  Forgejo Runner parameters
-## @param image The image for  Forgejo Runner
+# -- The image for  Forgejo Runner
 image: code.forgejo.org/forgejo/runner:9
-## @param imagePullPolicy Pull policy for  Forgejo Runner image
+# -- Pull policy for  Forgejo Runner image
 imagePullPolicy: Always
-## @param forgejoInstanceUrl Forgejo instance url.
+# -- Forgejo instance url.
 forgejoInstanceUrl: https://codeberg.org
-## @param secretRef The secret reference for the Forgejo Runner
+# -- The secret reference for the Forgejo Runner
 secretRef: forgejo-runner
-## @param storageClassName Set the storage class
+# -- Set the storage class
 storageClassName: ""
 ## @section Resources requests and limits
 resources:
-  ## @param resources.requests.memory Memory request for the container
   requests:
+    # -- Memory request for the container
     memory: "500Mi"
-    ## @param resources.requests.cpu CPU request for the container
+    # -- CPU request for the container
     cpu: "100m"
   limits:
-    ## @param resources.limits.memory Memory limit for the container
+    # -- Memory limit for the container
     memory: "1Gi"

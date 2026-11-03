@@ -1,10 +1,10 @@
 ## @section Ingress parameters
 ingress:
-  ## @param ingress.className The class name for the ingress
+  # -- The class name for the ingress
   className: ""
 ## @section Cluster Issuer parameters
 acme:
-  ## @param acme.email The email address for ACME
+  # -- The email address for ACME
   email: ""
-  ## @param acme.solver The solver for ACME
+  # -- The solver for ACME
   solver: ""

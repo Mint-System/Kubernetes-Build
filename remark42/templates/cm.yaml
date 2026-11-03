@@ -20,7 +20,10 @@ data:
   SMTP_USERNAME: {{ .Values.smtp.username | quote }}
   SMTP_TLS: {{ .Values.smtp.tls | quote }}
   {{- end }}
-  {{- if .Values.admin.sharedEmail }}
+  {{- if .Values.auth.github }}
+  AUTH_GITHUB_CID: {{ .Values.auth.github.cid | quote }}
+  {{- end }}
+    {{- if .Values.admin.sharedEmail }}
   ADMIN_SHARED_EMAIL: {{ .Values.admin.sharedEmail | quote }}
   ADMIN_SHARED_ID: {{ .Values.admin.sharedId | quote }}
   {{- end }}
