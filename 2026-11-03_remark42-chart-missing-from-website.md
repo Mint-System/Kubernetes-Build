@@ -1,5 +1,5 @@
 ---
-commit_ref: 0cf95fff59f52ec33defc9bd0fb83c2d43ea9fcb
+commit_ref: 5e106836d35cd26095184130d4635954a49a1a8a
 title: "Remark42 chart missing from website"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 action: implement
