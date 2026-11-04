@@ -31,7 +31,7 @@ help-table() {
     rows+=("list-charts||List local Helm charts.")
     rows+=("list-external-charts||List external Helm charts.")
     rows+=("update-dependencies|[chart]|Update dependencies for a chart.")
-    rows+=("install-chart|[chart][values]|Install local Helm chart.")
+    rows+=("install-chart|[chart][path]|Install local Helm chart.")
     rows+=("upgrade-release|[chart][values]|Upgrade Helm release.")
     rows+=("uninstall-release|[release]|Uninstall Helm release.")
     rows+=("===BOOTSTRAP===| | ")
@@ -176,10 +176,6 @@ get-namespace() {
 
 get-context() {
     kubectl config current-context 2>/dev/null
-}
-
-get-kubeconfig() {
-    readlink "$HOME/.kube/config" 2>/dev/null || echo 'none'
 }
 
 get-cluster() {
@@ -349,7 +345,74 @@ forward-traefik() {
     kubectl port-forward -n traefik svc/traefik $port:80
 }
 
-# Chart Commands
+# Chart commands
+
+install-chart() {
+    if test -z "$1"; then echo '$1/chart is empty.'; exit; fi
+    if test -z "$2"; then echo '$2/path is empty.'; exit; fi
+    local release_name="$1"
+    local values="$2"
+    local secrets_file
+    secrets_file="$(dirname "$values")/secrets.yaml"
+
+    if [[ -f "$secrets_file" ]] && grep -q "^sops:" "$secrets_file" 2>/dev/null; then
+        echo "Apply secrets from $secrets_file:"
+        sops --decrypt "$secrets_file" | kubectl apply -f -
+    fi
+
+    if [[ "$1" = 'cluster-issuer' ]]; then
+        "install-$1" "$2"
+    elif list-charts | grep -q "$1"; then
+        echo "Install chart $1 as release $release_name:"
+        helm install "$release_name" "$1" \
+            --values "$2"
+    elif list-external-charts | grep -q "$1"; then
+        echo "Error: '$1' is an external chart. Use the explicit command 'install-$1' instead."
+        echo "Run 'task help bootstrap' to list the bootstrap commands."
+        exit 1
+    else
+        echo "Error: Unknown chart '$1'."
+        echo "Run 'task list-charts' or 'task list-external-charts' to list available charts."
+        exit 1
+    fi
+}
+
+upgrade-release() {
+    if test -z "$1"; then echo '$1 is empty.'; exit; fi
+    if test -z "$2"; then echo '$2 is empty.'; exit; fi
+
+    local release_name="$1"
+
+    if list-charts | grep -q "$1"; then
+        echo "Upgrade $1 chart for release $release_name:"
+        helm upgrade "$release_name" "$1" \
+            --values "$2"
+    else
+        "upgrade-$1" "$2"
+    fi
+}
+
+uninstall-release() {
+    if test -z "$1"; then echo '$1 is empty.'; exit; fi
+    local release_name="$1"
+
+    echo "Uninstall release $release_name:"
+
+    local namespace=""
+    case "$release_name" in
+        cert-manager) namespace="cert-manager" ;;
+        cnpg) namespace="cnpg-system" ;;
+        k8up) namespace="k8up" ;;
+        metrics-server) namespace="metrics-server" ;;
+        traefik) namespace="traefik" ;;
+    esac
+
+    if [[ -n "$namespace" ]]; then
+        helm uninstall "$release_name" --namespace "$namespace"
+    else
+        helm uninstall "$release_name"
+    fi
+}
 
 list-charts() {
     for dir in */; do
@@ -482,130 +545,12 @@ list-releases() {
     done
 }
 
-list-kubeconfigs() {
-    if test -z "$1"; then echo '$1/path is empty.'; exit; fi
-    local path="$1"
-    local -a rows
-    local max_name=4 max_path=4
-
-    while IFS= read -r file; do
-        [[ -z "$file" ]] && continue
-        local name
-        name=$(basename "$file")
-        
-        rows+=("$name|$file")
-
-        (( ${#name} > max_name )) && max_name=${#name}
-        (( ${#file} > max_path )) && max_path=${#file}
-    done < <(find "$path" -path "*/kube/config*.yaml" -type f 2>/dev/null | grep -v "\.decrypted$")
-
-    [[ ${#rows[@]} -eq 0 ]] && {
-        echo "No kubeconfig files found."
-        return
-    }
-
-    printf '| %-*s | %-*s |\n' \
-        "$max_name" "Name" \
-        "$max_path" "Path"
-
-    printf '|-%*s-|-%*s-|\n' \
-        "$max_name" "$(printf '%*s' "$max_name" '' | tr ' ' '-')" \
-        "$max_path" "$(printf '%*s' "$max_path" '' | tr ' ' '-')"
-
-    printf '%s\n' "${rows[@]}" | sort -t'|' -k2 | while IFS='|' read -r name path; do
-        printf '| %-*s | %-*s |\n' \
-            "$max_name" "$name" \
-            "$max_path" "$path"
-    done
-}
-
-switch-kubeconfig() {
-    if test -z "$1"; then echo '$1/path is empty.'; exit; fi
-    local target="$1"
-
-    if [[ ! -f "$target" ]]; then
-        echo "Error: Target config file '$target' does not exist." >&2
-        return 1
-    fi
-
-    if grep -q "^sops:" "$target" 2>/dev/null; then
-        decrypt-with-sops "$target" "decrypted"
-        target="${target}.decrypted"
-    fi
-
-    mkdir -p "$HOME/.kube"
-    echo "Remove $HOME/.kube/config"
-    rm -f "$HOME/.kube/config" || true
-    
-    echo "Setup symlink from $HOME/.kube/config to $target"
-    touch "$target"
-    target="$(realpath "$target")"
-    ln -s "$target" "$HOME/.kube/config"
-    chmod 0644 "$target"
-
-    local context_alias
-    local parent_dir
-    parent_dir=$(dirname "$1")
-    context_alias=$(basename "$(dirname "$parent_dir")")
-
-    local cluster_dir
-    cluster_dir=$(dirname "$1")
-    cluster_dir=$(dirname "$cluster_dir")
-    local cluster_file=""
-    for file in "$cluster_dir"/*.yaml; do
-        if [[ "$(yq eval '.kind' "$file" 2>/dev/null)" == "Cluster" && "$(basename "$(dirname "$file")")" == "$context_alias" ]]; then
-            cluster_file="$file"
-            break
-        fi
-    done
-
-    if [[ -n "$cluster_file" && "$(yq eval '.openshift' "$cluster_file" 2>/dev/null)" == "true" ]]; then
-        local server
-        server="$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}')"
-        echo "Login to OpenShift cluster"
-        oc login --web --server="$server"
-    fi
-
-    if kubectl config current-context >/dev/null 2>&1; then
-        echo 'Select namespace'
-        select-kubectl-namespace
-    fi
-}
-
 update-dependencies() {
     if test -z "$1"; then echo '$1 is empty.'; exit; fi
     helm dependency update "$1"
 }
 
-install-chart() {
-    if test -z "$1"; then echo '$1 is empty.'; exit; fi
-    if test -z "$2"; then echo '$2 is empty.'; exit; fi
-    local release_name="$1"
-    local values="$2"
-    local secrets_file
-    secrets_file="$(dirname "$values")/secrets.yaml"
-
-    if [[ -f "$secrets_file" ]] && grep -q "^sops:" "$secrets_file" 2>/dev/null; then
-        echo "Apply secrets from $secrets_file:"
-        sops --decrypt "$secrets_file" | kubectl apply -f -
-    fi
-
-    if [[ "$1" = 'cluster-issuer' ]]; then
-        "install-$1" "$2"
-    elif list-charts | grep -q "$1"; then
-        echo "Install chart $1 as release $release_name:"
-        helm install "$release_name" "$1" \
-            --values "$2"
-    elif list-external-charts | grep -q "$1"; then
-        echo "Error: '$1' is an external chart. Use the explicit command 'install-$1' instead."
-        echo "Run 'task help bootstrap' to list the bootstrap commands."
-        exit 1
-    else
-        echo "Error: Unknown chart '$1'."
-        echo "Run 'task list-charts' or 'task list-external-charts' to list available charts."
-        exit 1
-    fi
-}
+# Bootstrap commands
 
 install-cnpg() {
     echo 'Install cnpg/cloudnative-pg.'
@@ -661,21 +606,6 @@ install-metrics-server() {
         "${values_args[@]}"
 }
 
-upgrade-release() {
-    if test -z "$1"; then echo '$1 is empty.'; exit; fi
-    if test -z "$2"; then echo '$2 is empty.'; exit; fi
-
-    local release_name="$1"
-
-    if list-charts | grep -q "$1"; then
-        echo "Upgrade $1 chart for release $release_name:"
-        helm upgrade "$release_name" "$1" \
-            --values "$2"
-    else
-        "upgrade-$1" "$2"
-    fi
-}
-
 upgrade-cert-manager() {
     echo 'Upgrade jetstack/cert-manager.'
     helm upgrade \
@@ -698,28 +628,6 @@ upgrade-cluster-issuer() {
         --values "$2"
 }
 
-uninstall-release() {
-    if test -z "$1"; then echo '$1 is empty.'; exit; fi
-    local release_name="$1"
-
-    echo "Uninstall release $release_name:"
-
-    local namespace=""
-    case "$release_name" in
-        cert-manager) namespace="cert-manager" ;;
-        cnpg) namespace="cnpg-system" ;;
-        k8up) namespace="k8up" ;;
-        metrics-server) namespace="metrics-server" ;;
-        traefik) namespace="traefik" ;;
-    esac
-
-    if [[ -n "$namespace" ]]; then
-        helm uninstall "$release_name" --namespace "$namespace"
-    else
-        helm uninstall "$release_name"
-    fi
-}
-
 uninstall-haproxy-ingress() {
     echo 'Uninstall ingress-nginx release.'
     helm uninstall haproxy-ingress/haproxy-ingress --namespace haproxy-ingress
@@ -732,15 +640,6 @@ uninstall-ingress-nginx() {
     kubectl delete namespace ingress-nginx
 }
 
-run-job() {
-    if test -z "$1"; then echo '$1 is empty.'; exit 1; fi
-    local job_name="$1"
-
-    echo "Run job: $job_name"
-    kubectl delete job ${job_name}-run --ignore-not-found
-    kubectl create job --from=cronjob/${job_name} ${job_name}-run
-}
-
 # kubectl Commands
 
 reveal-secrets() {
@@ -749,9 +648,25 @@ reveal-secrets() {
     kubectl get secret "$1" -o json | jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'
 }
 
+list() {
+    helm list
+}
 
 get-pods() {
     kubectl get pods
+}
+
+get-namespace() {
+    kubectl config view --minify -o jsonpath="{..namespace}" 2>/dev/null || echo
+}
+
+run-job() {
+    if test -z "$1"; then echo '$1 is empty.'; exit 1; fi
+    local job_name="$1"
+
+    echo "Run job: $job_name"
+    kubectl delete job ${job_name}-run --ignore-not-found
+    kubectl create job --from=cronjob/${job_name} ${job_name}-run
 }
 
 watch-cluster-memory() {
@@ -794,10 +709,6 @@ template-manifest() {
         helm --debug template "$release_name" "$1" \
             --values "$values"
     fi
-}
-
-list() {
-    helm list
 }
 
 package-repo() {
