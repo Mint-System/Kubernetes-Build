@@ -1,5 +1,5 @@
 ---
-commit_ref: bedc2501bd064b2d76851183f27225f10ed2e406
+commit_ref: e2140f48362d45dce2c54167945cfeb47bf24c7f
 title: "Create Helm chart remark42 from Ansible role"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 state: completed
