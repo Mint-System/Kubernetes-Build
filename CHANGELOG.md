@@ -15,5 +15,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - Improved deployment-updater/README.md to better describe the service account's cluster-wide capabilities
 - Refactored task script to include new command in help output and implement kubeconfig generation logic
-- Fixed `test-chart-odoo` by adding `--platform` flag to `docker pull` in `start-and-prepare` to resolve multi-arch image loading failure into Kind cluster
+- Fixed `test-chart-odoo` by adding `--platform` flag to `docker pull` in `start-and-prepare`
+- Fixed `load-image` command to bypass `kind load docker-image` and use `docker save | ctr images import` directly, avoiding the hardcoded `--all-platforms` flag that fails with multi-arch images
 - Updated Odoo test values to use image tag `19.0.20261102` to match the pre-loaded image
