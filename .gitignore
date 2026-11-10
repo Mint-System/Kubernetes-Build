@@ -1,7 +1,6 @@
 # Taskfile
 tmp
-
-# dotenv
+prompt.md
 .env
 
 
