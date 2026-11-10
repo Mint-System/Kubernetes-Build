@@ -1,15 +1,15 @@
 ---
-commit_ref:
+commit_ref: 2f3979f89e7b4c73a84c31aee13c1fd85a979109
 title: "Action cannot load Odoo image"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 action: implement
-state: draft
-date_completed: YYYY-MM-DD
-harness:
-provider:
-model:
-input_tokens:
-output_tokens:
+state: completed
+date_completed: 2026-11-10
+harness: pi
+provider: infomaniak
+model: moonshotai/Kimi-K2.6
+input_tokens: 30705
+output_tokens: 8587
 ---
 
 # Action cannot load Odoo image
@@ -50,6 +50,11 @@ Why can it not load the image? The locally and find cause.
 
 ## Worklog
 
-@Clanker Add a summary here once the task has been completed.
+**Root Cause:** The `mintsystem/odoo:19.0.20261102` image is a multi-architecture (multi-platform) image. `kind load docker-image` internally calls `ctr images import --all-platforms --digests --snapshotter=overlayfs -`. The `--all-platforms` flag is hardcoded in the `kind` CLI. Even with `docker pull --platform`, `docker save` can still include manifest-list references or buildx attestations (SBOM/provenance) in the exported tar. When `ctr images import --all-platforms` runs, it tries to resolve every digest referenced in the tar, including the missing platform layers or attestation manifests, which causes `content digest ... not found`.
 
-@Clanker If author confirms results set frontmatter state to completed, otherwise to aborted. Update date, harness, provider and model. If you have access to session info also add token count. Finally, update the changelog with the most important changes.
+**Fixes Applied:**
+1. **`task` script (`start-and-prepare`):** Added `--platform linux/$arch` to the `docker pull` command. The architecture is detected dynamically via `uname -m` (mapped to Docker's `amd64`/`arm64` conventions). This ensures only the needed platform layers are downloaded, reducing image size and avoiding unnecessary platform data.
+2. **`task` script (`load-image`):** Replaced `kind load docker-image "$1"` with `docker save "$1" | docker exec -i kind-control-plane ctr -n k8s.io images import - > /dev/null`. This bypasses the hardcoded `--all-platforms` flag in `kind load docker-image`, so `ctr` only imports the default platform present in the tar and does not fail on missing cross-platform layers or attestations.
+3. **`test_gitops/knd/default/odoo/values.yaml`:** Updated the test image tag from `19.0.20261015` to `19.0.20261102` to match the image loaded into the Kind cluster during test setup.
+
+**Author confirmation:** The author confirmed the fix works ("done"). The prompt state has been set to completed.
