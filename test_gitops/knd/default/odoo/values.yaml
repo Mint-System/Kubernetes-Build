@@ -2,7 +2,7 @@ replicas: 2
 ingress:
   host: odoo.knd.local
   customDomain: odoo.local
-image: mintsystem/odoo:19.0.20261015
+image: mintsystem/odoo:19.0.20261102
 init:
   login: admin@example.com
 addonsGitRepos:

@@ -280,9 +280,14 @@ start-and-prepare() {
     echo "Install k8up."
     install-k8up
 
-    #FIXME: This does not work in GitHub runner env.
     echo "Load Odoo image."
-    docker pull mintsystem/odoo:19.0.20261102 
+    local arch
+    arch=$(uname -m)
+    case "$arch" in
+        x86_64) arch="amd64" ;;
+        aarch64|arm64) arch="arm64" ;;
+    esac
+    docker pull --platform "linux/$arch" mintsystem/odoo:19.0.20261102
     load-image mintsystem/odoo:19.0.20261102
 }
 
