@@ -1,5 +1,5 @@
 ---
-commit_ref: 2f3979f89e7b4c73a84c31aee13c1fd85a979109
+commit_ref: d485aef5fedbb19721403d5871398335b5cf7240
 title: "Action cannot load Odoo image"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 action: implement
