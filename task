@@ -16,6 +16,8 @@ help-table() {
     rows+=("version||Show version of required tools.")
     rows+=("info||Show info about env.")
     rows+=("template-dotenv||Generate .env from .env.template.")
+    rows+=("===INSTALL===| | ")
+    rows+=("install-kubernetes-build-scripts||Install scripts from bin to ~/.local/bin or /usr/local/bin.")
     rows+=("===DOCS===| | ")
     rows+=("init-zensical-docs||Initialize Zensical documentation build dependencies.")
     rows+=("dev-zensical-docs||Run Zensical development server.")
@@ -163,6 +165,38 @@ if [[ -d "$HOME/taskfile.build/bin" ]]; then
         fi
     done
 fi
+
+# Install Commands
+
+install-kubernetes-build-scripts() {
+    local target_dir
+
+    if [[ "$EUID" -eq 0 ]]; then
+        target_dir="/usr/local/bin"
+    else
+        target_dir="$HOME/.local/bin"
+    fi
+
+    if [[ ! -d "bin" ]]; then
+        echo 'Error: No bin directory found.'
+        exit 1
+    fi
+
+    echo "Install kubernetes-build scripts to $target_dir"
+    mkdir -p "$target_dir"
+
+    for script in bin/*; do
+        if [[ -f "$script" ]]; then
+            local script_name
+            script_name=$(basename "$script")
+            echo "Install $script_name"
+            cp "$script" "$target_dir/$script_name"
+            chmod +x "$target_dir/$script_name"
+        fi
+    done
+
+    echo 'Done.'
+}
 
 # Env Commands
 
