@@ -1,5 +1,5 @@
 ---
-commit_ref: 50c2b91395dc36c605f40e525476d08591cb43ad
+commit_ref: ff298f8c4aa1d14eb7724313643f2767c518cf23
 title: "Add install kuberentes build scripts command"
 author: "Janik von Rotz <login@janikvonrotz.ch>"
 action: implement
