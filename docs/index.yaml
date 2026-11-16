@@ -3,9 +3,9 @@ entries:
   cluster-issuer:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-11-11T14:25:07.676961383Z"
+    created: "2026-11-16T15:48:08.596823673Z"
     description: Mint System Cluster Issuer
-    digest: cb4ad3edb26295d6f1f11a4dec530f1c223790e653f6db8b5b67ecebadfaffe9
+    digest: b9fdccb87ea62fc7a93d6f6a9a830bb49d0a24578bf97dd5b7a974f7e8fdca3b
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -18,9 +18,9 @@ entries:
   deployment-updater:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-11-11T14:25:07.677145554Z"
+    created: "2026-11-16T15:48:08.596934895Z"
     description: Mint System Deployment Updater
-    digest: 7fcac6bd25964f1826051ec9821a51dcb5c7cb7e7a7c9433e3c6295e2223f333
+    digest: 1330188f8674f58e837778e5dfd268411611b5245a582ca12e0c60264c40da53
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -33,9 +33,9 @@ entries:
   forgejo-runner:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-11-11T14:25:07.677435249Z"
+    created: "2026-11-16T15:48:08.597126038Z"
     description: Mint System Forgejo Runner
-    digest: ad3decbaa7544e1eee78217091824bd9c5cc6293aff69c8b9738c31af153a010
+    digest: 1a3c4124bac27f4afa6e6a6e90dc29b5bb0412680dd94c246b94e3cf8b36b2dc
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -48,14 +48,14 @@ entries:
   nextcloud:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-11-11T14:25:07.705827307Z"
+    created: "2026-11-16T15:48:08.615480689Z"
     dependencies:
     - condition: nextcloud.enabled
       name: nextcloud
       repository: https://nextcloud.github.io/helm/
       version: 9.2.4
     description: Mint System Nextcloud
-    digest: c9fbbbbab22f4c4cb67667654e504a77a11e0f6f84b2b026ae792eda5d881ab1
+    digest: c662a77db683070c5430afdb24196320f50e04ee9cfdf7c5daf3b4c28fdaf32c
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -68,7 +68,7 @@ entries:
   odoo:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-11-11T14:25:07.706854899Z"
+    created: "2026-11-16T15:48:08.616184598Z"
     dependencies:
     - condition: postgres.enabled
       name: postgres
@@ -79,7 +79,7 @@ entries:
       repository: file://../vshn-postgres
       version: 0.1.0
     description: Mint System Odoo
-    digest: 8f18af71fbb98941b3b85e0dddd62677fa6d5377e68eb17168ad0605d934e0ee
+    digest: f315ea5cdaf22479fcb86c3f09ad22f22694f1b004c060c2af560196e3745368
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -92,9 +92,9 @@ entries:
   postgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-11-11T14:25:07.707134548Z"
+    created: "2026-11-16T15:48:08.616343993Z"
     description: Mint System Postgres
-    digest: 497b2e8c7e9c7b6027420c8d10a6104b22282372020ac58942618563a0a6e6f1
+    digest: 223a702d4a9382f8d343493802840d4af448abc709512b3c78831098a4fc9a69
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -107,14 +107,14 @@ entries:
   prometheus-agent:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-11-11T14:25:07.710760808Z"
+    created: "2026-11-16T15:48:08.617780776Z"
     dependencies:
     - condition: kube-state-metrics.enabled
       name: kube-state-metrics
       repository: https://prometheus-community.github.io/helm-charts
       version: 5.x.x
     description: Prometheus agent mode scraper for Kubernetes.
-    digest: 82637184f281411ab7cba5870f65ba434eff6fe19b95ebe0534362558356bb43
+    digest: bd48d2fe0c4a29d57f56b09cd2db5024cadda5a2474da945d287eebaa57f8eb2
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -127,9 +127,9 @@ entries:
   remark42:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-11-11T14:25:07.711211878Z"
+    created: "2026-11-16T15:48:08.618086459Z"
     description: Mint System Remark42
-    digest: b3a819a86329230065ebdf53b7a3ab6aa647475c0e2201ca725777e881513464
+    digest: b473f5634472d1a363d8db6c02692a65eaf8c352af14fc53a6bbeeeb759252b3
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -142,9 +142,9 @@ entries:
   taskfile-build:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-11-11T14:25:07.711473408Z"
+    created: "2026-11-16T15:48:08.618276398Z"
     description: Mint System Vueress
-    digest: 56f0a60e9172645e93db62e930f6a472cad27b3ea28bd20184e0c756e754571a
+    digest: bf4915b2ff8f9618cdfed1b8921bcf9115234c11a0e8e6704d011f6a5f32fb52
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -157,9 +157,9 @@ entries:
   vshn-postgres:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-11-11T14:25:07.711690661Z"
+    created: "2026-11-16T15:48:08.618397769Z"
     description: VSHN Postgres
-    digest: 272eebd9f56e5e17b27408c45e96495f6857e980c5a5f1886dabdb8a9649efb2
+    digest: a1c30942e553582148c5c8d3f54d0a6df063c794d7d9fb6aca49c9d679a055ea
     home: https://kubernetes.build
     maintainers:
     - email: support@mint-system.ch
@@ -169,4 +169,4 @@ entries:
     urls:
     - vshn-postgres-0.1.0.tgz
     version: 0.1.0
-generated: "2026-11-11T14:25:07.676634862Z"
+generated: "2026-11-16T15:48:08.596581046Z"
